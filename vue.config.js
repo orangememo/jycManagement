@@ -39,19 +39,19 @@ module.exports = {
 		proxy: {
 			// 服务器ip
 			'/rule/': {
-				target: 'http://192.168.0.106:8085',
+				target: 'http://192.168.0.106:8086',
 				changeOrigin: true,
 			},
 			'/role/': {
-				target: 'http://192.168.0.106:8085',
+				target: 'http://192.168.0.106:8086',
 				changeOrigin: true,
 			},
 			'/manager/': {
-				target: 'http://192.168.0.106:8085',
+				target: 'http://192.168.0.106:8086',
 				changeOrigin: true,
 			},
 			'/account/': {
-				target: 'http://192.168.0.106:8085',
+				target: 'http://192.168.0.106:8086',
 				changeOrigin: true,
 			},
 		},

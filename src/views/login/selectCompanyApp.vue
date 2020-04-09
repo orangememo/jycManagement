@@ -18,7 +18,8 @@
 
 <script>
 import { loginJyc } from '@/api/login'
-import { mapGetters, mapState } from 'vuex'
+import { resetRouter } from '@/router'
+import { mapGetters, mapState, mapActions } from 'vuex'
 
 export default {
   data() {
@@ -29,10 +30,14 @@ export default {
       value2: []
     }
   },
+  created() {
+    this.$store.dispatch('login/resetRouter').then(() => {
+      // this.$router.options.routes = this.$router.options.routes.concat(res)
+    })
+  },
   mounted() {
     this.value1 = this.companyList
 
-    // let pass = this.$getRsaCode('888888')
     // console.log(pass, '222pass')
   },
   computed: {
@@ -59,11 +64,11 @@ export default {
           companyId: this.companyId
         }
         this.$store.commit('login/SET_APPLICATION_ID', applicationId)
-
-        this.$store.dispatch('login/loginInfo', {}).then(res => {
-          console.log(res, 'res')
+        this.$store.dispatch('login/loginInfo').then(res => {
+          console.log(res, ' this.$router.addRoutes(res)')
+          this.$router.addRoutes(res)
+          this.$router.push({ path: '/dashboard' })
         })
-        this.$router.push({ path: '/dashboard' })
       }
     }
   }

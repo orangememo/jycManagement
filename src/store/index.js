@@ -27,7 +27,7 @@ const store = new Vuex.Store({
 			reducer(val) {
 				let { login } = val
 				return {
-					// 只储存state中的assessmentData
+					// 只储存state中的login
 					login,
 				}
 			},
