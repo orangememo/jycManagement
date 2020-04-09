@@ -5,7 +5,7 @@
     auto-upload
     action="http://49.234.12.49/lp/lp/lpVuser/edits"
     accept="image/png, image/jpg, image/jpeg"
-    :limit="1"
+    :limit="limit"
     :before-upload="beforeAvatarUpload"
     :file-list="fileList"
     :on-success="uploads"

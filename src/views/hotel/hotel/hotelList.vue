@@ -434,9 +434,13 @@ export default {
 				row.images = []
 				row.images.push(inImg)
 			}
-			this.ruleForm = row
 		},
-		saveNewHotel() {},
+		saveNewHotel() {
+			if(this.dialogEditStatus){
+				this.dialogStatus = false;
+				return;
+			}
+		},
 		//地图+图片上传
 		location(address, loca) {
 			let lon = this.accountNum(loca[0][0])
