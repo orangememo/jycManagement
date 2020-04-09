@@ -1,0 +1,33 @@
+.mainWrap {
+    padding: 15px 40px 15px 15px;
+
+    .topSearch {
+        // background-color: rgb(9, 27, 47);
+        // padding-top: 25px;
+        display: flex;
+    }
+
+    .cardWrap {
+        border-radius: 4px;
+        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+        border: 1px solid #e6ebf5;
+
+        .topTitle {
+            padding: 0 0 0 10px;
+            border-bottom: 1px solid #e4e7ed;
+        }
+    }
+}
+
+.dialogBody {
+    .body {
+        padding: 20px 30px 20px 20px;
+        border-bottom: 1px solid #dcdfe6;
+        max-height: calc(100vh - 320px);
+        overflow: auto;
+    }
+
+    .buttonCtrl {
+        padding: 25px 40px 0px;
+    }
+}
