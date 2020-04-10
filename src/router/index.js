@@ -456,7 +456,7 @@ export const constantRoutes = [
 				path: '/operate/manager',
 				component: () => import('@/views/operate/manager'), // Parent router-view
 				name: 'operateManager',
-				meta: { title: '会员管理', icon: 'table' },
+				meta: { title: '运营中心管理', icon: 'table' },
 			},
 			{
 				path: 'order15',
@@ -487,6 +487,29 @@ export const constantRoutes = [
 				component: () => import('@/views/business/commodity'), // Parent router-view
 				name: 'order51',
 				meta: { title: '订单子类管理', icon: 'table' },
+			},
+		],
+  },
+  {
+		path: '/apply',
+		component: Layout,
+		name: 'apply',
+		meta: {
+			title: '应用',
+			icon: 'nested',
+		},
+		children: [
+			{
+				path: '/apply/manager',
+				component: () => import('@/views/apply/manager'), 
+				name: 'applyManager',
+				meta: { title: '应用管理', icon: 'table' },
+			},
+			{
+				path: 'order51',
+				component: () => import('@/views/business/commodity'), // Parent router-view
+				name: 'order51',
+				meta: { title: 'Cvideo', icon: 'table' },
 			},
 		],
 	},

@@ -27,7 +27,17 @@
 		<el-dialog :title="dialogTitle" :visible.sync="dialogStatus" width="800px">
 			<div>
 				<el-form :model="newProd" ref="roleFrom">
-					<el-form-item label="标志" :label-width="labelWidth" style="margin-right: -80px;">
+					<el-form-item label="选择应用" :label-width="labelWidth" style="margin-right: -80px;">
+						<el-select v-model="newProd.applyList" placeholder="请选择...">
+							<el-option
+								v-for="(item,index) in applyList"
+								:key="index"
+								:label="item.applicationName"
+								:value="item.id"
+							></el-option>
+						</el-select>
+					</el-form-item>
+					<el-form-item label="选择标志" :label-width="labelWidth" style="margin-right: -80px;">
 						<el-select v-model="newProd.labelList" multiple placeholder="请选择...">
 							<el-option
 								v-for="(item,index) in labelList"
@@ -112,6 +122,7 @@ import SearchForm from '@/components/seachForm/seachForm'
 import jycTable from '@/components/table/jycTable'
 import Pagination from '@/components/Pagination'
 import Upload from '@/components/Upload.vue'
+import store from '@/store'
 import {
 	getCompanyPageHotel,
 	companyTopWeight,
@@ -119,6 +130,7 @@ import {
 	delCompany,
 	updateCompany
 } from '@/api/company'
+import { getApplyByCompany  } from '@/api/apply'
 import { getLabelList } from '@/api/label'
 export default {
 	components: { Pagination, jycTable, SearchForm, Upload },
@@ -134,6 +146,7 @@ export default {
 			total: 0,
 			listLoading: true,
 			labelList: [],
+			applyList: [],
 			isEdit: false,
 			newProd: {
 				abbreviateImg: '',
@@ -153,13 +166,14 @@ export default {
 				mobile: '',
 				modifyAccountId: '',
 				modifyTime: '',
-				pcompanyId: 0,
+				pcmpId: 0,
 				pyCode: '',
 				state: '',
 				vrimage: '',
 				weight: 0,
 				images: [],
-				labelList: []
+				labelList: [],
+				applyList: []
 			},
 			pageSize: 10,
 			listQuery: {
@@ -255,17 +269,18 @@ export default {
 					align: 'center',
 					render: row => {
 						let _this = this
-						let span = `<div class="label-div">`
+						let span = `<div style="display: flex;justify-content: center;">`
 						row.labelList.map(item => {
-							let bg = 'label-bg'
+							let bg =
+								'width: 50px;height: 35px;color: #fff;line-height: 35px;margin: 0 2px;'
 							if (item.labelCode == 'HOT') {
-								bg += ' hot'
+								bg += 'background: #f39c12;'
 							} else if (item.labelCode == 'INDEX') {
-								bg += ' home'
+								bg += 'background: #18bc9c;'
 							} else if (item.labelCode == 'recommend') {
-								bg += ' reco'
+								bg += 'background: #e74c3c;'
 							}
-							span += `<div class="${bg}">${item.labelName}</div>`
+							span += `<div style="${bg}">${item.labelName}</div>`
 						})
 						span += `</div>`
 						return span
@@ -362,6 +377,7 @@ export default {
 	mounted() {
 		this.getList()
 		this.getLabel()
+		this.getApply()
 	},
 	methods: {
 		handleButton(object) {
@@ -372,7 +388,7 @@ export default {
 					_this.edit(object.row)
 					break
 				case 'delete':
-					_this.delete([object.row.companyId])
+					_this.delete(object.row.companyId)
 					break
 				case 'top':
 					_this.top(object.row)
@@ -400,36 +416,38 @@ export default {
 			this.chooseList = row
 		},
 		getList() {
-			let _this = this;
+			let _this = this
 			const params = {
 				isPage: 'YES',
 				currentPage: _this.listQuery.page,
 				pageSize: _this.listQuery.limit
 			}
 			let p = { ...params, ..._this.form }
-			console.log('form:'+JSON.stringify(_this.form));
-			console.log('p:'+JSON.stringify(p));
+			console.log('form:' + JSON.stringify(_this.form))
+			console.log('p:' + JSON.stringify(p))
 			this.searchCompanyPageHotel(p)
 		},
 		searchCompanyPageHotel(params) {
 			let _this = this
-			_this.loading = true;
-			getCompanyPageHotel(params).then(data => {
-				if (data.code == '200') {
-					_this.total = data.result.total
-					if (data.result.records.length > 0) {
-						_this.tableData = data.result.records
+			_this.loading = true
+			getCompanyPageHotel(params)
+				.then(data => {
+					if (data.code == '200') {
+						_this.total = data.result.total
+						if (data.result.records.length > 0) {
+							_this.tableData = data.result.records
+						} else {
+							_this.$alert('未获取到有效信息')
+						}
 					} else {
 						_this.$alert('未获取到有效信息')
 					}
-				} else {
-					_this.$alert('未获取到有效信息')
-				}
-				_this.loading = false;
-			}).catch(err=>{
-				_this.$alert('服务器异常')
-				_this.loading = false;
-			})
+					_this.loading = false
+				})
+				.catch(err => {
+					_this.$alert('服务器异常')
+					_this.loading = false
+				})
 		},
 		getLabel() {
 			let _this = this
@@ -439,9 +457,20 @@ export default {
 				}
 			})
 		},
+		getApply() {
+			let _this = this
+			getApplyByCompany({isPage: 'NO',id:store.state.login.companyId}).then(data => {
+				if (data.code == '200') {
+					if (data.result.records.length > 0) {
+						_this.applyList = data.result.records
+					}
+				}
+			})
+		},
 		addNew() {
 			this.editStatus = false
 			this.resetForm()
+			this.newProd.pcompanyId = store.state.login.companyId
 			this.dialogTitle = '添加'
 			this.dialogStatus = true
 		},
@@ -453,7 +482,7 @@ export default {
 			_this.newProd.images instanceof Array
 				? (_this.newProd.images = _this.newProd.images.join(','))
 				: ''
-			_this.newProd.companyType = 'HOTEL';
+			_this.newProd.companyType = 'HOTEL'
 			if (_this.editStatus) {
 				updateCompany(_this.newProd).then(data => {
 					if (data.code == '200') {
@@ -481,7 +510,7 @@ export default {
 			this.setRuleFrom(row)
 			this.dialogStatus = true
 		},
-		delete(companyIdList) {
+		delete(companyIds) {
 			let _this = this
 			this.$confirm('确定删除所选酒店吗?', '提示', {
 				confirmButtonText: '确定',
@@ -489,7 +518,7 @@ export default {
 				type: 'warning'
 			}).then(() => {
 				let params = {
-					companyId: companyIds,
+					companyIdList: companyIds,
 					state: 'DELETE'
 				}
 				delCompany(params).then(data => {
@@ -510,11 +539,11 @@ export default {
 		},
 		delAll() {
 			if (this.chooseList.length > 0) {
-				let companyIds = [];
-				this.chooseList.map(item=>{
+				let companyIds = []
+				this.chooseList.map(item => {
 					companyIds.push(item.companyId)
 				})
-				this.delete(companyIds);
+				this.delete(companyIds.join(','))
 			} else {
 				this.$alert('请先选择要删除项')
 			}
@@ -580,6 +609,7 @@ export default {
 				backgroundImg: '',
 				images: [],
 				labelList: [],
+				applyList: [],
 				businessHours: '',
 				companyAddr: '',
 				companyCode: '',
@@ -595,7 +625,7 @@ export default {
 				mobile: '',
 				modifyAccountId: '',
 				modifyTime: '',
-				pcompanyId: 0,
+				pcmpId: 0,
 				pyCode: '',
 				state: '',
 				vrimage: '',

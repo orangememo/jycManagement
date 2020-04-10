@@ -1,25 +1,9 @@
 import request from '@/utils/request'
 
-//分页查询所有公司信息
-export function getCompanyPageOperator(params){
-  return request({
-    url: '/company/page/operator',
-    method: 'get',
-    params: params
-  })
-}
-//分页查询子公司信息
-export function getCompanyOperatorHotel(params){
-  return request({
-    url: '/company/operator/hotel',
-    method: 'get',
-    params: params
-  })
-}
-//分页查询酒店信息
+//分页查询运营商信息
 export function getCompanyPageHotel(params){
   return request({
-    url: '/company/page/hotel',
+    url: '/company/page/operator',
     method: 'get',
     params: params
   })
@@ -32,7 +16,7 @@ export function companyTopWeight(params){
     params: params
   })
 } 
-//新增公司信息
+//新增运营商信息
 export function addNewCompany(params){
   return request({
     url: '/company/info/operator',
@@ -51,7 +35,7 @@ export function delCompany(params){
 //修改公司信息
 export function updateCompany(params){
   return request({
-    url: '/company/hotel/info',
+    url: '/company/operator/info',
     method: 'put',
     data: params
   })

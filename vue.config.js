@@ -61,6 +61,10 @@ module.exports = {
 			'/label':{
 				target: 'http://192.168.0.108:8085',
 				changeOrigin: true,
+			},
+			'/application':{
+				target: 'http://192.168.0.108:8085',
+				changeOrigin: true,
 			}
 		},
 		after: require('./mock/mock-server.js'),

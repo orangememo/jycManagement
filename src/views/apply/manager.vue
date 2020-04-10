@@ -1,6 +1,6 @@
 <template>
 	<div class="app-container">
-		<search-form :formConfig="formConfig" :value="form" labelWidth="80px"></search-form>
+		<!-- <search-form :formConfig="formConfig" :value="form" labelWidth="80px"></search-form> -->
 		<el-popover placement="top-end" trigger="click" v-model="moreStatus">
 			<el-link class="set" @click="editStatus(1)">设置为显示</el-link>
 			<br />
@@ -27,72 +27,20 @@
 		<el-dialog :title="dialogTitle" :visible.sync="dialogStatus" width="800px">
 			<div>
 				<el-form :model="newProd" ref="roleFrom">
-					<el-form-item label="标志" :label-width="labelWidth" style="margin-right: -80px;">
-						<el-select v-model="newProd.labelList" multiple placeholder="请选择...">
-							<el-option
-								v-for="(item,index) in labelList"
-								:key="index"
-								:label="item.labelName"
-								:value="item.labelId"
-							></el-option>
+					<el-form-item label="应用Key" :label-width="labelWidth">
+						<el-input v-model="newProd.applicationKey"></el-input>
+					</el-form-item>
+					<el-form-item label="应用名称" :label-width="labelWidth">
+						<el-input v-model="newProd.applicationName"></el-input>
+					</el-form-item>
+					<el-form-item label="应用端" :label-width="labelWidth">
+						<el-select v-model="newProd.applicationSource" placeholder="请选择...">
+							<el-option label="电脑端" value="PC"></el-option>
+                            <el-option label="移动端" value="MOBILE"></el-option>
 						</el-select>
 					</el-form-item>
-					<el-form-item label="名称" :label-width="labelWidth">
-						<el-input v-model="newProd.companyName"></el-input>
-					</el-form-item>
-					<el-form-item label="联系人" :label-width="labelWidth" prop="linkMan">
-						<el-input v-model="newProd.linkMan"></el-input>
-					</el-form-item>
-					<el-form-item label="电话" :label-width="labelWidth" prop="mobile">
-						<el-input v-model="newProd.mobile"></el-input>
-					</el-form-item>
-					<el-form-item label="地址" :label-width="labelWidth" prop="companyAddr">
-						<el-input v-model="newProd.companyAddr"></el-input>
-					</el-form-item>
-					<el-form-item label="缩略图" :label-width="labelWidth">
-						<el-image
-							v-if="newProd.abbreviateImg"
-							style="width: 150px; height: 150px"
-							:src="hostUrl+newProd.abbreviateImg"
-							fit="cover"
-						></el-image>
-						<div>请上传酒店缩略图</div>
-						<upload v-on:uploadimg="uImg" />
-					</el-form-item>
-					<el-form-item label="背景图片" :label-width="labelWidth">
-						<el-image
-							v-if="newProd.backgroundImg"
-							style="width: 150px; height: 150px"
-							:src="hostUrl+newProd.backgroundImg"
-							fit="cover"
-						></el-image>
-						<div>请上传酒店背景图</div>
-						<upload v-on:uploadimg="uBgImg" />
-					</el-form-item>
-					<el-form-item label="图片组" :label-width="labelWidth">
-						<div v-if="newProd.images">
-							<el-image
-								v-for="(item,index) in newProd.images"
-								:key="index"
-								style="width: 150px; height: 150px;margin:0 20px 20px 0;"
-								:src="hostUrl+item"
-								fit="cover"
-							></el-image>
-						</div>
-						<div>上传图片组</div>
-						<upload v-on:uploadimg="uInImg" :limit="pageSize" />
-					</el-form-item>
-					<el-form-item label="营业时间" :label-width="labelWidth" prop="businessHours">
-						<el-input v-model="newProd.businessHours"></el-input>
-					</el-form-item>
-					<el-form-item label="描述" :label-width="labelWidth">
-						<el-input v-model="newProd.description"></el-input>
-					</el-form-item>
-					<el-form-item label="X" :label-width="labelWidth">
-						<el-input v-model="newProd.longitude" type="number"></el-input>
-					</el-form-item>
-					<el-form-item label="Y" :label-width="labelWidth">
-						<el-input v-model="newProd.latitude" type="number"></el-input>
+					<el-form-item label="类型" :label-width="labelWidth">
+						<el-input v-model="newProd.applicationType"></el-input>
 					</el-form-item>
 					<el-form-item label="权重" :label-width="labelWidth">
 						<el-input v-model="newProd.weight"></el-input>
@@ -111,18 +59,9 @@
 import SearchForm from '@/components/seachForm/seachForm'
 import jycTable from '@/components/table/jycTable'
 import Pagination from '@/components/Pagination'
-import Upload from '@/components/Upload.vue'
-import store from '@/store'
-import {
-	getCompanyPageHotel,
-	companyTopWeight,
-	addNewCompany,
-	delCompany,
-	updateCompany
-} from '@/api/operate/manager'
-import { getLabelList } from '@/api/label'
+import { getApplyPageInfo,addNewApply,updateApply,delApply } from '@/api/apply'
 export default {
-	components: { Pagination, jycTable, SearchForm, Upload },
+	components: { Pagination, jycTable, SearchForm },
 	data() {
 		return {
 			form: {
@@ -134,33 +73,19 @@ export default {
 			loading: false,
 			total: 0,
 			listLoading: true,
-			labelList: [],
 			isEdit: false,
 			newProd: {
-				abbreviateImg: '',
-				backgroundImg: '',
-				businessHours: '',
-				companyAddr: '',
-				companyCode: '',
-				cmpId: 0,
-				companyName: '',
-				companyType: '',
+				applicationId: 0,
+				applicationKey: '',
+				applicationName: '',
+				applicationSource: '',
+				applicationType: '',
 				createAccountId: '',
 				createTime: '',
-				description: '',
-				latitude: '',
-				linkMan: '',
-				longitude: '',
-				mobile: '',
 				modifyAccountId: '',
 				modifyTime: '',
-				pcmpId: 0,
-				pyCode: '',
 				state: '',
-				vrimage: '',
-				weight: 0,
-				images: [],
-				labelList: []
+				weight: 0
 			},
 			pageSize: 10,
 			listQuery: {
@@ -239,66 +164,47 @@ export default {
 			tableData: [],
 			tableLabel: [
 				{
-					label: 'ID',
-					param: 'cmpId',
+					label: '应用ID',
+					param: 'applicationId',
 					align: 'center',
 					type: 'text'
 				},
 				{
-					label: '名称',
-					param: 'companyName',
+					label: '应用KEY',
+					param: 'applicationKey',
 					align: 'center',
 					type: 'text'
 				},
 				{
-					label: '标签',
-					param: 'labelList',
+					label: '应用名称',
+					param: 'applicationName',
+					align: 'center',
+					type: 'text'
+				},
+				{
+					label: '应用端',
+					param: 'applicationSource',
 					align: 'center',
 					render: row => {
 						let _this = this
-						let span = `<div style="display: flex;justify-content: center;">`
-						row.labelList.map(item => {
-							let bg = 'width: 50px;height: 35px;color: #fff;line-height: 35px;margin: 0 2px;'
-							if (item.labelCode == 'HOT') {
-								bg += 'background: #f39c12;'
-							} else if (item.labelCode == 'INDEX') {
-								bg += 'background: #18bc9c;'
-							} else if (item.labelCode == 'recommend') {
-								bg += 'background: #e74c3c;'
-							}
-							span += `<div style="${bg}">${item.labelName}</div>`
-						})
-						span += `</div>`
-						return span
+						if (row.applicationSource == 'PC') {
+							return '电脑端'
+						} else if (row.applicationSource == 'MOBILE') {
+							return '移动端'
+						} else {
+							return row.applicationSource
+						}
 					}
 				},
 				{
-					label: '联系人',
-					param: 'linkMan',
+					label: '类型',
+					param: 'applicationType',
 					align: 'center',
 					type: 'text'
 				},
 				{
-					label: '电话',
-					param: 'mobile',
-					align: 'center',
-					type: 'text'
-				},
-				{
-					label: '地址',
-					param: 'companyAddr',
-					align: 'center',
-					type: 'text'
-				},
-				{
-					label: '缩略图',
-					param: 'abbreviateImg',
-					align: 'center',
-					type: 'img'
-				},
-				{
-					label: '营业时间',
-					param: 'businessHours',
+					label: '创建人',
+					param: 'createAccountId',
 					align: 'center',
 					type: 'text'
 				},
@@ -308,6 +214,19 @@ export default {
 					align: 'center',
 					type: 'text'
 				},
+				{
+					label: '修改人',
+					param: 'modifyAccountId',
+					align: 'center',
+					type: 'text'
+				},
+				{
+					label: '修改时间',
+					param: 'modifyTime',
+					align: 'center',
+					type: 'text'
+				},
+
 				{
 					label: '权重',
 					param: 'weight',
@@ -324,8 +243,6 @@ export default {
 							return '正常'
 						} else if (row.state == 'DELETE') {
 							return '删除'
-						} else if (row.state == 'FROZEN') {
-							return '冻结'
 						}
 					}
 				}
@@ -362,7 +279,6 @@ export default {
 	},
 	mounted() {
 		this.getList()
-		this.getLabel()
 	},
 	methods: {
 		handleButton(object) {
@@ -373,7 +289,7 @@ export default {
 					_this.edit(object.row)
 					break
 				case 'delete':
-					_this.delete(object.row.cmpId)
+					_this.delete(object.row.applicationId)
 					break
 				case 'top':
 					_this.top(object.row)
@@ -401,63 +317,47 @@ export default {
 			this.chooseList = row
 		},
 		getList() {
-			let _this = this;
+			let _this = this
 			const params = {
-				isPage: 'YES',
 				currentPage: _this.listQuery.page,
 				pageSize: _this.listQuery.limit
 			}
 			let p = { ...params, ..._this.form }
-			console.log('form:'+JSON.stringify(_this.form));
-			console.log('p:'+JSON.stringify(p));
-			this.searchCompanyPageHotel(p)
+			this.searchApplyPageInfo(p)
 		},
-		searchCompanyPageHotel(params) {
+		searchApplyPageInfo(params) {
 			let _this = this
-			_this.loading = true;
-			getCompanyPageHotel(params).then(data => {
-				if (data.code == '200') {
-					_this.total = data.result.total
-					if (data.result.records.length > 0) {
-						_this.tableData = data.result.records
+			_this.loading = true
+			getApplyPageInfo(params)
+				.then(data => {
+					if (data.code == '200') {
+						_this.total = data.result.total
+						if (data.result.records.length > 0) {
+							_this.tableData = data.result.records
+						} else {
+							_this.$alert('未获取到有效信息')
+						}
 					} else {
 						_this.$alert('未获取到有效信息')
 					}
-				} else {
-					_this.$alert('未获取到有效信息')
-				}
-				_this.loading = false;
-			}).catch(err=>{
-				_this.$alert('服务器异常')
-				_this.loading = false;
-			})
-		},
-		getLabel() {
-			let _this = this
-			getLabelList({ isPage: 'NO' }).then(data => {
-				if (data.code == '200') {
-					_this.labelList = data.result
-				}
-			})
+					_this.loading = false
+				})
+				.catch(err => {
+					_this.$alert('服务器异常')
+					_this.loading = false
+				})
 		},
 		addNew() {
 			this.editStatus = false
 			this.resetForm()
-			this.newProd.pcompanyId = store.state.login.companyId
 			this.dialogTitle = '添加'
 			this.dialogStatus = true
 		},
 		save() {
-			let _this = this
-			_this.newProd.labelList instanceof Array
-				? (_this.newProd.flags = _this.newProd.labelList.join(','))
-				: ''
-			_this.newProd.images instanceof Array
-				? (_this.newProd.images = _this.newProd.images.join(','))
-				: ''
-			_this.newProd.companyType = 'HOTEL';
+            let _this = this
+            console.log(JSON.stringify(_this.newProd));
 			if (_this.editStatus) {
-				updateCompany(_this.newProd).then(data => {
+				updateApply(_this.newProd).then(data => {
 					if (data.code == '200') {
 						_this.$alert('修改成功')
 						_this.dialogStatus = false
@@ -467,7 +367,7 @@ export default {
 					}
 				})
 			} else {
-				addNewCompany(_this.newProd).then(data => {
+				addNewApply(_this.newProd).then(data => {
 					if (data.code == '200') {
 						_this.$alert('保存成功')
 						_this.dialogStatus = false
@@ -483,7 +383,7 @@ export default {
 			this.setRuleFrom(row)
 			this.dialogStatus = true
 		},
-		delete(companyIds) {
+		delete(applicationId) {
 			let _this = this
 			this.$confirm('确定删除所选酒店吗?', '提示', {
 				confirmButtonText: '确定',
@@ -491,10 +391,10 @@ export default {
 				type: 'warning'
 			}).then(() => {
 				let params = {
-					companyIdList: companyIds,
+					applicationId: applicationId,
 					state: 'DELETE'
 				}
-				delCompany(params).then(data => {
+				delApply(params).then(data => {
 					if (data.code == '200') {
 						_this.$alert('删除成功')
 						_this.getList()
@@ -512,11 +412,11 @@ export default {
 		},
 		delAll() {
 			if (this.chooseList.length > 0) {
-				let companyIds = [];
-				this.chooseList.map(item=>{
-					companyIds.push(item.cmpId)
+				let ids = []
+				this.chooseList.map(item => {
+					ids.push(item.companyId)
 				})
-				this.delete(companyIds.join(','));
+				this.delete(ids.join(','))
 			} else {
 				this.$alert('请先选择要删除项')
 			}
@@ -538,7 +438,7 @@ export default {
 		//置顶
 		toTop(row) {
 			let _this = this
-			companyTopWeight({ cmpId: row.cmpId }).then(data => {
+			companyTopWeight({ companyId: row.companyId }).then(data => {
 				if (data.code == '200') {
 					_this.$alert('置顶成功')
 					_this.getList()
@@ -547,60 +447,16 @@ export default {
 				}
 			})
 		},
-		uImg(img) {
-			this.newProd.abbreviateImg = img
-		},
-		uBgImg(img) {
-			this.newProd.backgroundImg = img
-		},
-		uInImg(img) {
-			this.newProd.images.push(img)
-		},
 		setRuleFrom(row) {
-			let newLabel = []
-			row.labelList.map(item => {
-				newLabel.push(item.labelId)
-			})
-			if (row.images instanceof Array) {
-				this.newProd = { ...row }
-				this.newProd.labelList = newLabel
-			} else if (row.images && row.images.indexOf(',') > -1) {
-				row.images = row.images.split(',')
-				this.newProd = { ...row }
-				this.newProd.labelList = newLabel
-			} else {
-				let inImg = row.images
-				row.images = []
-				row.images.push(inImg)
-				this.newProd = { ...row }
-				this.newProd.labelList = newLabel
-			}
+            this.newProd = { ...row }
 		},
 		resetForm() {
 			this.newProd = {
-				abbreviateImg: '',
-				backgroundImg: '',
-				images: [],
-				labelList: [],
-				businessHours: '',
-				companyAddr: '',
-				companyCode: '',
-				cmpId: 0,
-				companyName: '',
-				companyType: '',
-				createAccountId: '',
-				createTime: '',
-				description: '',
-				latitude: '',
-				linkMan: '',
-				longitude: '',
-				mobile: '',
-				modifyAccountId: '',
-				modifyTime: '',
-				pcmpId: 0,
-				pyCode: '',
-				state: '',
-				vrimage: '',
+				applicationId: null,
+				applicationKey: '',
+				applicationName: '',
+				applicationSource: '',
+				applicationType: '',
 				weight: 0
 			}
 		}

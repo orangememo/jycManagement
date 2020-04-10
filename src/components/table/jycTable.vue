@@ -114,26 +114,5 @@ export default {
   }
 };
 </script>
-<style scoped>
-.label-div {
-	display: flex;
-	justify-content: center;
-}
-.label-bg {
-	width: 50px;
-	height: 35px;
-	color: #fff;
-	line-height: 35px;
-	margin: 0 2px;
-}
-.hot {
-	background: #f39c12;
-}
-.home {
-	background: #18bc9c;
-}
-.reco {
-	background: #e74c3c;
-}
-</style>
+
 
