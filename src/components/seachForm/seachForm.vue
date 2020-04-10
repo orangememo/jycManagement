@@ -21,6 +21,7 @@
         :clearable="true"
         :placeholder="item.placeholder"
       ></el-input>
+
       <el-select
         :clearable="true"
         v-else-if="item.type=='select'"

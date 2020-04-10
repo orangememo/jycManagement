@@ -13,7 +13,6 @@
 			:table-option="tableOption"
 			:selectionShow="true"
 			@handleButton="handleButton"
-			@handleSortChange="handleSortChange"
 			@handleSelectionChange="handleSelectionChange"
 			ref="table"
 		></jyc-table>
@@ -22,6 +21,7 @@
 			:total="total"
 			:page.sync="listQuery.page"
 			:limit.sync="listQuery.limit"
+			@pagination="getList"
 		/>
 
 		<el-dialog :title="dialogTitle" :visible.sync="dialogStatus" width="800px">
@@ -112,18 +112,16 @@ import SearchForm from '@/components/seachForm/seachForm'
 import jycTable from '@/components/table/jycTable'
 import Pagination from '@/components/Pagination'
 import Upload from '@/components/Upload.vue'
-import {
-	getCompanyPageHotel,
-	companyTopWeight,
-	addNewCompany,
-	delCompany,
-	updateCompany
-} from '@/api/company'
+import { getCompanyPageOperator, addNewCompany } from '@/api/operate/manager'
+import { companyTopWeight, delCompany, updateCompany } from '@/api/company'
 import { getLabelList } from '@/api/label'
 export default {
 	components: { Pagination, jycTable, SearchForm, Upload },
 	data() {
 		return {
+			form: {
+				state: 'NORMAL'
+			}, //查询条件
 			labelWidth: '80px',
 			dialogStatus: false,
 			dialogTitle: '',
@@ -158,7 +156,7 @@ export default {
 				images: [],
 				labelList: []
 			},
-			pageSize: 20,
+			pageSize: 10,
 			listQuery: {
 				page: 1,
 				limit: 10,
@@ -192,7 +190,10 @@ export default {
 						prop: 'state',
 						label: '状态',
 						placeholder: '状态',
-						optList: this.labelList
+						optList: [
+							{ label: '正常', value: 'NORMAL' },
+							{ label: '删除', value: 'DELETE' }
+						]
 					}
 				],
 				operate: [
@@ -200,7 +201,7 @@ export default {
 						icon: 'el-icon-search',
 						type: 'primary',
 						name: '查询',
-						handleClick: this.search
+						handleClick: this.getList
 					},
 					{
 						icon: 'el-icon-document-add',
@@ -208,28 +209,27 @@ export default {
 						name: '添加',
 						handleClick: this.addNew
 					},
-					{
-						icon: 'el-icon-edit',
-						type: 'primary',
-						name: '编辑',
-						handleClick: this.editAll
-					},
+					// {
+					// 	icon: 'el-icon-edit',
+					// 	type: 'primary',
+					// 	name: '编辑',
+					// 	handleClick: this.editAll
+					// },
 					{
 						icon: 'el-icon-delete',
 						type: 'primary',
 						name: '删除',
 						handleClick: this.delAll
-					},
-					{
-						icon: 'el-icon-setting',
-						type: 'primary',
-						name: '更多',
-						slot: 'reference',
-						handleClick: this.more
 					}
+					// {
+					// 	icon: 'el-icon-setting',
+					// 	type: 'primary',
+					// 	name: '更多',
+					// 	slot: 'reference',
+					// 	handleClick: this.more
+					// }
 				]
 			},
-			form: {},
 			tableData: [],
 			tableLabel: [
 				{
@@ -249,18 +249,20 @@ export default {
 					param: 'labelList',
 					align: 'center',
 					render: row => {
-						let span = ''
+						let _this = this
+						let span = `<div class="label-div">`
 						row.labelList.map(item => {
 							let bg = 'label-bg'
 							if (item.labelCode == 'HOT') {
 								bg += ' hot'
-							} else if (item.labelCode == 'HOME') {
+							} else if (item.labelCode == 'INDEX') {
 								bg += ' home'
-							} else if (item.labelCode == 'RECO') {
+							} else if (item.labelCode == 'recommend') {
 								bg += ' reco'
 							}
 							span += `<div class="${bg}">${item.labelName}</div>`
 						})
+						span += `</div>`
 						return span
 					}
 				},
@@ -357,7 +359,6 @@ export default {
 		this.getLabel()
 	},
 	methods: {
-		handleSortChange() {},
 		handleButton(object) {
 			let _this = this
 			let method = object['methods']
@@ -366,7 +367,7 @@ export default {
 					_this.edit(object.row)
 					break
 				case 'delete':
-					_this.delete(object.row)
+					_this.delete([object.row.companyId])
 					break
 				case 'top':
 					_this.top(object.row)
@@ -397,29 +398,39 @@ export default {
 			let _this = this
 			const params = {
 				isPage: 'YES',
-				currentPage: 1,
-				pageSize: 10,
-				state: 'NORMAL'
+				currentPage: _this.listQuery.page,
+				pageSize: _this.listQuery.limit
 			}
-			getCompanyPageHotel(params).then(data => {
-				if (data.code == '200') {
-					_this.total = data.result.total
-					if (data.result.records.length > 0) {
-						_this.tableData = data.result.records
+			let p = { ...params, ..._this.form }
+			this.searchCompanyPageOperator(p)
+		},
+		searchCompanyPageOperator(params) {
+			let _this = this
+			_this.loading = true
+			getCompanyPageOperator(params)
+				.then(data => {
+					if (data.code == '200') {
+						_this.total = data.result.total
+						if (data.result.records.length > 0) {
+							_this.tableData = data.result.records
+						} else {
+							_this.$alert('未获取到有效信息')
+						}
+					} else {
+						_this.$alert('未获取到有效信息')
 					}
-				} else {
-					_this.$alert('未获取到有效信息')
-				}
-			})
+					_this.loading = false
+				})
+				.catch(err => {
+					_this.$alert('服务器异常')
+					_this.loading = false
+				})
 		},
 		getLabel() {
-			let param = {
-				isPage: 'NO'
-			}
 			let _this = this
-			getLabelList(param).then(data => {
+			getLabelList({ isPage: 'NO' }).then(data => {
 				if (data.code == '200') {
-					_this.labelList = data.result.records
+					_this.labelList = data.result
 				}
 			})
 		},
@@ -437,6 +448,7 @@ export default {
 			_this.newProd.images instanceof Array
 				? (_this.newProd.images = _this.newProd.images.join(','))
 				: ''
+			_this.newProd.companyType = 'OPERATOR';
 			if (_this.editStatus) {
 				updateCompany(_this.newProd).then(data => {
 					if (data.code == '200') {
@@ -464,15 +476,15 @@ export default {
 			this.setRuleFrom(row)
 			this.dialogStatus = true
 		},
-		delete(row) {
+		delete(companyIdList) {
 			let _this = this
-			this.$confirm('确定删除吗?', '提示', {
+			this.$confirm('确定删除所选酒店吗?', '提示', {
 				confirmButtonText: '确定',
 				cancelButtonText: '取消',
 				type: 'warning'
 			}).then(() => {
 				let params = {
-					companyId: row.companyId,
+					companyId: companyIds,
 					state: 'DELETE'
 				}
 				delCompany(params).then(data => {
@@ -493,11 +505,11 @@ export default {
 		},
 		delAll() {
 			if (this.chooseList.length > 0) {
-				// const param = {
-				// 	title: '提示',
-				// 	message: '确定要删除吗？'
-				// }
-				this.$confirm('确定要删除吗？')
+				let companyIds = []
+				this.chooseList.map(item => {
+					companyIds.push(item.companyId)
+				})
+				this.delete(companyIds)
 			} else {
 				this.$alert('请先选择要删除项')
 			}
@@ -538,8 +550,8 @@ export default {
 			this.newProd.images.push(img)
 		},
 		setRuleFrom(row) {
-			let newLabel = [];
-			row.labelList.map(item=>{
+			let newLabel = []
+			row.labelList.map(item => {
 				newLabel.push(item.labelId)
 			})
 			if (row.images instanceof Array) {
@@ -589,30 +601,6 @@ export default {
 }
 </script>
 
-<style scoped>
-.set {
-	height: 50px;
-	background: none;
-}
-.label-bg {
-	width: 100px;
-	height: 50px;
-	color: #fff;
-	padding: 10px;
-}
-.hot {
-	background: #f39c12;
-}
-.home {
-	background: #18bc9c;
-}
-.reco {
-	background: #e74c3c;
-}
-.el-input {
-	width: 200px;
-}
-.el-form-item {
-	display: flex;
-}
+<style lang="scss" scoped>
+@import '@/styles/my.scss';
 </style>
