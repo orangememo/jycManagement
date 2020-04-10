@@ -373,7 +373,7 @@ export const constantRoutes = [
         path: 'hotelType',
         component: () => import('@/views/business/hotelType'), // Parent router-view
         name: 'hotelType',
-        meta: { title: '酒店分类', icon: 'table' },
+        meta: { title: '酒店管理', icon: 'table' },
       },
       {
         path: 'order2',
@@ -447,9 +447,9 @@ export const constantRoutes = [
     },
     children: [
       {
-        path: 'home11',
-        component: () => import('@/views/business/commodity'), // Parent router-view
-        name: 'home11',
+        path: 'memberManager',
+        component: () => import('@/views/operate/manager'), // Parent router-view
+        name: 'memberManager',
         meta: { title: '会员管理', icon: 'table' },
       },
       {

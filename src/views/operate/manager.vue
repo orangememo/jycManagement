@@ -124,7 +124,6 @@ export default {
 	components: { Pagination, jycTable, SearchForm, Upload },
 	data() {
 		return {
-			form: {}, //查询条件
 			labelWidth: '80px',
 			dialogStatus: false,
 			dialogTitle: '',
@@ -220,16 +219,17 @@ export default {
 						type: 'primary',
 						name: '删除',
 						handleClick: this.delAll
+					},
+					{
+						icon: 'el-icon-setting',
+						type: 'primary',
+						name: '更多',
+						slot: 'reference',
+						handleClick: this.more
 					}
-					// {
-					// 	icon: 'el-icon-setting',
-					// 	type: 'primary',
-					// 	name: '更多',
-					// 	slot: 'reference',
-					// 	handleClick: this.more
-					// }
 				]
 			},
+			form: {},
 			tableData: [],
 			tableLabel: [
 				{
@@ -394,28 +394,13 @@ export default {
 			this.chooseList = row
 		},
 		getList() {
+			let _this = this
 			const params = {
 				isPage: 'YES',
 				currentPage: 1,
 				pageSize: 10,
 				state: 'NORMAL'
 			}
-			this.searchCompanyPageHotel(params);
-		},
-		search() {
-			let _this = this
-			let params = {
-				isPage: 'YES',
-				currentPage: 1,
-				pageSize: 10,
-				state: 'NORMAL'
-			}
-			let p = {...params,..._this.form}
-			console.log(p);
-			this.searchCompanyPageHotel(params);
-		},
-		searchCompanyPageHotel(params) {
-			let _this = this;
 			getCompanyPageHotel(params).then(data => {
 				if (data.code == '200') {
 					_this.total = data.result.total
@@ -553,8 +538,8 @@ export default {
 			this.newProd.images.push(img)
 		},
 		setRuleFrom(row) {
-			let newLabel = []
-			row.labelList.map(item => {
+			let newLabel = [];
+			row.labelList.map(item=>{
 				newLabel.push(item.labelId)
 			})
 			if (row.images instanceof Array) {
