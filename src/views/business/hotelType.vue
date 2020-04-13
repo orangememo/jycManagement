@@ -33,7 +33,7 @@
 								v-for="(item,index) in applyList"
 								:key="index"
 								:label="item.applicationName"
-								:value="item.id"
+								:value="item.applicationId"
 							></el-option>
 						</el-select>
 					</el-form-item>
@@ -461,8 +461,8 @@ export default {
 			let _this = this
 			getApplyByCompany({isPage: 'NO',id:store.state.login.companyId}).then(data => {
 				if (data.code == '200') {
-					if (data.result.records.length > 0) {
-						_this.applyList = data.result.records
+					if (data.result.length > 0) {
+						_this.applyList = data.result
 					}
 				}
 			})

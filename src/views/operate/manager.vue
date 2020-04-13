@@ -142,7 +142,7 @@ export default {
 				businessHours: '',
 				companyAddr: '',
 				companyCode: '',
-				cmpId: 0,
+				companyId: 0,
 				companyName: '',
 				companyType: '',
 				createAccountId: '',
@@ -240,7 +240,7 @@ export default {
 			tableLabel: [
 				{
 					label: 'ID',
-					param: 'cmpId',
+					param: 'companyId',
 					align: 'center',
 					type: 'text'
 				},
@@ -373,7 +373,7 @@ export default {
 					_this.edit(object.row)
 					break
 				case 'delete':
-					_this.delete(object.row.cmpId)
+					_this.delete(object.row.companyId)
 					break
 				case 'top':
 					_this.top(object.row)
@@ -514,7 +514,7 @@ export default {
 			if (this.chooseList.length > 0) {
 				let companyIds = [];
 				this.chooseList.map(item=>{
-					companyIds.push(item.cmpId)
+					companyIds.push(item.companyId)
 				})
 				this.delete(companyIds.join(','));
 			} else {
@@ -538,7 +538,7 @@ export default {
 		//置顶
 		toTop(row) {
 			let _this = this
-			companyTopWeight({ cmpId: row.cmpId }).then(data => {
+			companyTopWeight({ companyId: row.companyId }).then(data => {
 				if (data.code == '200') {
 					_this.$alert('置顶成功')
 					_this.getList()
@@ -585,7 +585,7 @@ export default {
 				businessHours: '',
 				companyAddr: '',
 				companyCode: '',
-				cmpId: 0,
+				companyId: 0,
 				companyName: '',
 				companyType: '',
 				createAccountId: '',
