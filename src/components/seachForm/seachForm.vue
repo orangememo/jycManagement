@@ -5,7 +5,7 @@
     label-position="right"
     :label-width="formConfig.labelWidth"
     :rules="rules"
-    size='mini'
+    size="mini"
   >
     <slot name="formItem" />
     <el-form-item
@@ -23,7 +23,7 @@
       ></el-input>
 
       <el-select
-        :clearable="true"
+        :clearable="item.clearable?false:true"
         v-else-if="item.type=='select'"
         v-model="value[item.prop]"
         :disabled="item.disabled"
@@ -55,8 +55,7 @@
           :type="item.type"
           :icon="item.icon"
           @click="item.handleClick"
-        >{{item.name}}
-        </el-button>
+        >{{item.name}}</el-button>
       </el-button-group>
       <slot name="operate"></slot>
     </div>
@@ -81,18 +80,18 @@ export default {
   computed: {},
   methods: {
     setDefaultValue() {
-      const formData = { ...this.value };
+      const formData = { ...this.value }
       // 设置默认值
       this.formConfig.formItemList.forEach(({ key, value }) => {
         if (formData[key] === undefined || formData[key] === null) {
-          formData[key] = value;
+          formData[key] = value
         }
-      });
-      this.$emit("input", formData);
+      })
+      this.$emit('input', formData)
     }
   },
   mounted() {
-    this.setDefaultValue();
+    this.setDefaultValue()
   }
-};
+}
 </script>

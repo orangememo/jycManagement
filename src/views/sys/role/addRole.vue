@@ -158,9 +158,7 @@ export default {
           this.$refs.form.validate(valid => {
             if (valid) {
               let obj = JSON.parse(JSON.stringify(this.form))
-              obj.ruleIdList = this.$refs.tree
-                .getCheckedKeys()
-                .concat(this.$refs.tree.getHalfCheckedKeys())
+              obj.ruleIdList = this.$refs.tree.getCheckedKeys()
               if (this.edit == 1) {
                 obj.roleId = this.editRoleId
                 putRoleInfo(obj).then(res => {
@@ -203,7 +201,7 @@ export default {
     form: {
       handler(newValue, oldValue) {
         let roleId = newValue.proleId
-        let operationType = 'operationType'
+        let operationType = 'selectList'
         if (this.proleId !== roleId) {
           this.proleId = roleId
           getRuleInfoTree({ operationType, roleId }).then(res => {

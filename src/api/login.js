@@ -11,9 +11,12 @@ export function loginJyc(data) {
 		data,
 	})
 }
+/**
+ * 根据账户获取权限树
+ */
 export function loginInfo(params) {
 	return request({
-		url: '/account/roleInfo/ruleInfo',
+		url: '/rule/ruleInfo/tree/accountId',
 		method: 'GET',
 		params,
 	})

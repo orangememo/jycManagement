@@ -1,0 +1,113 @@
+{
+    "success": true,
+    "message": "操作成功！",
+    "code": 200,
+    "result": {
+        "success": "true",
+        "list": [
+            {
+                "ruleId": 1,
+                "ruleCode": "application_manage1",
+                "ruleName": "应用管理1",
+                "ruleType": "MENU",
+                "state": "NORMAL",
+                "companyId": 1,
+                "applicationId": 1,
+                "requestUrl": "/application1",
+                "weight": 1,
+                "isHide": 0,
+                "icon": "1",
+                "remarks": "1",
+                "createTime": "2020-04-07T18:13:59",
+                "createAccountId": "1",
+                "modifyTime": "2020-04-07T18:14:20",
+                "modifyAccountId": "1",
+                "children": [
+                    {
+                        "ruleId": 11,
+                        "ruleCode": "application_manage11",
+                        "ruleName": "应用管理11",
+                        "ruleType": "MENU",
+                        "state": "NORMAL",
+                        "companyId": 1,
+                        "applicationId": 1,
+                        "requestUrl": "application11",
+                        "weight": 1,
+                        "isHide": 0,
+                        "icon": "1",
+                        "remarks": "1",
+                        "createTime": "2020-04-07T18:13:59",
+                        "createAccountId": "1",
+                        "modifyTime": "2020-04-07T18:14:20",
+                        "modifyAccountId": "1",
+                        "children": [],
+                        "pruleId": 1
+                    },
+                    {
+                        "ruleId": 12,
+                        "ruleCode": "application_manage12",
+                        "ruleName": "应用管理12",
+                        "ruleType": "MENU",
+                        "state": "NORMAL",
+                        "companyId": 1,
+                        "applicationId": 1,
+                        "requestUrl": "application12",
+                        "weight": 1,
+                        "isHide": 0,
+                        "icon": "1",
+                        "remarks": "1",
+                        "createTime": "2020-04-07T18:13:59",
+                        "createAccountId": "1",
+                        "modifyTime": "2020-04-07T18:14:20",
+                        "modifyAccountId": "1",
+                        "children": [],
+                        "pruleId": 1
+                    }
+                ],
+                "pruleId": 0
+            },
+            {
+                "ruleId": 2,
+                "ruleCode": "application_manage2",
+                "ruleName": "应用管理2",
+                "ruleType": "MENU",
+                "state": "NORMAL",
+                "companyId": 1,
+                "applicationId": 1,
+                "requestUrl": "/application2",
+                "weight": 1,
+                "isHide": 0,
+                "icon": "1",
+                "remarks": "1",
+                "createTime": "2020-04-07T18:13:59",
+                "createAccountId": "1",
+                "modifyTime": "2020-04-07T18:14:20",
+                "modifyAccountId": "1",
+                "children": [
+                    {
+                        "ruleId": 21,
+                        "ruleCode": "application_manage21",
+                        "ruleName": "应用管理21",
+                        "ruleType": "BUTTON",
+                        "state": "NORMAL",
+                        "companyId": 1,
+                        "applicationId": 1,
+                        "requestUrl": "application21",
+                        "weight": 1,
+                        "isHide": 0,
+                        "icon": "1",
+                        "remarks": "1",
+                        "createTime": "2020-04-07T18:13:59",
+                        "createAccountId": "1",
+                        "modifyTime": "2020-04-07T18:14:20",
+                        "modifyAccountId": "1",
+                        "children": [],
+                        "pruleId": 2
+                    }
+                ],
+                "pruleId": 0
+            }
+        ]
+    },
+    "timestamp": 1586480318269
+}

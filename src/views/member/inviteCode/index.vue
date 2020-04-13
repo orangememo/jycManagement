@@ -195,22 +195,24 @@ export default {
           }
         }
       ],
-      tableOption: {
-        label: '操作',
-        width: '200',
-        options: [
-          {
-            label: '编辑',
-            type: 'primary',
-            methods: '编辑'
-          },
-          {
-            label: '删除',
-            type: 'danger',
-            methods: '删除'
-          }
-        ]
-      },
+      tableOption: [
+        {
+          label: '操作',
+          width: '200',
+          options: [
+            {
+              label: '编辑',
+              type: 'primary',
+              methods: '编辑'
+            },
+            {
+              label: '删除',
+              type: 'danger',
+              methods: '删除'
+            }
+          ]
+        }
+      ],
       tableData: [
         {
           status: 0

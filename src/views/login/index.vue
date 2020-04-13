@@ -69,7 +69,7 @@ import { mapActions } from 'vuex'
 
 export default {
   name: 'Login',
-  data () {
+  data() {
     const validateUsername = (rule, value, callback) => {
       if (!validUsername(value)) {
         callback(new Error('Please enter the correct user name'))
@@ -100,15 +100,18 @@ export default {
   },
   watch: {
     $route: {
-      handler: function (route) {
+      handler: function(route) {
         this.redirect = route.query && route.query.redirect
       },
       immediate: true
     }
   },
+  mounted() {
+    this.$store.dispatch('login/resetToken')
+  },
   methods: {
     ...mapActions('login', ['login']),
-    showPwd () {
+    showPwd() {
       if (this.passwordType === 'password') {
         this.passwordType = ''
       } else {
@@ -118,7 +121,7 @@ export default {
         this.$refs.password.focus()
       })
     },
-    handleLogin () {
+    handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
@@ -128,13 +131,14 @@ export default {
             type: 0,
             accountPwd: this.$getRsaCode(this.loginForm.password)
           }
-          this.login(obj).then((res) => {
-            console.log(res, 'resres');
-            this.$router.push({ path: '/' })
-            this.loading = false
-          }).catch(() => {
-            this.loading = false
-          })
+          this.login(obj)
+            .then(res => {
+              this.$router.push({ path: '/selectCompanyApp' })
+              this.loading = false
+            })
+            .catch(() => {
+              this.loading = false
+            })
         } else {
           console.log('error submit!!')
           return false

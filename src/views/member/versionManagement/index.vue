@@ -1,6 +1,6 @@
 <template>
   <div id="versionManagement" class="mainWrap">
-    <el-card>
+    <!-- <el-card>
       <div class="topSearch">
         <div class>
           <el-form ref="form" :model="form" label-width="80px" :inline="true" size="small">
@@ -13,15 +13,15 @@
           <el-button size="small" type="primary" @click="search()">查询</el-button>
         </div>
       </div>
-    </el-card>
-    <div class="ly-flex ly-justify-sb mt40 titleAndButton">
+    </el-card>-->
+    <search-form :formConfig="formConfig" :value="form" labelWidth="80px"></search-form>
+    <!-- <div class="ly-flex ly-justify-sb mt40 titleAndButton">
       <div style="padding-left:15px">{{$route.meta.title}}列表</div>
       <div class="buttonCtrl">
         <el-button size="small" type="info" @click="search()">刷新</el-button>
         <el-button size="small" type="primary" @click="handleClick('新增')">新增</el-button>
-        <!-- <el-button size="small" type="success" @click="handleClick('编辑')">编辑</el-button> -->
       </div>
-    </div>
+    </div>-->
     <div class="mt25">
       <div class="tableOutBox">
         <jyc-table
@@ -103,15 +103,18 @@
 
 <script>
 import { getRoleInfoTree, deleteRoleInfo } from '@/api/sys'
+import { getVersionPageInfo } from '@/api/member'
+
 import Pagination from '@/components/Pagination'
 import addVersion from './addVersion'
 import jycTable from '@/components/table/jycTable'
-
+import SearchForm from '@/components/seachForm/seachForm'
 export default {
   components: {
     Pagination,
     addVersion,
-    jycTable
+    jycTable,
+    SearchForm
   },
   data() {
     return {
@@ -126,12 +129,57 @@ export default {
         page: 1,
         size: 10
       },
-      expands: [],
+      formConfig: {
+        formItemList: [
+          {
+            type: 'input',
+            prop: 'value3',
+            label: '用户名',
+            placeholder: '输入用户名'
+          },
+          {
+            type: 'select',
+            prop: 'state',
+            clearable: '关闭',
+            optList: [
+              {
+                label: '全部',
+                value: 'ALL'
+              },
+              {
+                label: '正常',
+                value: 'NORMAL'
+              },
+              {
+                label: '冻结',
+                value: 'FROZEN'
+              }
+            ],
+            label: '状态',
+            placeholder: '选择状态'
+          }
+        ],
+        operate: [
+          {
+            icon: 'el-icon-search',
+            type: 'primary',
+            name: '查询',
+            handleClick: this.search
+          },
+          {
+            icon: 'el-icon-document-add',
+            type: 'primary',
+            name: '添加',
+            handleClick: this.addNew
+          }
+        ]
+      },
       form: {
         value0: '',
         value1: '',
         value2: '',
-        value3: ''
+        value3: '',
+        state: ''
       },
       tableTitle: [
         {
@@ -229,22 +277,24 @@ export default {
           }
         }
       ],
-      tableOption: {
-        label: '操作',
-        width: '200',
-        options: [
-          {
-            label: '编辑',
-            type: 'primary',
-            methods: '编辑'
-          },
-          {
-            label: '删除',
-            type: 'danger',
-            methods: '删除'
-          }
-        ]
-      },
+      tableOption: [
+        {
+          label: '操作',
+          width: '200',
+          options: [
+            {
+              label: '编辑',
+              type: 'primary',
+              methods: '编辑'
+            },
+            {
+              label: '删除',
+              type: 'danger',
+              methods: '删除'
+            }
+          ]
+        }
+      ],
       tableData: [
         {
           status: 0
@@ -263,9 +313,12 @@ export default {
       this.page.page = 1
       this.getList()
     },
+    addNew() {
+      this.handleClick('新增')
+    },
     getList: async function() {
-      let res = await getRoleInfoTree()
-      this.tableData = res.result.list
+      let res = await getVersionPageInfo()
+      this.tableData = res.result.records
     },
     handleClick(type, val) {
       switch (type) {
