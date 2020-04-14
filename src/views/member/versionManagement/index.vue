@@ -1,19 +1,5 @@
 <template>
   <div id="versionManagement" class="mainWrap">
-    <!-- <el-card>
-      <div class="topSearch">
-        <div class>
-          <el-form ref="form" :model="form" label-width="80px" :inline="true" size="small">
-            <el-form-item label="名称">
-              <el-input v-model.trim="form.value3" placeholder="请输入名称" maxlength="50" clearable />
-            </el-form-item>
-          </el-form>
-        </div>
-        <div class="searchButton">
-          <el-button size="small" type="primary" @click="search()">查询</el-button>
-        </div>
-      </div>
-    </el-card>-->
     <search-form :formConfig="formConfig" :value="form" labelWidth="80px"></search-form>
     <!-- <div class="ly-flex ly-justify-sb mt40 titleAndButton">
       <div style="padding-left:15px">{{$route.meta.title}}列表</div>
@@ -131,12 +117,6 @@ export default {
       },
       formConfig: {
         formItemList: [
-          {
-            type: 'input',
-            prop: 'value3',
-            label: '用户名',
-            placeholder: '输入用户名'
-          },
           {
             type: 'select',
             prop: 'state',

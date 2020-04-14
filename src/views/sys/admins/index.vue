@@ -80,7 +80,7 @@
 
 <script>
 import addAdmin from './addAdmin'
-import { getManagerUserInfoPageList } from '@/api/sys'
+import { getManagerUserInfoPageList, deleteManagerUserInfo } from '@/api/sys'
 import SearchForm from '@/components/seachForm/seachForm'
 
 export default {
@@ -245,7 +245,6 @@ export default {
           this.getList()
           break
         case '展开':
-          console.log(val, 'expands')
           let id = val.id.toString()
           if (this.expands.includes(id)) {
             console.log(1111)
@@ -264,7 +263,16 @@ export default {
             type: 'warning'
           })
             .then(() => {
-              console.log('确定删除了')
+              let { userInfoId, accountNum } = val
+              deleteManagerUserInfo({ userInfoId, accountNum }).then(res => {
+                if (res.code === 200) {
+                  this.$message({
+                    type: 'success',
+                    message: '删除成功'
+                  })
+                  thi.getList()
+                }
+              })
             })
             .catch(() => {})
           break
