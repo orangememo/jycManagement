@@ -2,17 +2,11 @@
   <div class="dialogBody" id="addRole">
     <div class="body">
       <el-form ref="form" :model="form" :rules="formRules" label-width="100px" size="small">
-        <!-- <el-form-item label="创建时间">
-                  <el-date-picker v-model="form.value1" type="date" placeholder="请选择开始日期"></el-date-picker>-
-                  <el-date-picker v-model="form.value2" type="date" placeholder="请选择结束日期"></el-date-picker>
-        </el-form-item>-->
-
         <el-row>
           <el-col :span="24">
-            <el-form-item label="所属组别" prop="proleId">
-              <!-- <el-input v-model="form.proleId" placeholder="请输入项目名称"></el-input> -->
+            <el-form-item label="所属组别" prop="roleIdList">
               <treeSelect
-                v-model="form.proleId"
+                v-model="form.roleIdList"
                 :data="options.proleIdOptions"
                 placeholder="请选择组别"
                 style="width:100%"
@@ -24,34 +18,33 @@
               />
             </el-form-item>
           </el-col>
-
           <el-col :span="24">
-            <el-form-item label="用户名" prop="title">
-              <el-input v-model="form.title" placeholder="请输入用户名"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="Email" prop="ti1tle">
-              <el-input v-model="form.ti1tle" placeholder="请输入Email"></el-input>
+            <el-form-item label="账号" prop="accountNum">
+              <el-input v-model.number="form.accountNum" placeholder="请输入账号,目前只支持手机号"></el-input>
             </el-form-item>
           </el-col>
 
           <el-col :span="24">
-            <el-form-item label="昵称" prop="ti1tl1e">
-              <el-input v-model="form.ti1tl1e" placeholder="请输入昵称"></el-input>
+            <el-form-item label="用户名" prop="userName">
+              <el-input v-model="form.userName" placeholder="请输入用户名"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="密码" prop="ti1t1le">
-              <el-input v-model="form.ti1t1le" placeholder="请输入密码"></el-input>
+            <el-form-item label="Email" prop="email">
+              <el-input v-model="form.email" placeholder="请输入Email"></el-input>
             </el-form-item>
           </el-col>
 
           <el-col :span="24">
-            <el-form-item label="状态" prop="res1ource">
-              <el-radio-group v-model="form.res1ource">
-                <el-radio :label="1">正常</el-radio>
-                <el-radio :label="0">隐藏</el-radio>
+            <el-form-item label="昵称" prop="nickName">
+              <el-input v-model="form.nickName" placeholder="请输入昵称"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="状态" prop="state">
+              <el-radio-group v-model="form.state">
+                <el-radio label="NORMAL">正常</el-radio>
+                <el-radio label="FROZEN">隐藏</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -68,9 +61,14 @@
 </template>
 
 <script>
-import { validEmail } from '@/utils/validate'
+import { validEmail, validateMobile } from '@/utils/validate'
 import { mapGetters, mapActions, mapState } from 'vuex'
-import { getRoleInfoTree } from '@/api/sys'
+import {
+  roleInfoTreeAccountId,
+  postManagerUserInfo,
+  putManagerUserInfo,
+  getManagerUserInfo
+} from '@/api/sys'
 import treeSelect from '@/components/treeSelect'
 
 export default {
@@ -80,33 +78,50 @@ export default {
   props: {
     propHandleClick: {
       type: Function
+    },
+    edit: {
+      default: 0
+    },
+    editId: {
+      default: null
     }
   },
   data() {
     return {
       sumbitLoading: false,
       form: {
-        proleId: '',
-        title: '',
-        ti1tle: '',
-        ti1t1le: '',
-        ti1tl1e: '',
-        res1ource: 0
+        roleIdList: '',
+        userName: '',
+        email: '',
+        nickName: '',
+        state: 'NORMAL',
+        accountNum: null
       },
 
       formRules: {
-        title: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
-        proleId: [{ required: true, message: '请选择组别', trigger: 'change' }],
-        ti1tle: [
+        accountNum: [
+          {
+            required: true,
+            message: '请输入手机号码',
+            trigger: 'blur'
+          },
+
+          { validator: validateMobile, trigger: 'blur' }
+        ],
+        userName: [
+          { required: true, message: '请输入用户名', trigger: 'blur' }
+        ],
+        roleIdList: [
+          { required: true, message: '请选择组别', trigger: 'change' }
+        ],
+        email: [
           { required: true, message: '请输入Email', trigger: 'blur' },
           {
             validator: validEmail,
             message: '请输入正确的Email',
             trigger: 'blur'
           }
-        ],
-        ti1t1le: [{ required: true, message: '请输入密码', trigger: 'blur' }],
-        ti1tl1e: [{ required: true, message: '请输入昵称', trigger: 'blur' }]
+        ]
       },
       defaultProps: {
         children: 'children',
@@ -114,14 +129,25 @@ export default {
       },
       options: {
         fatherOptions: [],
-        roleOptions: []
+        roleOptions: [],
+        proleIdOptions: []
       }
     }
   },
   mounted() {
-    getRoleInfoTree().then(res => {
+    roleInfoTreeAccountId().then(res => {
       this.options.proleIdOptions = res.result.list
     })
+
+    if (this.edit == 1) {
+      let userInfoId = this.editId
+      console.log(userInfoId, 'userInfoId')
+      getManagerUserInfo({ userInfoId }).then(res => {
+        this.form = res.result
+        console.log(res, 'res')
+        let { result } = res
+      })
+    }
   },
 
   methods: {
@@ -133,7 +159,31 @@ export default {
           this.sumbitLoading = true
           this.$refs.form.validate(valid => {
             if (valid) {
-              console.log('提交了')
+              let obj = JSON.parse(JSON.stringify(this.form))
+              obj.source = 'PC'
+              if (this.edit == 1) {
+                obj.roleId = this.editId
+                putManagerUserInfo(obj).then(res => {
+                  if (res.code == 200) {
+                    this.$message({
+                      type: 'success',
+                      message: '修改成功'
+                    })
+                    this.propHandleClick(type)
+                  }
+                })
+              } else {
+                postManagerUserInfo(obj).then(res => {
+                  if (res.code == 200) {
+                    this.$message({
+                      type: 'success',
+                      message: '新增成功'
+                    })
+                    this.propHandleClick(type)
+                  }
+                })
+              }
+              this.sumbitLoading = false
             } else {
               this.sumbitLoading = false
               return false

@@ -32,6 +32,7 @@ export default {
   },
   created() {
     this.$store.dispatch('login/resetRouter').then(() => {
+      console.log(1111111, 'login/resetRouter')
       // this.$router.options.routes = this.$router.options.routes.concat(res)
     })
   },
@@ -59,12 +60,13 @@ export default {
         this.applicationId = applicationId
 
         let obj = {
+          operationType: 'selectList',
           accountId: this.accountId,
           applicationId: this.applicationId,
           companyId: this.companyId
         }
         this.$store.commit('login/SET_APPLICATION_ID', applicationId)
-        this.$store.dispatch('login/loginInfo').then(res => {
+        this.$store.dispatch('login/loginInfo', obj).then(res => {
           console.log(res, ' this.$router.addRoutes(res)')
           this.$router.addRoutes(res)
           this.$router.push({ path: '/dashboard' })

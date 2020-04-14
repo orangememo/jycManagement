@@ -1,28 +1,7 @@
 <template>
   <div id="admins" class="mainWrap">
-    <el-card>
-      <div class="topSearch">
-        <div class>
-          <el-form ref="form" :model="form" label-width="80px" :inline="true" size="small">
-            <el-form-item label="名称">
-              <el-input v-model.trim="form.value3" placeholder="请输入名称" maxlength="50" clearable />
-            </el-form-item>
-          </el-form>
-        </div>
-        <div class="searchButton">
-          <el-button size="small" type="primary" @click="search()">查询</el-button>
-        </div>
-      </div>
-    </el-card>
-    <div class="ly-flex ly-justify-sb mt40 titleAndButton">
-      <div style="padding-left:15px">{{$route.meta.title}}列表</div>
-      <div class="buttonCtrl">
-        <el-button size="small" type="primary" @click="handleClick('新增')">新增</el-button>
-        <!-- <el-button size="small" type="success" @click="handleClick('编辑')">编辑</el-button> -->
-        <el-button size="small" type="danger" @click="handleClick('删除')">删除</el-button>
-      </div>
-    </div>
-    <div class="mt25">
+    <search-form :formConfig="formConfig" :value="form" labelWidth="80px"></search-form>
+    <div class>
       <div class="tableOutBox">
         <el-table
           :data="tableData"
@@ -63,8 +42,8 @@
           </template>
           <el-table-column label="操作" fixed="right" width="180" align="center">
             <template slot-scope="scope">
-              <el-button size="small" type="primary" @click="handleClick('编辑',scope.row)">编辑</el-button>
-              <el-button size="small" type="danger" @click="handleClick('删除',scope.row)">删除</el-button>
+              <el-button size="mini" type="primary" @click="handleClick('编辑',scope.row)">编辑</el-button>
+              <el-button size="mini" type="danger" @click="handleClick('删除',scope.row)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -87,7 +66,12 @@
         <div slot="title" style="padding:20px 30px ;border-bottom:1px solid #DCDFE6">
           <span>{{editTitle[edit]}}</span>
         </div>
-        <addAdmin :propHandleClick="handleClick" v-if="dialogVisible" :edit="edit" />
+        <addAdmin
+          :propHandleClick="handleClick"
+          v-if="dialogVisible"
+          :edit="edit"
+          :editId="editId"
+        />
         <span slot="footer" class="dialog-footer"></span>
       </el-dialog>
     </div>
@@ -96,13 +80,18 @@
 
 <script>
 import addAdmin from './addAdmin'
+import { getManagerUserInfoPageList } from '@/api/sys'
+import SearchForm from '@/components/seachForm/seachForm'
+
 export default {
   components: {
-    addAdmin
+    addAdmin,
+    SearchForm
   },
   data() {
     return {
       edit: 0,
+      editId: '',
       editTitle: {
         0: '新增',
         1: '编辑'
@@ -114,51 +103,88 @@ export default {
       },
       expands: [],
       form: {
-        value0: '',
-        value1: '',
-        value2: '',
-        value3: ''
+        value3: '',
+        state: 'ALL'
+      },
+      formConfig: {
+        formItemList: [
+          {
+            type: 'input',
+            prop: 'value3',
+            label: '用户名',
+            placeholder: '输入用户名'
+          },
+          {
+            type: 'select',
+            prop: 'state',
+            clearable: '关闭',
+            optList: [
+              {
+                label: '全部',
+                value: 'ALL'
+              },
+              {
+                label: '正常',
+                value: 'NORMAL'
+              },
+              {
+                label: '冻结',
+                value: 'FROZEN'
+              }
+            ],
+            label: '用户名',
+            placeholder: '输入用户名'
+          }
+        ],
+        operate: [
+          {
+            icon: 'el-icon-search',
+            type: 'primary',
+            name: '查询',
+            handleClick: this.search
+          },
+          {
+            icon: 'el-icon-document-add',
+            type: 'primary',
+            name: '添加',
+            handleClick: this.addNew
+          }
+        ]
       },
       tableTitle: [
         {
-          prop: 'id',
+          prop: 'userInfoId',
           name: 'ID',
           width: '',
           align: 'center'
         },
         {
-          prop: 'title',
+          prop: 'userName',
           name: '用户名',
           width: '',
           align: 'center'
         },
         {
-          prop: 'icon',
+          prop: 'nickName',
           name: '昵称',
           width: '',
           align: 'center'
         },
         {
-          prop: 'i1con',
+          prop: 'roleNames',
           name: '所属组别',
           width: '',
           align: 'center'
         },
         {
-          prop: 'i1c1on',
+          prop: 'email',
           name: 'email',
           width: '',
           align: 'center'
         },
         {
-          prop: 'i1c1o1n',
+          prop: 'state',
           name: '状态',
-          width: '',
-          align: 'center'
-        },
-        {
-          prop: 'i1c1o1n1',
-          name: '最后登录',
           width: '',
           align: 'center'
         }
@@ -169,67 +195,54 @@ export default {
         //   align: 'center'
         // }
       ],
-      tableData: [
-        {
-          id: 1,
-          title: '平常管理',
-          icon: 'user',
-          i1con: 'admin',
-          i1c1on: '5',
-          i1c1o1n: '正常'
-        },
-        {
-          id: 3,
-          title: '权限管理',
-          icon: 'nested',
-          i1con: 'admin',
-          i1c1on: '5',
-          i1c1o1n: '正常',
-          children: [
-            {
-              id: 31,
-              title: '角色组',
-              icon: 'user',
-              i1con: 'admin',
-              i1c1on: '5',
-              i1c1o1n: '正常'
-            },
-            {
-              id: 32,
-              title: '菜单规则',
-              icon: 'nested',
-              i1con: 'admin',
-              i1c1on: '5',
-              i1c1o1n: '正常'
-            }
-          ]
-        }
-      ],
+      tableData: [],
       listLoading: false,
       dialogVisible: false,
       dialogVisible1: false
     }
   },
+  mounted() {
+    this.getList()
+  },
   methods: {
+    addNew() {
+      this.handleClick('新增')
+    },
     search() {
       this.page.page = 1
       this.getList()
     },
-    getList: async function() {},
+    getList: async function() {
+      let obj = {
+        pageSize: this.page.size,
+        currentPage: this.page.page,
+        state: this.form.state,
+        userName: this.form.value3
+      }
+      let res = await getManagerUserInfoPageList(obj)
+      let { result } = res
+      this.tableData = result.records
+      this.page.total = result.total
+    },
     handleClick(type, val) {
       switch (type) {
         case '新增':
+          this.edit = 0
           this.dialogVisible = true
           break
         case '编辑':
+          console.log(val, 'userInfoIduserInfoId')
           this.edit = 1
+          this.editId = val.userInfoId
           this.dialogVisible = true
           break
         case '确认':
           this.dialogVisible = false
+          this.getList()
           break
         case '关闭':
           this.dialogVisible = false
+          this.getList()
           break
         case '展开':
           console.log(val, 'expands')

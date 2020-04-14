@@ -32,11 +32,15 @@ import Layout from '@/layout'
  */
 export const constantRoutes = [
 	{
+		path: '/',
+		component: () => import('@/views/login/index'),
+		hidden: true
+	},
+	{
 		path: '/login',
 		component: () => import('@/views/login/index'),
 		hidden: true
 	},
-
 	{
 		path: '/404',
 		component: () => import('@/views/404'),
@@ -85,13 +89,13 @@ export const constantRoutes = [
 			},
 			{
 				path: 'role',
-				name: 'role222',
+				name: 'role',
 				component: () => import('@/views/sys/role/index'),
 				meta: { title: '角色组', icon: 'form' }
 			},
 			{
 				path: 'menu',
-				name: 'menu111',
+				name: 'menu',
 				component: () => import('@/views/sys/menu/index'),
 				meta: { title: '菜单规则', icon: 'form' }
 			}
@@ -370,30 +374,78 @@ export const constantRoutes = [
 		},
 		children: [
 			{
+				path: 'home',
+				component: () => import('@/views/business/commodity'), // Parent router-view
+				name: 'home',
+				meta: { title: '商家商品库', icon: 'table' }
+			},
+			{
 				path: 'hotelType',
 				component: () => import('@/views/business/hotelType'), // Parent router-view
 				name: 'hotelType',
-				meta: { title: '酒店管理', icon: 'table' },
+				meta: { title: '酒店分类', icon: 'table' }
 			},
 			{
-				path: 'labelManager',
-				component: () => import('@/views/business/labelManager'), // Parent router-view
-				name: 'labelManager',
-				meta: { title: '标签管理', icon: 'table' },
+				path: 'order2',
+				component: () => import('@/views/business/commodity'), // Parent router-view
+				name: 'order2',
+				meta: { title: '菜单标签', icon: 'table' }
 			},
 			{
-				path: 'tableManager',
-				component: () => import('@/views/business/tableManager'), // Parent router-view
-				name: 'tableManager',
-				meta: { title: '桌位详情管理', icon: 'table' },
+				path: 'order3',
+				component: () => import('@/views/business/commodity'), // Parent router-view
+				name: 'order3',
+				meta: { title: '菜单详情管理', icon: 'table' }
 			},
 			{
-				path: '/tabel/LabelManager',
-				component: () => import('@/views/business/tableLabelManager'), // Parent router-view
-				name: 'tabelLabelManager',
-				meta: { title: '酒店桌位标签管理', icon: 'table' },
+				path: 'order4',
+				component: () => import('@/views/business/commodity'), // Parent router-view
+				name: 'order4',
+				meta: { title: '会员管理', icon: 'table' }
+			},
+			{
+				path: 'order5',
+				component: () => import('@/views/business/commodity'), // Parent router-view
+				name: 'order5',
+				meta: { title: '酒店桌位标签管理', icon: 'table' }
+			},
+			{
+				path: 'order6',
+				component: () => import('@/views/business/commodity'), // Parent router-view
+				name: 'order6',
+				meta: { title: '会员分组', icon: 'table' }
+			},
+			{
+				path: 'order7',
+				component: () => import('@/views/business/commodity'), // Parent router-view
+				name: 'order7',
+				meta: { title: '会员规则', icon: 'table' }
+			},
+			{
+				path: 'order8',
+				component: () => import('@/views/business/commodity'), // Parent router-view
+				name: 'order8',
+				meta: { title: '版本管理', icon: 'table' }
+			},
+			{
+				path: 'order9',
+				component: () => import('@/views/business/commodity'), // Parent router-view
+				name: 'order9',
+				meta: { title: '订单管理', icon: 'table' }
+			},
+			{
+				path: 'order10',
+				component: () => import('@/views/business/commodity'), // Parent router-view
+				name: 'order10',
+				meta: { title: '酒店桌位详情管理', icon: 'table' }
+			},
+			{
+				path: 'order11',
+				component: () => import('@/views/business/commodity'), // Parent router-view
+				name: 'order11',
+				meta: { title: '菜品订单', icon: 'table' }
 			}
-		],
+		]
 	},
 	{
 		path: '/operateManager',
@@ -411,14 +463,38 @@ export const constantRoutes = [
 				meta: { title: '运营中心管理', icon: 'table' }
 			},
 			{
-				path: '/version/manager',
-				component: () => import('@/views/business/version'), // Parent router-view
-				name: 'versionManager',
-				meta: { title: '版本管理', icon: 'table' },
+				path: 'order15',
+				component: () => import('@/views/business/commodity'), // Parent router-view
+				name: 'order15',
+				meta: { title: '会员规则', icon: 'table' }
+			},
+			{
+				path: 'order21',
+				component: () => import('@/views/business/commodity'), // Parent router-view
+				name: 'order21',
+				meta: { title: '会员分组', icon: 'table' }
+			},
+			{
+				path: 'order31',
+				component: () => import('@/views/business/commodity'), // Parent router-view
+				name: 'order31',
+				meta: { title: '版本管理', icon: 'table' }
+			},
+			{
+				path: 'order41',
+				component: () => import('@/views/business/commodity'), // Parent router-view
+				name: 'order41',
+				meta: { title: '运营端订单', icon: 'table' }
+			},
+			{
+				path: 'order51',
+				component: () => import('@/views/business/commodity'), // Parent router-view
+				name: 'order51',
+				meta: { title: '订单子类管理', icon: 'table' }
 			}
-		],
-  },
-  {
+		]
+	},
+	{
 		path: '/apply',
 		component: Layout,
 		name: 'apply',

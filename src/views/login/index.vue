@@ -106,6 +106,9 @@ export default {
       immediate: true
     }
   },
+  mounted() {
+    this.$store.dispatch('login/resetToken')
+  },
   methods: {
     ...mapActions('login', ['login']),
     showPwd() {

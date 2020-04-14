@@ -27,17 +27,17 @@ service.interceptors.request.use(
 			applicationId,
 			companyId
 		}
-		// if (config.method == 'post' || config.method == 'put') {
-		// 	config.data = {
-		// 		...config.data,
-		// 		...req,
-		// 	}
-		// } else {
-		// 	config.params = {
-		// 		...config.params,
-		// 		...req,
-		// 	}
-		// }
+		if (config.method == 'post' || config.method == 'put') {
+			config.data = {
+				...config.data,
+				...req
+			}
+		} else {
+			config.params = {
+				...config.params,
+				...req
+			}
+		}
 		return config
 	},
 	error => {
