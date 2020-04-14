@@ -19,7 +19,7 @@ export function getApplyByCompany(params){
 //置顶
 export function companyTopWeight(params){
   return request({
-    url: '/company/top/weight',
+    url: '/application/top/weight',
     method: 'post',
     params: params
   })
@@ -32,20 +32,22 @@ export function addNewApply(params){
     data: params
   })
 }
-//删除应用信息
-export function delApply(params){
-  return request({
-    url: '/company/info',
-    method: 'delete',
-    params
-  })
-}
+
 //修改应用信息
 export function updateApply(params){
   return request({
     url: '/application/info',
     method: 'put',
     data: params
+  })
+} 
+
+//删除应用信息
+export function delApply(params){
+  return request({
+    url: '/application/info',
+    method: 'delete',
+    params: params
   })
 } 
 

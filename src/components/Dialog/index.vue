@@ -43,7 +43,7 @@
 			</div>
 			<span slot="footer" class="dialog-footer">
 				<el-button type="primary" @click="save">确 定</el-button>
-				<el-button @click="resetForm">重置</el-button>
+				<el-button @click="reset">重置</el-button>
 			</span>
 		</el-dialog>
   </div>

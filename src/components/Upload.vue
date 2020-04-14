@@ -39,7 +39,11 @@ export default {
   },
   methods: {
     uploads(response) {
-      this.$emit("uploadimg", response.result);
+      let url = response.result;
+      if(url.indexOf(".com") > -1){
+         url = url.split(".com")[1]
+      }
+       this.$emit("uploadimg", url);
     },
     handleExceed() {
       this.$message.warning(`当前限制选择 ${this.limit}个文件`);

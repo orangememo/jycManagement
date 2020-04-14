@@ -111,7 +111,7 @@
 			</div>
 			<span slot="footer" class="dialog-footer">
 				<el-button type="primary" @click="save">确 定</el-button>
-				<el-button @click="resetForm">重置</el-button>
+				<el-button @click="reset">重置</el-button>
 			</span>
 		</el-dialog>
 	</div>
@@ -459,7 +459,7 @@ export default {
 		},
 		getApply() {
 			let _this = this
-			getApplyByCompany({isPage: 'NO',id:store.state.login.companyId}).then(data => {
+			getApplyByCompany({isPage: 'NO',cmpId:store.state.login.companyId}).then(data => {
 				if (data.code == '200') {
 					if (data.result.length > 0) {
 						_this.applyList = data.result
@@ -602,6 +602,11 @@ export default {
 				this.newProd = { ...row }
 				this.newProd.labelList = newLabel
 			}
+		},
+		reset(){
+			let oldId = this.newProd.companyId;
+			this.resetForm();
+			this.newProd.companyId = oldId;
 		},
 		resetForm() {
 			this.newProd = {

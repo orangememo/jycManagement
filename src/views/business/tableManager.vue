@@ -27,75 +27,57 @@
 		<el-dialog :title="dialogTitle" :visible.sync="dialogStatus" width="800px">
 			<div>
 				<el-form :model="newProd" ref="roleFrom">
-					<el-form-item label="标志" :label-width="labelWidth" style="margin-right: -80px;">
-						<el-select v-model="newProd.labelList" multiple placeholder="请选择...">
+					<el-form-item label="选择酒店" :label-width="labelWidth">
+						<el-select v-model="newProd.companyId" placeholder="请选择...">
 							<el-option
-								v-for="(item,index) in labelList"
+								v-for="(item,index) in hotelList"
 								:key="index"
-								:label="item.labelName"
-								:value="item.labelId"
+								:label="item.companyName"
+								:value="item.companyId"
 							></el-option>
 						</el-select>
 					</el-form-item>
-					<el-form-item label="名称" :label-width="labelWidth">
-						<el-input v-model="newProd.companyName"></el-input>
-					</el-form-item>
-					<el-form-item label="联系人" :label-width="labelWidth" prop="linkMan">
-						<el-input v-model="newProd.linkMan"></el-input>
-					</el-form-item>
-					<el-form-item label="电话" :label-width="labelWidth" prop="mobile">
-						<el-input v-model="newProd.mobile"></el-input>
-					</el-form-item>
-					<el-form-item label="地址" :label-width="labelWidth" prop="companyAddr">
-						<el-input v-model="newProd.companyAddr"></el-input>
-					</el-form-item>
-					<el-form-item label="缩略图" :label-width="labelWidth">
-						<el-image
-							v-if="newProd.abbreviateImg"
-							style="width: 150px; height: 150px"
-							:src="hostUrl+newProd.abbreviateImg"
-							fit="cover"
-						></el-image>
-						<div>请上传酒店缩略图</div>
-						<upload v-on:uploadimg="uImg" />
-					</el-form-item>
-					<el-form-item label="背景图片" :label-width="labelWidth">
-						<el-image
-							v-if="newProd.backgroundImg"
-							style="width: 150px; height: 150px"
-							:src="hostUrl+newProd.backgroundImg"
-							fit="cover"
-						></el-image>
-						<div>请上传酒店背景图</div>
-						<upload v-on:uploadimg="uBgImg" />
-					</el-form-item>
-					<el-form-item label="图片组" :label-width="labelWidth">
-						<div v-if="newProd.images">
-							<el-image
-								v-for="(item,index) in newProd.images"
+					<el-form-item label="座椅标签" :label-width="labelWidth">
+						<el-select v-model="newProd.hotelTableId" placeholder="请选择...">
+							<el-option
+								v-for="(item,index) in tableLabelList"
 								:key="index"
-								style="width: 150px; height: 150px;margin:0 20px 20px 0;"
-								:src="hostUrl+item"
-								fit="cover"
-							></el-image>
-						</div>
-						<div>上传图片组</div>
-						<upload v-on:uploadimg="uInImg" :limit="pageSize" />
+								:label="item.name"
+								:value="item.id"
+							></el-option>
+						</el-select>
 					</el-form-item>
-					<el-form-item label="营业时间" :label-width="labelWidth" prop="businessHours">
-						<el-input v-model="newProd.businessHours"></el-input>
+					<el-form-item label="餐桌编号" :label-width="labelWidth">
+						<el-input v-model="newProd.number"></el-input>
 					</el-form-item>
-					<el-form-item label="描述" :label-width="labelWidth">
-						<el-input v-model="newProd.description"></el-input>
-					</el-form-item>
-					<el-form-item label="X" :label-width="labelWidth">
-						<el-input v-model="newProd.longitude" type="number"></el-input>
-					</el-form-item>
-					<el-form-item label="Y" :label-width="labelWidth">
-						<el-input v-model="newProd.latitude" type="number"></el-input>
+					<el-form-item label="餐桌名称" :label-width="labelWidth">
+						<el-input v-model="newProd.name"></el-input>
 					</el-form-item>
 					<el-form-item label="权重" :label-width="labelWidth">
-						<el-input v-model="newProd.weight"></el-input>
+						<el-input v-model="newProd.weigh"></el-input>
+					</el-form-item>
+					<el-form-item label="说明" :label-width="labelWidth">
+						<el-input v-model="newProd.tableExplain"></el-input>
+					</el-form-item>
+					<el-form-item label="图片" :label-width="labelWidth">
+						<div v-if="newProd.images">
+							<el-image v-for="(item,index) in newProd.images" :key="index" 
+							style="width: 150px; height: 150px" :src="hostUrl+item" fit="cover"></el-image>
+						</div>
+						<div>上传图片</div>
+						<upload v-on:uploadimg="uImg" :limit="20" />
+					</el-form-item>
+					<el-form-item label="桌位状态" :label-width="labelWidth">
+						<el-select v-model="newProd.type" placeholder="请选择...">
+							<el-option label="普通" value="ORDINARY"></el-option>
+							<el-option label="包厢" value="BALCONY"></el-option>
+						</el-select>
+					</el-form-item>
+					<el-form-item label="状态" :label-width="labelWidth">
+						<el-select v-model="newProd.state" placeholder="请选择...">
+							<el-option label="正常" value="NORMAL"></el-option>
+							<el-option label="删除" value="DELETE"></el-option>
+						</el-select>
 					</el-form-item>
 				</el-form>
 			</div>
@@ -112,15 +94,14 @@ import SearchForm from '@/components/seachForm/seachForm'
 import jycTable from '@/components/table/jycTable'
 import Pagination from '@/components/Pagination'
 import Upload from '@/components/Upload.vue'
-import store from '@/store'
 import {
-	getCompanyPageHotel,
-	companyTopWeight,
-	addNewCompany,
-	delCompany,
-	updateCompany
-} from '@/api/operate/manager'
-import { getLabelList } from '@/api/label'
+	getTabelList,
+	addNewTabel,
+	updateTabel,
+	delTabel,
+	getTabelLabelList
+} from '@/api/tabel'
+import { getCompanyPageHotel } from '@/api/company'
 export default {
 	components: { Pagination, jycTable, SearchForm, Upload },
 	data() {
@@ -128,39 +109,26 @@ export default {
 			form: {
 				state: 'NORMAL'
 			}, //查询条件
+			hotelList: [],
+			tableLabelList: [],
 			labelWidth: '80px',
 			dialogStatus: false,
 			dialogTitle: '',
 			loading: false,
 			total: 0,
 			listLoading: true,
-			labelList: [],
 			isEdit: false,
 			newProd: {
-				abbreviateImg: '',
-				backgroundImg: '',
-				businessHours: '',
-				companyAddr: '',
-				companyCode: '',
-				companyId: 0,
-				companyName: '',
-				companyType: '',
-				createAccountId: '',
-				createTime: '',
-				description: '',
-				latitude: '',
-				linkMan: '',
-				longitude: '',
-				mobile: '',
-				modifyAccountId: '',
-				modifyTime: '',
-				pcmpId: 0,
-				pyCode: '',
-				state: '',
-				vrimage: '',
-				weight: 0,
+				companyId: null,
+				hotelTableId: null,
+				id: null,
 				images: [],
-				labelList: []
+				name: '',
+				number: '',
+				state: '',
+				tableExplain: '',
+				type: '',
+				weigh: 0
 			},
 			pageSize: 10,
 			listQuery: {
@@ -175,26 +143,20 @@ export default {
 				formItemList: [
 					{
 						type: 'input',
-						prop: 'companyName',
-						label: '名称',
-						placeholder: '请输入名称'
+						prop: 'labelName',
+						label: '标签名称',
+						placeholder: '请输入标签名称'
 					},
 					{
 						type: 'input',
-						prop: 'linkMan',
-						label: '联系人',
-						placeholder: '请输入联系人'
-					},
-					{
-						type: 'input',
-						prop: 'companyAddr',
-						label: '地址',
-						placeholder: '请输入地址'
+						prop: 'labelCode',
+						label: '标签代码',
+						placeholder: '请输入标签代码'
 					},
 					{
 						type: 'select',
 						prop: 'state',
-						label: '状态',
+						label: '标签状态',
 						placeholder: '状态',
 						optList: [
 							{ label: '正常', value: 'NORMAL' },
@@ -240,79 +202,66 @@ export default {
 			tableLabel: [
 				{
 					label: 'ID',
+					param: 'id',
+					align: 'center',
+					type: 'text'
+				},
+				{
+					label: '酒店ID',
 					param: 'companyId',
 					align: 'center',
 					type: 'text'
 				},
 				{
+					label: '餐桌编号',
+					param: 'number',
+					align: 'center',
+					type: 'text'
+				},
+				{
+					label: '商家座椅标签',
+					param: 'hotelTableId',
+					align: 'center',
+					type: 'text'
+				},
+				{
 					label: '名称',
-					param: 'companyName',
+					param: 'name',
 					align: 'center',
 					type: 'text'
 				},
 				{
-					label: '标签',
-					param: 'labelList',
-					align: 'center',
-					render: row => {
-						let _this = this
-						let span = `<div style="display: flex;justify-content: center;">`
-						row.labelList.map(item => {
-							let bg = 'width: 50px;height: 35px;color: #fff;line-height: 35px;margin: 0 2px;'
-							if (item.labelCode == 'HOT') {
-								bg += 'background: #f39c12;'
-							} else if (item.labelCode == 'INDEX') {
-								bg += 'background: #18bc9c;'
-							} else if (item.labelCode == 'recommend') {
-								bg += 'background: #e74c3c;'
-							}
-							span += `<div style="${bg}">${item.labelName}</div>`
-						})
-						span += `</div>`
-						return span
-					}
-				},
-				{
-					label: '联系人',
-					param: 'linkMan',
+					label: '说明',
+					param: 'tableExplain',
 					align: 'center',
 					type: 'text'
 				},
 				{
-					label: '电话',
-					param: 'mobile',
-					align: 'center',
-					type: 'text'
-				},
-				{
-					label: '地址',
-					param: 'companyAddr',
-					align: 'center',
-					type: 'text'
-				},
-				{
-					label: '缩略图',
-					param: 'abbreviateImg',
+					label: '图片',
+					param: 'images',
 					align: 'center',
 					type: 'img'
 				},
 				{
-					label: '营业时间',
-					param: 'businessHours',
-					align: 'center',
-					type: 'text'
-				},
-				{
-					label: '创建时间',
-					param: 'createTime',
-					align: 'center',
-					type: 'text'
-				},
-				{
 					label: '权重',
-					param: 'weight',
+					param: 'weigh',
 					align: 'center',
 					type: 'text'
+				},
+				{
+					label: '桌位状态',
+					param: 'type',
+					type: 'text',
+					align: 'center',
+					render: row => {
+						if (row.type == 'ORDINARY') {
+							return '普通'
+						} else if (row.type == 'BALCONY') {
+							return '包厢'
+						} else {
+							return row.type
+						}
+					}
 				},
 				{
 					label: '状态',
@@ -324,10 +273,32 @@ export default {
 							return '正常'
 						} else if (row.state == 'DELETE') {
 							return '删除'
-						} else if (row.state == 'FROZEN') {
-							return '冻结'
 						}
 					}
+				},
+				{
+					label: '创建人',
+					param: 'createAccountId',
+					align: 'center',
+					type: 'text'
+				},
+				{
+					label: '创建时间',
+					param: 'createTime',
+					align: 'center',
+					type: 'text'
+				},
+				{
+					label: '修改人',
+					param: 'modifyAccountId',
+					align: 'center',
+					type: 'text'
+				},
+				{
+					label: '修改时间',
+					param: 'modifyTime',
+					align: 'center',
+					type: 'text'
 				}
 			],
 			tableOption: [
@@ -362,7 +333,8 @@ export default {
 	},
 	mounted() {
 		this.getList()
-		this.getLabel()
+		this.getHotelList()
+		this.getHotelTableList()
 	},
 	methods: {
 		handleButton(object) {
@@ -373,10 +345,7 @@ export default {
 					_this.edit(object.row)
 					break
 				case 'delete':
-					_this.delete(object.row.companyId)
-					break
-				case 'top':
-					_this.top(object.row)
+					_this.delete(object.row.id)
 					break
 				case 'goOrder':
 					_this.goOrder(object.row)
@@ -401,63 +370,71 @@ export default {
 			this.chooseList = row
 		},
 		getList() {
-			let _this = this;
+			let _this = this
 			const params = {
 				isPage: 'YES',
 				currentPage: _this.listQuery.page,
 				pageSize: _this.listQuery.limit
 			}
 			let p = { ...params, ..._this.form }
-			console.log('form:'+JSON.stringify(_this.form));
-			console.log('p:'+JSON.stringify(p));
-			this.searchCompanyPageHotel(p)
+			this.searchApplyPageInfo(p)
 		},
-		searchCompanyPageHotel(params) {
+		getHotelList() {
 			let _this = this
-			_this.loading = true;
+			let params = {
+				isPage: 'NO'
+			}
 			getCompanyPageHotel(params).then(data => {
+				_this.hotelList = data
 				if (data.code == '200') {
-					_this.total = data.result.total
-					if (data.result.records.length > 0) {
-						_this.tableData = data.result.records
+					_this.hotelList = data.result
+				}
+			})
+		},
+		getHotelTableList() {
+			let _this = this
+			let params = {
+				isPage: 'NO'
+			}
+			getTabelLabelList().then(data => {
+				if (data.code == '200') {
+					_this.tableLabelList = data.result.records
+				}
+			})
+		},
+		searchApplyPageInfo(params) {
+			let _this = this
+			_this.loading = true
+			getTabelList(params)
+				.then(data => {
+					if (data.code == '200') {
+						_this.total = data.result.total
+						if (data.result.records.length > 0) {
+							_this.tableData = data.result.records
+						} else {
+							_this.$alert('未获取到有效信息')
+						}
 					} else {
 						_this.$alert('未获取到有效信息')
 					}
-				} else {
-					_this.$alert('未获取到有效信息')
-				}
-				_this.loading = false;
-			}).catch(err=>{
-				_this.$alert('服务器异常')
-				_this.loading = false;
-			})
-		},
-		getLabel() {
-			let _this = this
-			getLabelList({ isPage: 'NO' }).then(data => {
-				if (data.code == '200') {
-					_this.labelList = data.result
-				}
-			})
+					_this.loading = false
+				})
+				.catch(err => {
+					_this.$alert('服务器异常')
+					_this.loading = false
+				})
 		},
 		addNew() {
 			this.editStatus = false
 			this.resetForm()
-			this.newProd.pcompanyId = store.state.login.companyId
 			this.dialogTitle = '添加'
 			this.dialogStatus = true
 		},
 		save() {
 			let _this = this
-			_this.newProd.labelList instanceof Array
-				? (_this.newProd.flags = _this.newProd.labelList.join(','))
-				: ''
-			_this.newProd.images instanceof Array
-				? (_this.newProd.images = _this.newProd.images.join(','))
-				: ''
-			_this.newProd.companyType = 'HOTEL';
+			_this.newProd.images = _this.newProd.images.join(',')
 			if (_this.editStatus) {
-				updateCompany(_this.newProd).then(data => {
+				updateTabel(_this.newProd).then(data => {
 					if (data.code == '200') {
 						_this.$alert('修改成功')
 						_this.dialogStatus = false
@@ -467,7 +444,7 @@ export default {
 					}
 				})
 			} else {
-				addNewCompany(_this.newProd).then(data => {
+				addNewTabel(_this.newProd).then(data => {
 					if (data.code == '200') {
 						_this.$alert('保存成功')
 						_this.dialogStatus = false
@@ -479,22 +456,24 @@ export default {
 			}
 		},
 		edit(row) {
+			this.dialogTitle = '修改'
 			this.editStatus = true
+			this.resetForm();
 			this.setRuleFrom(row)
 			this.dialogStatus = true
 		},
-		delete(companyIds) {
+		delete(id) {
 			let _this = this
-			this.$confirm('确定删除所选酒店吗?', '提示', {
+			this.$confirm('确定删除所选应用吗?', '提示', {
 				confirmButtonText: '确定',
 				cancelButtonText: '取消',
 				type: 'warning'
 			}).then(() => {
 				let params = {
-					companyIdList: companyIds,
+					id: id,
 					state: 'DELETE'
 				}
-				delCompany(params).then(data => {
+				delTabel(params).then(data => {
 					if (data.code == '200') {
 						_this.$alert('删除成功')
 						_this.getList()
@@ -512,11 +491,11 @@ export default {
 		},
 		delAll() {
 			if (this.chooseList.length > 0) {
-				let companyIds = [];
-				this.chooseList.map(item=>{
-					companyIds.push(item.companyId)
+				let ids = []
+				this.chooseList.map(item => {
+					ids.push(item.applicationId)
 				})
-				this.delete(companyIds.join(','));
+				this.delete(ids.join(','))
 			} else {
 				this.$alert('请先选择要删除项')
 			}
@@ -535,6 +514,11 @@ export default {
 			this.$alert('修改成功')
 			this.moreStatus = false
 		},
+
+		setRuleFrom(row) {
+			this.newProd = { ...row }
+			this.newProd.images = this.newProd.images.split(',')
+		},
 		//置顶
 		toTop(row) {
 			let _this = this
@@ -548,65 +532,25 @@ export default {
 			})
 		},
 		uImg(img) {
-			this.newProd.abbreviateImg = img
-		},
-		uBgImg(img) {
-			this.newProd.backgroundImg = img
-		},
-		uInImg(img) {
 			this.newProd.images.push(img)
 		},
-		setRuleFrom(row) {
-			let newLabel = []
-			row.labelList.map(item => {
-				newLabel.push(item.labelId)
-			})
-			if (row.images instanceof Array) {
-				this.newProd = { ...row }
-				this.newProd.labelList = newLabel
-			} else if (row.images && row.images.indexOf(',') > -1) {
-				row.images = row.images.split(',')
-				this.newProd = { ...row }
-				this.newProd.labelList = newLabel
-			} else {
-				let inImg = row.images
-				row.images = []
-				row.images.push(inImg)
-				this.newProd = { ...row }
-				this.newProd.labelList = newLabel
-			}
-		},
 		reset(){
-			let oldId = this.newProd.companyId;
+			let oldId = this.newProd.id;
 			this.resetForm();
-			this.newProd.companyId = oldId;
+			this.newProd.id = oldId;
 		},
 		resetForm() {
 			this.newProd = {
-				abbreviateImg: '',
-				backgroundImg: '',
+				companyId: null,
+				hotelTableId: null,
+				id: null,
 				images: [],
-				labelList: [],
-				businessHours: '',
-				companyAddr: '',
-				companyCode: '',
-				companyId: 0,
-				companyName: '',
-				companyType: '',
-				createAccountId: '',
-				createTime: '',
-				description: '',
-				latitude: '',
-				linkMan: '',
-				longitude: '',
-				mobile: '',
-				modifyAccountId: '',
-				modifyTime: '',
-				pcmpId: 0,
-				pyCode: '',
+				name: '',
+				number: '',
 				state: '',
-				vrimage: '',
-				weight: 0
+				tableExplain: '',
+				type: '',
+				weigh: 0
 			}
 		}
 	}

@@ -425,14 +425,17 @@ export default {
 			this.$router.push({ name: 'foodList', params: { hotelId: row.id } })
 		},
 		setRuleFrom(row) {
+			this.resetForm()
 			if (row.images instanceof Array) {
 				this.ruleForm = row
 			} else if (row.images && row.images.indexOf(',') > -1) {
 				row.images = row.images.split(',')
+				this.ruleForm = row
 			} else {
 				let inImg = row.images
 				row.images = []
 				row.images.push(inImg)
+				this.ruleForm = row
 			}
 		},
 		saveNewHotel() {
