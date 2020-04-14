@@ -15,7 +15,7 @@
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
-          <router-link to="/">
+          <router-link to="/selectCompanyApp">
             <el-dropdown-item>选择公司</el-dropdown-item>
           </router-link>
 

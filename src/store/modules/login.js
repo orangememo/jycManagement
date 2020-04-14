@@ -1,9 +1,13 @@
 import { login, logout, getInfo } from '@/api/user'
 import { loginJyc, loginInfo } from '@/api/login'
+import { componentsMap } from '@/router/componentsMap'
 
 import { getToken, setToken, removeToken } from '@/utils/auth'
-import { resetRouter } from '@/router'
-
+import { resetRouter, constantRoutes } from '@/router'
+// import router from './router'
+// router.addRoutes(ruleList)
+import Layout from '@/layout'
+import ces from '@/utils/ces'
 const getDefaultState = () => {
 	return {
 		token: getToken(),
@@ -14,6 +18,9 @@ const getDefaultState = () => {
 		applicationId: '',
 		applicationList: '',
 		companyList: [],
+		ruleList: [],
+		permissionRoutes: [],
+		list: [],
 	}
 }
 
@@ -49,6 +56,10 @@ const mutations = {
 	},
 	SET_RULE_LIST: (state, val) => {
 		state.ruleList = val
+		state.permissionRoutes = constantRoutes.concat(val)
+	},
+	SET_LIST: (state, val) => {
+		state.list = val
 	},
 }
 
@@ -59,7 +70,6 @@ const actions = {
 		return new Promise((resolve, reject) => {
 			loginJyc(obj)
 				.then((res) => {
-					console.log(res, '12313')
 					const { result } = res
 					commit('SET_TOKEN', result.token)
 					commit('SET_COMPANY_LIST', result.companyList)
@@ -90,29 +100,13 @@ const actions = {
 		return new Promise((resolve, reject) => {
 			loginInfo(obj)
 				.then((res) => {
+					res = ces
 					let { result } = res
-					commit('SET_RULE_LIST', name)
-
-					resolve(result)
-					console.log('res', res)
-				})
-				.catch((error) => {
-					reject(error)
-				})
-		})
-	},
-	getInfo({ commit, state }) {
-		return new Promise((resolve, reject) => {
-			getInfo(state.token)
-				.then((response) => {
-					const { data } = response
-					if (!data) {
-						reject('Verification failed, please Login again.')
-					}
-					const { name, avatar } = data
-					commit('SET_NAME', name)
-					commit('SET_AVATAR', avatar)
-					resolve(data)
+					let ruleList = comparedRouter(result.list)
+					ruleList.push({ path: '*', redirect: '/404', hidden: true })
+					commit('SET_LIST', result.list)
+					commit('SET_RULE_LIST', ruleList)
+					resolve(ruleList)
 				})
 				.catch((error) => {
 					reject(error)
@@ -139,6 +133,21 @@ const actions = {
 			resolve()
 		})
 	},
+	// remove token
+	resetRouter({ commit }) {
+		return new Promise((resolve) => {
+			resetRouter() // must remove  token  first
+			commit('SET_RULE_LIST', [])
+			resolve()
+		})
+	},
+	getRouter({ commit, state }) {
+		return new Promise((resolve) => {
+			let ruleList = comparedRouter(state.list)
+			ruleList.push({ path: '*', redirect: '/404', hidden: true })
+			resolve(ruleList)
+		})
+	},
 }
 
 export default {
@@ -146,4 +155,34 @@ export default {
 	state,
 	mutations,
 	actions,
+}
+
+function comparedRouter(asyncRouterMap) {
+	const accessedRouters = []
+
+	if (asyncRouterMap.length != 0) {
+		asyncRouterMap.forEach((item) => {
+			accessedRouters.push(operatRouter(item))
+		})
+	}
+	return accessedRouters
+}
+function operatRouter(item) {
+	let component = Layout
+	let router = {}
+	if (item.pruleId !== 0) {
+		component = componentsMap[item.ruleCode]
+	}
+	router = {
+		path: item.requestUrl,
+		name: item.ruleCode,
+		meta: {
+			icon: item.icon,
+			title: item.ruleName,
+		},
+		hidden: item.isHide == 0 && item.ruleType == 'MENU' ? false : true,
+		component: component,
+		children: comparedRouter(item.children),
+	}
+	return router
 }
