@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
 //分页查询桌位详情信息
-export function getTabelList(params) {
+export function gettableList(params) {
     return request({
         url: '/HotelTableInfo/gethotelTableInfo',
         method: 'get',
@@ -10,7 +10,7 @@ export function getTabelList(params) {
 }
 
 //新增桌位详情信息
-export function addNewTabel(params) {
+export function addNewtable(params) {
     return request({
         url: '/HotelTableInfo/addhotelTableInfo',
         method: 'post',
@@ -19,7 +19,7 @@ export function addNewTabel(params) {
 }
 
 //修改桌位详情信息
-export function updateTabel(params) {
+export function updatetable(params) {
     return request({
         url: '/HotelTableInfo/updateHotelTableInfo',
         method: 'put',
@@ -28,7 +28,7 @@ export function updateTabel(params) {
 }
 
 //删除桌位详情信息
-export function delTabel(params) {
+export function deltable(params) {
     return request({
         url: '/HotelTableInfo/removehotelTableInfo',
         method: 'delete',
@@ -37,7 +37,7 @@ export function delTabel(params) {
 }
 
 //分页查询所有桌位标签
-export function getTabelLabelList(params) {
+export function gettableLabelList(params) {
     return request({
         url: '/HotelTable/gethotelTable',
         method: 'get',
@@ -46,7 +46,7 @@ export function getTabelLabelList(params) {
 }
 
 //新增桌位详情信息
-export function addNewTabelLabel(params) {
+export function addNewtableLabel(params) {
     return request({
         url: '/HotelTable/addhotelTable',
         method: 'post',
@@ -55,7 +55,7 @@ export function addNewTabelLabel(params) {
 }
 
 //修改桌位详情信息
-export function updateTabelLabel(params) {
+export function updatetableLabel(params) {
     return request({
         url: '/HotelTable/updateHotelTable',
         method: 'put',
@@ -64,7 +64,7 @@ export function updateTabelLabel(params) {
 }
 
 //删除桌位详情信息
-export function delTabelLabel(params) {
+export function deltableLabel(params) {
     return request({
         url: '/HotelTable/removehotelTable',
         method: 'delete',

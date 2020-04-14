@@ -142,7 +142,7 @@ export default {
 				businessHours: '',
 				companyAddr: '',
 				companyCode: '',
-				companyId: 0,
+				cmpId: 0,
 				companyName: '',
 				companyType: '',
 				createAccountId: '',
@@ -443,7 +443,7 @@ export default {
 		addNew() {
 			this.editStatus = false
 			this.resetForm()
-			this.newProd.pcompanyId = store.state.login.companyId
+			this.newProd.cmpId = store.state.login.companyId
 			this.dialogTitle = '添加'
 			this.dialogStatus = true
 		},
@@ -483,7 +483,7 @@ export default {
 			this.setRuleFrom(row)
 			this.dialogStatus = true
 		},
-		delete(companyIds) {
+		delete(cmpId) {
 			let _this = this
 			this.$confirm('确定删除所选酒店吗?', '提示', {
 				confirmButtonText: '确定',
@@ -491,7 +491,7 @@ export default {
 				type: 'warning'
 			}).then(() => {
 				let params = {
-					companyIdList: companyIds,
+					companyIdList: cmpId,
 					state: 'DELETE'
 				}
 				delCompany(params).then(data => {
@@ -538,7 +538,7 @@ export default {
 		//置顶
 		toTop(row) {
 			let _this = this
-			companyTopWeight({ companyId: row.companyId }).then(data => {
+			companyTopWeight({ cmpId: row.companyId }).then(data => {
 				if (data.code == '200') {
 					_this.$alert('置顶成功')
 					_this.getList()
@@ -579,7 +579,7 @@ export default {
 		reset(){
 			let oldId = this.newProd.companyId;
 			this.resetForm();
-			this.newProd.companyId = oldId;
+			this.newProd.cmpId = oldId;
 		},
 		resetForm() {
 			this.newProd = {
@@ -590,7 +590,7 @@ export default {
 				businessHours: '',
 				companyAddr: '',
 				companyCode: '',
-				companyId: 0,
+				cmpId: 0,
 				companyName: '',
 				companyType: '',
 				createAccountId: '',

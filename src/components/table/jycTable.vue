@@ -26,7 +26,7 @@
 			<template slot-scope="scope">
 				<span v-if="item.render" v-html="item.render(scope.row)"></span>
 				<span v-else-if="item.type=='img'">
-					<el-image style="width: 50px; height: 50px" :src="imgSet(scope.row[item.param])" fit="cover"></el-image>
+					<el-image style="width: 50px; height: 50px" :src="hostUrl+scope.row[item.param]" fit="cover"></el-image>
 				</span>
 				<span v-else>{{scope.row[item.param]}}</span>
 			</template>
@@ -115,15 +115,6 @@ export default {
 		},
 		handleSelectionChange(val) {
 			this.$emit('handleSelectionChange', val)
-		},
-		imgSet(val) {
-			if (val instanceof Array) {
-				  val = val[0].indexOf('.com') > -1 ?  val[0].split('.com')[1] :  val[0]
-				  return this.hostUrl + val
-			} else {
-          val = val.indexOf('.com') > -1 ?  val.split('.com')[1] :  val
-          return this.hostUrl + val
-			}
 		}
 	}
 }

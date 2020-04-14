@@ -71,7 +71,6 @@ module.exports = {
 				target: 'http://192.168.0.108:8085',
 				changeOrigin: true,
 			},
-			'/label':{
 			'/label': {
 				target: 'http://192.168.0.108:8085',
 				changeOrigin: true
