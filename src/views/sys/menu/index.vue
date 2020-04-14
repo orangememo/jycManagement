@@ -113,9 +113,16 @@ export default {
           width: '',
           align: 'center'
         },
+
         {
           prop: 'ruleName',
           name: '标题',
+          width: '',
+          align: 'center'
+        },
+        {
+          prop: 'ruleCode',
+          name: 'Code',
           width: '',
           align: 'center'
         },

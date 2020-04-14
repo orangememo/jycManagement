@@ -83,6 +83,20 @@ service.interceptors.response.use(
 					})
 				})
 			}
+			if (res.code !== 200) {
+				Message({
+					message: res.message,
+					type: 'error',
+					duration: 3 * 1000
+				})
+				// if (res.code === 500) {
+				// 	Message({
+				// 		message: res.message,
+				// 		type: 'error',
+				// 		duration: 3 * 1000
+				// 	})
+				// }
+			}
 			return res
 			// return Promise.reject(new Error(res.message || 'Error'))
 		} else {

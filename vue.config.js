@@ -63,24 +63,24 @@ module.exports = {
 				target: 'http://192.168.0.108:8085',
 				changeOrigin: true
 			},
-			'/HotelTable':{
+			'/HotelTable': {
 				target: 'http://192.168.0.108:8085',
-				changeOrigin: true,
+				changeOrigin: true
 			},
-			'/HotelTableInfo':{
+			'/HotelTableInfo': {
 				target: 'http://192.168.0.108:8085',
-				changeOrigin: true,
+				changeOrigin: true
 			},
-			'/label':{
+
 			'/label': {
 				target: 'http://192.168.0.108:8085',
 				changeOrigin: true
 			},
 			'/application': {
 				target: 'http://192.168.0.108:8085',
-				changeOrigin: true,
+				changeOrigin: true
 			},
-			'/lp':{
+			'/lp': {
 				target: 'http://49.234.12.49:9090',
 				changeOrigin: true,
 				changeOrigin: true

@@ -171,6 +171,9 @@ function comparedRouter(asyncRouterMap) {
 			accessedRouters.push(operatRouter(item))
 		})
 	}
+	accessedRouters.sort((a, b) => {
+		return a.weight - b.weight
+	})
 	return accessedRouters
 }
 function operatRouter(item) {
@@ -182,6 +185,7 @@ function operatRouter(item) {
 	router = {
 		path: item.requestUrl,
 		name: item.ruleCode,
+		weight: item.weight,
 		meta: {
 			icon: item.icon,
 			title: item.ruleName
@@ -189,6 +193,9 @@ function operatRouter(item) {
 		hidden: item.isHide == 0 && item.ruleType == 'MENU' ? false : true,
 		component: component,
 		children: comparedRouter(item.children)
+	}
+	if (item.pruleId === 0 && item.children.length != 0) {
+		router.redirect = `${item.requestUrl}/${item.children[0].requestUrl}`
 	}
 	return router
 }
