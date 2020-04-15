@@ -156,7 +156,9 @@ export default {
       this.getList()
     },
     getList: async function() {
+      this.listLoading = true
       let res = await getRoleInfoTree()
+      this.listLoading = false
       this.tableData = res.result.list
     },
     handleClick(type, val) {

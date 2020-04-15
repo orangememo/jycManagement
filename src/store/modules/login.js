@@ -194,7 +194,8 @@ function operatRouter(item) {
 		weight: item.weight,
 		meta: {
 			icon: item.icon,
-			title: item.ruleName
+			title: item.ruleName,
+			isHide: item.isHide
 		},
 		hidden: item.isHide == 0 && item.ruleType == 'MENU' ? false : true,
 		component: component,

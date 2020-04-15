@@ -123,7 +123,7 @@ export default {
             optList: [
               {
                 label: '全部',
-                value: 'ALL'
+                value: ''
               },
               {
                 label: '正常',
@@ -154,10 +154,6 @@ export default {
         ]
       },
       form: {
-        value0: '',
-        value1: '',
-        value2: '',
-        value3: '',
         state: ''
       },
       tableTitle: [
@@ -209,10 +205,9 @@ export default {
           type: 'text'
         },
         {
-          label: '强制更新',
+          label: '最低支持版本',
           param: 'applicationMin',
           align: 'center',
-
           type: 'text'
         },
         {
@@ -300,7 +295,7 @@ export default {
           break
         case '编辑':
           this.edit = 1
-          this.editRoleId = val.roleId
+          this.editRoleId = val.applicationVersionId
           this.dialogVisible = true
           break
         case '确认':
@@ -349,8 +344,7 @@ export default {
     handleSelectionChange() {},
     handleSortChange() {},
     handleButton(a) {
-      this.handleClick('编辑', a.row)
-      console.log(a)
+      this.handleClick(a.methods, a.row)
     },
     handleSelectionChange() {}
   }
