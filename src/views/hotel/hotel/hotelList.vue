@@ -2,9 +2,7 @@
 	<div class="app-container">
 		<search-form :formConfig="formConfig" :value="form" labelWidth="80px"></search-form>
 		<el-popover placement="top-end" trigger="click" v-model="moreStatus">
-			<el-link class="set" @click="editStatus(1)">设置为显示</el-link>
-			<br />
-			<el-link class="set" @click="editStatus(0)">设置为隐藏</el-link>
+			
 		</el-popover>
 		<jyc-table
 			:loading="loading"
@@ -25,9 +23,7 @@
 		/>
 
 		<el-popover placement="bottom-end" trigger="click" slot="ref">
-			<el-link class="set" @click="editStatus(1)">设置为显示</el-link>
-			<br />
-			<el-link class="set" @click="editStatus(0)">设置为隐藏</el-link>
+			
 		</el-popover>
 
 		<!-- 添加新的酒店 Dialog-->
@@ -372,16 +368,16 @@ export default {
 			this.addNewStatus = false
 		},
 		delete(row) {
-			this.$alert('删除')
+			this.alertMessage('删除')
 		},
 		top(row) {
 			if (row.id) {
-				this.$alert(row.id)
+				this.alertMessage(row.id)
 			} else {
 				if (this.chooseList.length > 0) {
-					this.$alert('置顶')
+					this.alertMessage('置顶')
 				} else {
-					this.$alert('请先选择要置顶项')
+					this.alertMessage('请先选择要置顶项')
 				}
 			}
 		},
@@ -389,14 +385,14 @@ export default {
 			if (this.chooseList.length > 0) {
 				this.moreStatus = !this.moreStatus
 			} else {
-				this.$alert('请先选择要处理项')
+				_this.$message.error('请先选择要处理项')
 			}
 		},
 		editStatus(status) {
 			this.chooseList.map(item => {
 				item.status = status
 			})
-			this.$alert('修改成功')
+			this.alertMessage('修改成功')
 			this.moreStatus = false
 		},
 		goOrder(row) {

@@ -30,9 +30,15 @@ Vue.prototype.$getRsaCode = function(str) {
 	return data
 }
 //my
-//全局引入接口
-// import companyApi from '@/api/company'
-// Vue.use(companyApi)
+//全局弹窗
+//正确
+Vue.prototype.alertMessage = param => {
+  Message({
+    message: param,
+    type: 'success',
+    duration: 5 * 1000
+  })
+}
 //图片前缀地址
 Vue.prototype.hostUrl = 'https://9uc-1253537498.cos.ap-shanghai.myqcloud.com'
 //时间格式化

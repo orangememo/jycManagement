@@ -2,9 +2,7 @@
 	<div class="app-container">
 		<search-form :formConfig="formConfig" :value="form" labelWidth="80px"></search-form>
 		<el-popover placement="top-end" trigger="click" v-model="moreStatus">
-			<el-link class="set" @click="editStatus(1)">设置为显示</el-link>
-			<br />
-			<el-link class="set" @click="editStatus(0)">设置为隐藏</el-link>
+			
 		</el-popover>
 		<jyc-table
 			:loading="loading"
@@ -25,9 +23,7 @@
 		/>
 
 		<el-popover placement="bottom-end" trigger="click" slot="ref">
-			<el-link class="set" @click="editStatus(1)">设置为显示</el-link>
-			<br />
-			<el-link class="set" @click="editStatus(0)">设置为隐藏</el-link>
+			
 		</el-popover>
 
 		<el-dialog :title="dialogTitle" :visible.sync="dialogStatus" width="800px">
@@ -416,12 +412,12 @@ export default {
 			this.dialogStatus = true
 		},
 		delete(row) {
-			this.$alert('删除')
+			this.alertMessage('删除')
 		},
 		editAll() {
 			if (this.chooseList.length > 0) {
 			} else {
-				this.$alert('请先选择要编辑项')
+				_this.$message.error('请先选择要编辑项')
 			}
 		},
 		delAll() {
@@ -432,21 +428,21 @@ export default {
 				// }
 				this.$confirm('确定要删除吗？')
 			} else {
-				this.$alert('请先选择要删除项')
+				_this.$message.error('请先选择要删除项')
 			}
 		},
 		more() {
 			if (this.chooseList.length > 0) {
 				this.moreStatus = !this.moreStatus
 			} else {
-				this.$alert('请先选择要处理项')
+				_this.$message.error('请先选择要处理项')
 			}
 		},
 		editStatus(status) {
 			this.chooseList.map(item => {
 				item.status = status
 			})
-			this.$alert('修改成功')
+			this.alertMessage('修改成功')
 			this.moreStatus = false
 		}
 	}

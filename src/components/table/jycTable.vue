@@ -26,7 +26,7 @@
 			<template slot-scope="scope">
 				<span v-if="item.render" v-html="item.render(scope.row)"></span>
 				<span v-else-if="item.type=='img'">
-					<el-image style="width: 50px; height: 50px" :src="hostUrl+scope.row[item.param]" fit="cover"></el-image>
+					<el-image style="width: 50px; height: 50px" :src="hostUrl+scope.row[item.param]" :preview-src-list="[hostUrl+scope.row[item.param]]" fit="cover"></el-image>
 				</span>
 				<span v-else>{{scope.row[item.param]}}</span>
 			</template>
