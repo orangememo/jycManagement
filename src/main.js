@@ -3,6 +3,7 @@ import Vue from "vue";
 import "normalize.css/normalize.css"; // A modern alternative to CSS resets
 
 import ElementUI from "element-ui";
+import { MessageBox, Message } from 'element-ui'
 import "element-ui/lib/theme-chalk/index.css";
 // import locale from "element-ui/lib/locale/lang/en"; // lang i18n
 
@@ -27,9 +28,15 @@ Vue.prototype.$getRsaCode = function(str) {
   return data;
 };
 //my
-//全局引入接口
-// import companyApi from '@/api/company'
-// Vue.use(companyApi)
+//全局弹窗
+//正确
+Vue.prototype.alertMessage = param => {
+  Message({
+    message: param,
+    type: 'success',
+    duration: 5 * 1000
+  })
+}
 //图片前缀地址
 Vue.prototype.hostUrl = "https://9uc-1253537498.cos.ap-shanghai.myqcloud.com";
 //时间格式化
@@ -55,22 +62,7 @@ Vue.prototype.$dateFormat = param => {
     filerdata(mm);
   return timeFormat;
 };
-//提示信息
-Vue.prototype.$alert_my = param => {
-  this.$message({
-    type: "success",
-    message: param
-  });
-};
-Vue.prototype.$confirm_my = param => {
-  this.$confirm(param.message, param.title, {
-    confirmButtonText: "确定",
-    cancelButtonText: "取消",
-    type: "warning"
-  })
-    .then(() => {})
-    .catch(() => {});
-};
+
 //地图
 import VueAMap from "vue-amap";
 Vue.use(VueAMap);

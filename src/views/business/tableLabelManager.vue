@@ -24,9 +24,7 @@
 		</el-form>
 		<search-form :formConfig="formConfig" :value="form" labelWidth="80px"></search-form>
 		<el-popover placement="top-end" trigger="click" v-model="moreStatus">
-			<el-link class="set" @click="editStatus(1)">设置为显示</el-link>
-			<br />
-			<el-link class="set" @click="editStatus(0)">设置为隐藏</el-link>
+			
 		</el-popover>
 		<jyc-table
 			:loading="loading"
@@ -340,17 +338,9 @@ export default {
 						if (data.result.records.length > 0) {
 							_this.tableData = data.result.records
 						} else {
-							_this.$alert('未获取到有效信息')
 							_this.tableData = [];
 						}
-					} else {
-						_this.$alert('未获取到有效信息')
-						_this.tableData = [];
-					}
-					_this.loading = false
-				})
-				.catch(err => {
-					_this.$alert('服务器异常')
+					} 
 					_this.loading = false
 				})
 		},
@@ -365,22 +355,18 @@ export default {
 			if (_this.editStatus) {
 				updatetableLabel(_this.newProd).then(data => {
 					if (data.code == '200') {
-						_this.$alert('修改成功')
+						_this.alertMessage('修改成功')
 						_this.dialogStatus = false
 						_this.getList()
-					} else {
-						_this.$alert(data.message)
-					}
+					} 
 				})
 			} else {
 				addNewtableLabel(_this.newProd).then(data => {
 					if (data.code == '200') {
-						_this.$alert('保存成功')
+						_this.alertMessage('保存成功')
 						_this.dialogStatus = false
 						_this.getList()
-					} else {
-						_this.$alert(data.message)
-					}
+					} 
 				})
 			}
 		},
@@ -404,18 +390,16 @@ export default {
 				}
 				deltableLabel(params).then(data => {
 					if (data.code == '200') {
-						_this.$alert('删除成功')
+						_this.alertMessage('删除成功')
 						_this.getList()
-					} else {
-						_this.$alert(data.message)
-					}
+					} 
 				})
 			})
 		},
 		editAll() {
 			if (this.chooseList.length > 0) {
 			} else {
-				this.$alert('请先选择要编辑项')
+				_this.$message.error('请先选择要编辑项')
 			}
 		},
 		delAll() {
@@ -426,21 +410,21 @@ export default {
 				})
 				this.delete(ids.join(','))
 			} else {
-				this.$alert('请先选择要删除项')
+				_this.$message.error('请先选择要删除项')
 			}
 		},
 		more() {
 			if (this.chooseList.length > 0) {
 				this.moreStatus = !this.moreStatus
 			} else {
-				this.$alert('请先选择要处理项')
+				_this.$message.error('请先选择要处理项')
 			}
 		},
 		editStatus(status) {
 			this.chooseList.map(item => {
 				item.status = status
 			})
-			this.$alert('修改成功')
+			this.alertMessage('修改成功')
 			this.moreStatus = false
 		},
 
@@ -452,10 +436,8 @@ export default {
 			let _this = this
 			companyTopWeight({ companyId: row.companyId }).then(data => {
 				if (data.code == '200') {
-					_this.$alert('置顶成功')
+					_this.alertMessage('置顶成功')
 					_this.getList()
-				} else {
-					_this.$alert('置顶失败,请联系管理员')
 				}
 			})
 		},
