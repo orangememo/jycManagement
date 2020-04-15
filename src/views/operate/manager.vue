@@ -97,6 +97,12 @@
 					<el-form-item label="权重" :label-width="labelWidth">
 						<el-input v-model="newProd.weight"></el-input>
 					</el-form-item>
+					<el-form-item label="状态" :label-width="labelWidth">
+						<el-select v-model="newProd.state" placeholder="请选择...">
+							<el-option label="正常" value="NORMAL"></el-option>
+							<el-option label="删除" value="DELETE"></el-option>
+						</el-select>
+					</el-form-item>
 				</el-form>
 			</div>
 			<span slot="footer" class="dialog-footer">
@@ -126,7 +132,6 @@ export default {
 	data() {
 		return {
 			form: {
-				state: 'NORMAL'
 			}, //查询条件
 			labelWidth: '80px',
 			dialogStatus: false,
@@ -142,7 +147,7 @@ export default {
 				businessHours: '',
 				companyAddr: '',
 				companyCode: '',
-				companyId: 0,
+				cmpId: null,
 				companyName: '',
 				companyType: '',
 				createAccountId: '',
@@ -154,7 +159,7 @@ export default {
 				mobile: '',
 				modifyAccountId: '',
 				modifyTime: '',
-				pcmpId: 0,
+				pcmpId: null,
 				pyCode: '',
 				state: '',
 				vrimage: '',
@@ -197,6 +202,7 @@ export default {
 						label: '状态',
 						placeholder: '状态',
 						optList: [
+							{ label: '全部' },
 							{ label: '正常', value: 'NORMAL' },
 							{ label: '删除', value: 'DELETE' }
 						]
@@ -256,9 +262,10 @@ export default {
 					align: 'center',
 					render: row => {
 						let _this = this
-						let span = `<div style="display: flex;justify-content: center;">`
+						let span = `<div style="display: flex;justify-content: center;font-size:10px">`
 						row.labelList.map(item => {
-							let bg = 'width: 50px;height: 35px;color: #fff;line-height: 35px;margin: 0 2px;'
+							let bg =
+								'width: 50px;height: 25px;color: #fff;line-height: 26px;margin: 0 2px;'
 							if (item.labelCode == 'HOT') {
 								bg += 'background: #f39c12;'
 							} else if (item.labelCode == 'INDEX') {
@@ -321,11 +328,9 @@ export default {
 					align: 'center',
 					render: row => {
 						if (row.state == 'NORMAL') {
-							return '正常'
+							return `<span style='color:#18bc9c'>正常</span>`
 						} else if (row.state == 'DELETE') {
-							return '删除'
-						} else if (row.state == 'FROZEN') {
-							return '冻结'
+							return `<span style='color:#d2d6de'>删除</span>`
 						}
 					}
 				}
@@ -338,19 +343,16 @@ export default {
 						{
 							label: '编辑',
 							type: 'primary',
-							icon: 'el-icon-edit',
 							methods: 'edit'
 						},
 						{
 							label: '删除',
 							type: 'danger',
-							icon: 'el-icon-delete',
 							methods: 'delete'
 						},
 						{
 							label: '置顶',
 							type: 'warning',
-							icon: 'el-icon-caret-top',
 							methods: 'toTop'
 						}
 					]
@@ -422,9 +424,11 @@ export default {
 						_this.tableData = data.result.records
 					} else {
 						_this.$alert('未获取到有效信息')
+						_this.tableData = [];
 					}
 				} else {
 					_this.$alert('未获取到有效信息')
+					_this.tableData = [];
 				}
 				_this.loading = false;
 			}).catch(err=>{
@@ -443,7 +447,6 @@ export default {
 		addNew() {
 			this.editStatus = false
 			this.resetForm()
-			this.newProd.pcompanyId = store.state.login.companyId
 			this.dialogTitle = '添加'
 			this.dialogStatus = true
 		},
@@ -483,7 +486,7 @@ export default {
 			this.setRuleFrom(row)
 			this.dialogStatus = true
 		},
-		delete(companyIds) {
+		delete(cmpId) {
 			let _this = this
 			this.$confirm('确定删除所选酒店吗?', '提示', {
 				confirmButtonText: '确定',
@@ -491,7 +494,7 @@ export default {
 				type: 'warning'
 			}).then(() => {
 				let params = {
-					companyIdList: companyIds,
+					companyIdList: cmpId,
 					state: 'DELETE'
 				}
 				delCompany(params).then(data => {
@@ -538,7 +541,7 @@ export default {
 		//置顶
 		toTop(row) {
 			let _this = this
-			companyTopWeight({ companyId: row.companyId }).then(data => {
+			companyTopWeight({ cmpId: row.companyId }).then(data => {
 				if (data.code == '200') {
 					_this.$alert('置顶成功')
 					_this.getList()
@@ -558,6 +561,7 @@ export default {
 		},
 		setRuleFrom(row) {
 			let newLabel = []
+			row.cmpId = row.companyId
 			row.labelList.map(item => {
 				newLabel.push(item.labelId)
 			})
@@ -579,7 +583,7 @@ export default {
 		reset(){
 			let oldId = this.newProd.companyId;
 			this.resetForm();
-			this.newProd.companyId = oldId;
+			this.newProd.cmpId = oldId;
 		},
 		resetForm() {
 			this.newProd = {
@@ -590,7 +594,7 @@ export default {
 				businessHours: '',
 				companyAddr: '',
 				companyCode: '',
-				companyId: 0,
+				cmpId: null,
 				companyName: '',
 				companyType: '',
 				createAccountId: '',
@@ -602,7 +606,7 @@ export default {
 				mobile: '',
 				modifyAccountId: '',
 				modifyTime: '',
-				pcmpId: 0,
+				pcmpId: null,
 				pyCode: '',
 				state: '',
 				vrimage: '',

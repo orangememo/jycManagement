@@ -59,7 +59,6 @@ export default {
 	data() {
 		return {
 			form: {
-				state: 'NORMAL'
 			}, //查询条件
 			labelWidth: '80px',
 			dialogStatus: false,
@@ -103,6 +102,7 @@ export default {
 						label: '标签状态',
 						placeholder: '状态',
 						optList: [
+							{ label: '全部' },
 							{ label: '正常', value: 'NORMAL' },
 							{ label: '删除', value: 'DELETE' }
 						]
@@ -193,9 +193,9 @@ export default {
 					align: 'center',
 					render: row => {
 						if (row.state == 'NORMAL') {
-							return '正常'
+							return `<span style='color:#18bc9c'>正常</span>`
 						} else if (row.state == 'DELETE') {
-							return '删除'
+							return `<span style='color:#d2d6de'>删除</span>`
 						}
 					}
 				}
@@ -208,13 +208,11 @@ export default {
 						{
 							label: '编辑',
 							type: 'primary',
-							icon: 'el-icon-edit',
 							methods: 'edit'
 						},
 						{
 							label: '删除',
 							type: 'danger',
-							icon: 'el-icon-delete',
 							methods: 'delete'
 						}
 					]
@@ -281,9 +279,11 @@ export default {
 							_this.tableData = data.result.records
 						} else {
 							_this.$alert('未获取到有效信息')
+							_this.tableData = [];
 						}
 					} else {
 						_this.$alert('未获取到有效信息')
+						_this.tableData = [];
 					}
 					_this.loading = false
 				})

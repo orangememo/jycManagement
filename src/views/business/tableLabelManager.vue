@@ -1,5 +1,27 @@
 <template>
 	<div class="app-container">
+		<el-form inline="true" model="form" label-width="80px" size="mini" style="display:flex">
+			<el-form-item label="选择酒店">
+				<el-select clearable="true" v-model="form.cmpId" placeholder="请选择酒店">
+					<el-option
+						v-for="(item,index) in cmpList"
+						:key="index"
+						:label="item.label"
+						:value="item.value"
+					></el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="标签名称">
+				<el-input v-model="form.name" :clearable="true" placeholder="请输入桌位标签名称"></el-input>
+			</el-form-item>
+			<el-form-item label="标签状态">
+				<el-select clearable="true" v-model="form.state" placeholder="请选择酒店">
+					<el-option label="全部"></el-option>
+					<el-option label="正常" value="NORMAL"></el-option>
+					<el-option label="删除" value="DELETE"></el-option>
+				</el-select>
+			</el-form-item>
+		</el-form>
 		<search-form :formConfig="formConfig" :value="form" labelWidth="80px"></search-form>
 		<el-popover placement="top-end" trigger="click" v-model="moreStatus">
 			<el-link class="set" @click="editStatus(1)">设置为显示</el-link>
@@ -49,7 +71,7 @@
 						<upload v-on:uploadimg="uImg" :limit="20" />
 					</el-form-item>
 					<el-form-item label="权重" :label-width="labelWidth">
-						<el-input v-model="newProd.weigh"></el-input>
+						<el-input v-model="newProd.weight"></el-input>
 					</el-form-item>
 					<el-form-item label="状态" :label-width="labelWidth">
 						<el-select v-model="newProd.state" placeholder="请选择...">
@@ -73,24 +95,24 @@ import jycTable from '@/components/table/jycTable'
 import Pagination from '@/components/Pagination'
 import Upload from '@/components/Upload.vue'
 import {
-	getTabelLabelList,
-	addNewLabelTabel,
-	updateLabelTabel,
-	delTabelLabel,
-	updateTabelLabel,
-	addNewTabelLabel
-} from '@/api/tabel'
-import { getCompanyPageHotel,getCompanyOperatorHotel } from '@/api/company'
+	gettableLabelList,
+	addNewLabeltable,
+	updateLabeltable,
+	deltableLabel,
+	updatetableLabel,
+	addNewtableLabel
+} from '@/api/table'
+import { getCompanyPageHotel, getCompanyOperatorHotel } from '@/api/company'
 export default {
 	components: { Pagination, jycTable, SearchForm, Upload },
 	data() {
 		return {
 			form: {
-				state: 'NORMAL'
 			}, //查询条件
 			hotelList: [],
 			tableLabelList: [],
-			cmpList:[],
+			cmpList: [
+			],
 			labelWidth: '80px',
 			dialogStatus: false,
 			dialogTitle: '',
@@ -104,7 +126,7 @@ export default {
 				image: '',
 				name: '',
 				state: '',
-				weigh: 0
+				weight: 0
 			},
 			pageSize: 10,
 			listQuery: {
@@ -116,31 +138,6 @@ export default {
 				sort: '+id'
 			},
 			formConfig: {
-				formItemList: [
-					{
-						type: 'select',
-						prop: 'cmpId',
-						label: '公司名称',
-						placeholder: '请选择公司名称',
-						optList: this.cmpList
-					},
-					{
-						type: 'input',
-						prop: 'name',
-						label: '桌位标签名称',
-						placeholder: '桌位标签名称'
-					},
-					{
-						type: 'select',
-						prop: 'state',
-						label: '标签状态',
-						placeholder: '状态',
-						optList: [
-							{ label: '正常', value: 'NORMAL' },
-							{ label: '删除', value: 'DELETE' }
-						]
-					}
-				],
 				operate: [
 					{
 						icon: 'el-icon-search',
@@ -203,22 +200,9 @@ export default {
 				},
 				{
 					label: '权重',
-					param: 'weigh',
+					param: 'weight',
 					align: 'center',
 					type: 'text'
-				},
-				{
-					label: '状态',
-					param: 'state',
-					type: 'text',
-					align: 'center',
-					render: row => {
-						if (row.state == 'NORMAL') {
-							return '正常'
-						} else if (row.state == 'DELETE') {
-							return '删除'
-						}
-					}
 				},
 				{
 					label: '创建人',
@@ -243,6 +227,19 @@ export default {
 					param: 'modifyTime',
 					align: 'center',
 					type: 'text'
+				},
+				{
+					label: '状态',
+					param: 'state',
+					type: 'text',
+					align: 'center',
+					render: row => {
+						if (row.state == 'NORMAL') {
+							return `<span style='color:#18bc9c'>正常</span>`
+						} else if (row.state == 'DELETE') {
+							return `<span style='color:#d2d6de'>删除</span>`
+						}
+					}
 				}
 			],
 			tableOption: [
@@ -253,20 +250,12 @@ export default {
 						{
 							label: '编辑',
 							type: 'primary',
-							icon: 'el-icon-edit',
 							methods: 'edit'
 						},
 						{
 							label: '删除',
 							type: 'danger',
-							icon: 'el-icon-delete',
 							methods: 'delete'
-						},
-						{
-							label: '置顶',
-							type: 'warning',
-							icon: 'el-icon-caret-top',
-							methods: 'toTop'
 						}
 					]
 				}
@@ -278,7 +267,6 @@ export default {
 	mounted() {
 		this.getList()
 		this.getHotelList()
-		this.getHotelTableList()
 	},
 	methods: {
 		handleButton(object) {
@@ -332,34 +320,20 @@ export default {
 				_this.hotelList = data
 				if (data.code == '200') {
 					_this.hotelList = data.result
+					_this.hotelList.map(item => {
+						let obj = {
+							label: item.companyName,
+							value: item.companyId
+						}
+						_this.cmpList.push(obj)
+					})
 				}
-			})
-		},
-		getHotelTableList() {
-			let _this = this
-			let params = {
-				isPage: 'NO'
-			}
-			getTabelLabelList().then(data => {
-				if (data.code == '200') {
-					_this.tableLabelList = data.result.records
-				}
-			})
-		},
-		getCmpList(){
-			let params = {
-				isPage: 'NO',
-				state: 'NORMAL',
-				companyType: ''
-			}
-			getCompanyOperatorHotel(params).then(data=>{
-				alert(1);
 			})
 		},
 		searchApplyPageInfo(params) {
 			let _this = this
 			_this.loading = true
-			getTabelLabelList(params)
+			gettableLabelList(params)
 				.then(data => {
 					if (data.code == '200') {
 						_this.total = data.result.total
@@ -367,9 +341,11 @@ export default {
 							_this.tableData = data.result.records
 						} else {
 							_this.$alert('未获取到有效信息')
+							_this.tableData = [];
 						}
 					} else {
 						_this.$alert('未获取到有效信息')
+						_this.tableData = [];
 					}
 					_this.loading = false
 				})
@@ -386,9 +362,8 @@ export default {
 		},
 		save() {
 			let _this = this
-			alert(_this.newProd.state);return;
 			if (_this.editStatus) {
-				updateTabelLabel(_this.newProd).then(data => {
+				updatetableLabel(_this.newProd).then(data => {
 					if (data.code == '200') {
 						_this.$alert('修改成功')
 						_this.dialogStatus = false
@@ -398,7 +373,7 @@ export default {
 					}
 				})
 			} else {
-				addNewTabelLabel(_this.newProd).then(data => {
+				addNewtableLabel(_this.newProd).then(data => {
 					if (data.code == '200') {
 						_this.$alert('保存成功')
 						_this.dialogStatus = false
@@ -412,7 +387,7 @@ export default {
 		edit(row) {
 			this.dialogTitle = '修改'
 			this.editStatus = true
-			this.resetForm();
+			this.resetForm()
 			this.setRuleFrom(row)
 			this.dialogStatus = true
 		},
@@ -427,7 +402,7 @@ export default {
 					id: id,
 					state: 'DELETE'
 				}
-				delTabelLabel(params).then(data => {
+				deltableLabel(params).then(data => {
 					if (data.code == '200') {
 						_this.$alert('删除成功')
 						_this.getList()
@@ -487,10 +462,10 @@ export default {
 		uImg(img) {
 			this.newProd.image = img
 		},
-		reset(){
-			let oldId = this.newProd.id;
-			this.resetForm();
-			this.newProd.id = oldId;
+		reset() {
+			let oldId = this.newProd.id
+			this.resetForm()
+			this.newProd.id = oldId
 		},
 		resetForm() {
 			this.newProd = {
@@ -499,7 +474,7 @@ export default {
 				image: '',
 				name: '',
 				state: '',
-				weigh: 0
+				weight: 0
 			}
 		}
 	}

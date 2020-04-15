@@ -260,19 +260,16 @@ export default {
 						{
 							label: '编辑',
 							type: 'primary',
-							icon: 'el-icon-edit',
 							methods: 'edit'
 						},
 						{
 							label: '删除',
 							type: 'danger',
-							icon: 'el-icon-delete',
 							methods: 'delete'
 						},
 						{
 							label: '置顶',
 							type: 'warning',
-							icon: 'el-icon-caret-top',
 							methods: 'top'
 						}
 					]

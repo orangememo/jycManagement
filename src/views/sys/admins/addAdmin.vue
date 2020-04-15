@@ -94,7 +94,6 @@ export default {
         userName: '',
         email: '',
         nickName: '',
-        state: 'NORMAL',
         accountNum: null
       },
 

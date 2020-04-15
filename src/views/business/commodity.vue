@@ -301,19 +301,6 @@ export default {
 					type: 'text'
 				},
 				{
-					label: '状态',
-					param: 'status',
-					type: 'text',
-					align: 'center',
-					render: row => {
-						if (row.status == 0) {
-							return '隐藏'
-						} else if (row.status == 1) {
-							return '正常'
-						}
-					}
-				},
-				{
 					label: '创建时间',
 					param: 'createtime',
 					align: 'center',
@@ -324,6 +311,19 @@ export default {
 					param: 'updatetime',
 					align: 'center',
 					type: 'text'
+				},
+				{
+					label: '状态',
+					param: 'state',
+					type: 'text',
+					align: 'center',
+					render: row => {
+						if (row.state == 'NORMAL') {
+							return `<span style='color:#18bc9c'>正常</span>`
+						} else if (row.state == 'DELETE') {
+							return `<span style='color:#d2d6de'>删除</span>`
+						}
+					}
 				}
 			],
 			tableOption: {
@@ -333,13 +333,11 @@ export default {
 					{
 						label: '编辑',
 						type: 'primary',
-						icon: 'el-icon-edit',
 						methods: 'edit'
 					},
 					{
 						label: '删除',
 						type: 'danger',
-						icon: 'el-icon-delete',
 						methods: 'delete'
 					}
 				]
