@@ -1,15 +1,14 @@
 <template>
   <div id="menu" class="mainWrap">
-    <div class="ly-flex ly-justify-sb mt40 titleAndButton">
+    <!-- <div class="ly-flex ly-justify-sb mt40 titleAndButton">
       <div style="padding-left:15px">{{$route.meta.title}}列表</div>
       <div class="buttonCtrl">
         <el-button size="mini" type="info" @click="search()">刷新</el-button>
         <el-button size="mini" type="primary" @click="handleClick('新增')">新增</el-button>
-        <!-- <el-button size="mini" type="success" @click="handleClick('编辑')">编辑</el-button> -->
-        <!-- <el-button size="mini" type="danger" @click="handleClick('删除')">删除</el-button> -->
       </div>
-    </div>
-    <div class="mt25">
+    </div>-->
+    <search-form :formConfig="formConfig" :value="form" labelWidth="80px"></search-form>
+    <div class>
       <div class="tableOutBox">
         <el-table
           :data="tableData"
@@ -81,9 +80,12 @@
 <script>
 import addMenu from './addMenu'
 import { getRuleInfoTree, deleteRuleInfo } from '@/api/sys'
+import SearchForm from '@/components/seachForm/seachForm'
+
 export default {
   components: {
-    addMenu
+    addMenu,
+    SearchForm
   },
   data() {
     return {
@@ -104,6 +106,23 @@ export default {
         value1: '',
         value2: '',
         value3: ''
+      },
+      formConfig: {
+        formItemList: [],
+        operate: [
+          {
+            icon: 'el-icon-search',
+            type: 'primary',
+            name: '刷新',
+            handleClick: this.search
+          },
+          {
+            icon: 'el-icon-document-add',
+            type: 'primary',
+            name: '添加',
+            handleClick: this.addNew
+          }
+        ]
       },
       tableTitle: [
         {
@@ -158,21 +177,25 @@ export default {
       ],
       tableData: [],
       listLoading: false,
-      dialogVisible: false,
-      dialogVisible1: false
+      dialogVisible: false
     }
   },
   mounted() {
     this.getList()
   },
   methods: {
+    addNew() {
+      this.handleClick('新增')
+    },
     search() {
       this.page.page = 1
       this.getList()
     },
     getList: async function() {
+      this.listLoading = true
       let operationType = 'selectList'
       let res = await getRuleInfoTree({ operationType })
+      this.listLoading = false
       this.tableData = res.result.list
     },
     deleteData: async function(ruleId) {
