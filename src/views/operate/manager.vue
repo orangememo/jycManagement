@@ -45,35 +45,44 @@
 						<el-input v-model="newProd.companyAddr"></el-input>
 					</el-form-item>
 					<el-form-item label="缩略图" :label-width="labelWidth">
-						<el-image
-							v-if="newProd.abbreviateImg"
-							style="width: 150px; height: 150px"
-							:src="hostUrl+newProd.abbreviateImg"
-							fit="cover"
-						>
-						</el-image>
+						<div v-if="newProd.abbreviateImg" class="img-div-t">
+							<el-image
+								style="width: 150px; height: 150px"
+								:src="hostUrl+newProd.abbreviateImg"
+								:preview-src-list="[hostUrl+newProd.abbreviateImg]"
+								fit="cover"
+							></el-image>
+							<button class="del-img-btn" @click="newProd.abbreviateImg=''">删除</button>
+						</div>
 						<div>请上传酒店缩略图</div>
 						<upload v-on:uploadimg="uImg" />
 					</el-form-item>
 					<el-form-item label="背景图片" :label-width="labelWidth">
-						<el-image
-							v-if="newProd.backgroundImg"
-							style="width: 150px; height: 150px"
-							:src="hostUrl+newProd.backgroundImg"
-							fit="cover"
-						></el-image>
+						<div v-if="newProd.backgroundImg" class="img-div-t">
+							<el-image
+								style="width: 150px; height: 150px"
+								:src="hostUrl+newProd.backgroundImg"
+								:preview-src-list="[hostUrl+newProd.backgroundImg]"
+								fit="cover"
+							></el-image>
+							<button class="del-img-btn" @click="newProd.backgroundImg=''">删除</button>
+						</div>
 						<div>请上传酒店背景图</div>
 						<upload v-on:uploadimg="uBgImg" />
 					</el-form-item>
 					<el-form-item label="图片组" :label-width="labelWidth">
-						<div v-if="newProd.images">
-							<el-image
-								v-for="(item,index) in newProd.images"
-								:key="index"
-								style="width: 150px; height: 150px;margin:0 20px 20px 0;"
-								:src="hostUrl+item"
-								fit="cover"
-							></el-image>
+						<div v-if="newProd.images" style="display:inline">
+							<div v-for="(item,index) in newProd.images" :key="index" class="img-div">
+								<div class="img-div-t">
+									<el-image
+										style="width: 150px; height: 150px"
+										:src="hostUrl+item"
+										:preview-src-list="[hostUrl+item]"
+										fit="cover"
+									></el-image>
+									<button class="del-img-btn" @click="newProd.images.splice(index,1)">删除</button>
+								</div>
+							</div>
 						</div>
 						<div>上传图片组</div>
 						<upload v-on:uploadimg="uInImg" :limit="pageSize" />
@@ -127,8 +136,7 @@ export default {
 	components: { Pagination, jycTable, SearchForm, Upload },
 	data() {
 		return {
-			form: {
-			}, //查询条件
+			form: {}, //查询条件
 			labelWidth: '80px',
 			dialogStatus: false,
 			dialogTitle: '',
@@ -399,32 +407,32 @@ export default {
 			this.chooseList = row
 		},
 		getList() {
-			let _this = this;
+			let _this = this
 			const params = {
 				isPage: 'YES',
 				currentPage: _this.listQuery.page,
 				pageSize: _this.listQuery.limit
 			}
 			let p = { ...params, ..._this.form }
-			console.log('form:'+JSON.stringify(_this.form));
-			console.log('p:'+JSON.stringify(p));
+			console.log('form:' + JSON.stringify(_this.form))
+			console.log('p:' + JSON.stringify(p))
 			this.searchCompanyPageHotel(p)
 		},
 		searchCompanyPageHotel(params) {
 			let _this = this
-			_this.loading = true;
+			_this.loading = true
 			getCompanyPageHotel(params).then(data => {
 				if (data.code == '200') {
 					_this.total = data.result.total
 					if (data.result.records.length > 0) {
 						_this.tableData = data.result.records
 					} else {
-						_this.tableData = [];
+						_this.tableData = []
 					}
 				} else {
-					_this.tableData = [];
+					_this.tableData = []
 				}
-				_this.loading = false;
+				_this.loading = false
 			})
 		},
 		getLabel() {
@@ -449,14 +457,14 @@ export default {
 			_this.newProd.images instanceof Array
 				? (_this.newProd.images = _this.newProd.images.join(','))
 				: ''
-			_this.newProd.companyType = 'HOTEL';
+			_this.newProd.companyType = 'HOTEL'
 			if (_this.editStatus) {
 				updateCompany(_this.newProd).then(data => {
 					if (data.code == '200') {
 						_this.alertMessage('修改成功')
 						_this.dialogStatus = false
 						_this.getList()
-					} 
+					}
 				})
 			} else {
 				addNewCompany(_this.newProd).then(data => {
@@ -500,11 +508,11 @@ export default {
 		},
 		delAll() {
 			if (this.chooseList.length > 0) {
-				let companyIds = [];
-				this.chooseList.map(item=>{
+				let companyIds = []
+				this.chooseList.map(item => {
 					companyIds.push(item.companyId)
 				})
-				this.delete(companyIds.join(','));
+				this.delete(companyIds.join(','))
 			} else {
 				_this.$message.error('请先选择要删除项')
 			}
@@ -563,10 +571,10 @@ export default {
 				this.newProd.labelList = newLabel
 			}
 		},
-		reset(){
-			let oldId = this.newProd.companyId;
-			this.resetForm();
-			this.newProd.cmpId = oldId;
+		reset() {
+			let oldId = this.newProd.companyId
+			this.resetForm()
+			this.newProd.cmpId = oldId
 		},
 		resetForm() {
 			this.newProd = {
