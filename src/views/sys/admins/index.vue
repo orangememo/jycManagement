@@ -245,12 +245,15 @@ export default {
         case '重置密码':
           let { accountNum } = val
           putRetrievePassword({ accountNum }).then(res => {
-            this.$message({
-              type: 'success',
-              message: '重置成功'
-            })
+            if (res.code === 200) {
+              this.$message({
+                type: 'success',
+                message: '重置成功'
+              })
+              this.getList()
+            }
           })
-          thi.getList()
+
           break
         case '删除':
           this.$confirm('确认删除？', '提示', {

@@ -52,7 +52,7 @@ import { putUserInfoPassword } from '@/api/login'
 export default {
   data() {
     return {
-      passwordType: '',
+      passwordType: 'password',
       form: {
         password: ''
       }

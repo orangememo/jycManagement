@@ -271,11 +271,7 @@ export default {
           ]
         }
       ],
-      tableData: [
-        {
-          status: 0
-        }
-      ],
+      tableData: [],
       listLoading: false,
       dialogVisible: false,
       dialogVisible1: false

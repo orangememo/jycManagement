@@ -9,10 +9,4 @@ export const componentsMap = {
 	memberGroup: () => import('@/views/member/memberGroup/index'),
 	inviteCode: () => import('@/views/member/inviteCode'),
 	consumptionEnvelope: () => import('@/views/member/consumptionEnvelope')
-	// example_edit: () => import('@/views/example/edit'), // 文章编辑
-	// table_index: () => import('@/views/tab/index'), // 表格首页
-	// Icon: () => import('@/views/svg-icons/index'), // 图标管理
-	// Menu: () => import('@/views/app/sys/menu'), // 菜单
-	// Admins: () => import('@/views/app/sys/admins'), // 后台管理员
-	// Role: () => import('@/views/app/sys/role'),
 }
