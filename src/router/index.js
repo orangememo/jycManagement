@@ -71,7 +71,21 @@ export const constantRoutes = [
 				meta: { title: '个人资料', icon: 'user' }
 			}
 		]
-	},
+	}
+	// {
+	// 	path: '/test',
+	// 	component: Layout,
+	// 	redirect: '/test/index',
+	// 	children: [
+	// 		{
+	// 			path: 'index',
+	// 			name: 'test',
+	// 			component: () => import('@/components/test'),
+	// 			hidden: true,
+	// 			meta: { title: 'test', icon: 'user' }
+	// 		}
+	// 	]
+	// }
 	// {
 	// 	path: '/my',
 	// 	component: Layout,
