@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { upLoad } from '@/'
+import { upLoad } from '@/components/upLoad'
 
 export default {}
 </script>
