@@ -10,6 +10,7 @@
     :file-list="fileList"
     :on-success="uploads"
     :on-exceed="handleExceed"
+    :on-remove="handleRemove"
   >
     <i slot="default" class="el-icon-plus"></i>
     <!-- <div slot="file" slot-scope="{file}">
@@ -47,6 +48,9 @@ export default {
     },
     handleExceed() {
       this.$message.warning(`当前限制选择 ${this.limit}个文件`);
+    },
+    handleRemove(file, fileList){
+      this.$emit("removeimg", file, fileList);
     },
     beforeAvatarUpload(file) {
       console.log(file);

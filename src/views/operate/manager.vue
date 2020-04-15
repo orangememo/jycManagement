@@ -266,7 +266,7 @@ export default {
 								bg += 'background: #f39c12;'
 							} else if (item.labelCode == 'INDEX') {
 								bg += 'background: #18bc9c;'
-							} else if (item.labelCode == 'recommend') {
+							} else if (item.labelCode == 'RECOMMEND') {
 								bg += 'background: #e74c3c;'
 							}
 							span += `<div style="${bg}">${item.labelName}</div>`

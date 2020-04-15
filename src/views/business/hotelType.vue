@@ -1,9 +1,7 @@
 <template>
 	<div class="app-container">
 		<search-form :formConfig="formConfig" :value="form" labelWidth="80px"></search-form>
-		<el-popover placement="top-end" trigger="click" v-model="moreStatus">
-			
-		</el-popover>
+		<el-popover placement="top-end" trigger="click" v-model="moreStatus"></el-popover>
 		<jyc-table
 			:loading="loading"
 			:table-data="tableData"
@@ -58,38 +56,31 @@
 						<el-input v-model="newProd.companyAddr"></el-input>
 					</el-form-item>
 					<el-form-item label="缩略图" :label-width="labelWidth">
-						<el-image
-							v-if="newProd.abbreviateImg"
-							style="width: 150px; height: 150px"
-							:src="hostUrl+newProd.abbreviateImg"
-							fit="cover"
-						></el-image>
+						<div v-if="newProd.abbreviateImg" class="img-div-t">
+							<el-image style="width: 150px; height: 150px" :src="hostUrl+newProd.abbreviateImg" :preview-src-list="[hostUrl+newProd.abbreviateImg]" />
+							<button class="del-img-btn" @click="newProd.abbreviateImg=''">删除</button>
+						</div>
 						<div>请上传酒店缩略图</div>
 						<upload v-on:uploadimg="uImg" />
 					</el-form-item>
 					<el-form-item label="背景图片" :label-width="labelWidth">
-						<el-image
-							v-if="newProd.backgroundImg"
-							style="width: 150px; height: 150px"
-							:src="hostUrl+newProd.backgroundImg"
-							fit="cover"
-						></el-image>
+						<div v-if="newProd.backgroundImg" class="img-div-t">
+							<el-image style="width: 150px; height: 150px" :src="hostUrl+newProd.backgroundImg"  :preview-src-list="[hostUrl+newProd.backgroundImg]" />
+							<button class="del-img-btn" @click="newProd.backgroundImg=''">删除</button>
+						</div>
 						<div>请上传酒店背景图</div>
 						<upload v-on:uploadimg="uBgImg" />
 					</el-form-item>
-					<el-form-item label="图片组2" :label-width="labelWidth">
-						<div v-if="newProd.images">
-							<el-image
-								v-for="(item,index) in newProd.images"
-								:key="index"
-								style="width: 150px; height: 150px;margin:0 20px 20px 0;"
-								:src="hostUrl+item"
-								fit="cover"
-							>
-							</el-image>
-							<span>删除</span>
+					<el-form-item label="图片组" :label-width="labelWidth">
+						<div v-if="newProd.images" style="display:inline">
+							<div v-for="(item,index) in newProd.images" :key="index" class="img-div">
+								<div class="img-div-t">
+									<el-image style="width: 150px; height: 150px" :src="hostUrl+item" :preview-src-list="[hostUrl+item]" fit="cover"></el-image>
+									<button class="del-img-btn" @click="newProd.images.splice(index,1)">删除</button>
+								</div>
+							</div>
 						</div>
-						<div>上传图片组</div>
+						<div style="clear:both">上传图片组</div>
 						<upload v-on:uploadimg="uInImg" :limit="pageSize" />
 					</el-form-item>
 					<el-form-item label="营业时间" :label-width="labelWidth" prop="businessHours">
@@ -99,10 +90,10 @@
 						<el-input v-model="newProd.description"></el-input>
 					</el-form-item>
 					<el-form-item label="X" :label-width="labelWidth">
-						<el-input v-model="newProd.longitude" type="number"></el-input>
+						<el-input v-model="newProd.longitude" type="text"></el-input>
 					</el-form-item>
 					<el-form-item label="Y" :label-width="labelWidth">
-						<el-input v-model="newProd.latitude" type="number"></el-input>
+						<el-input v-model="newProd.latitude" type="text"></el-input>
 					</el-form-item>
 					<el-form-item label="权重" :label-width="labelWidth">
 						<el-input v-model="newProd.weight"></el-input>
@@ -130,14 +121,13 @@ import {
 	delCompany,
 	updateCompany
 } from '@/api/company'
-import { getApplyByCompany  } from '@/api/apply'
+import { getApplyByCompany } from '@/api/apply'
 import { getLabelList } from '@/api/label'
 export default {
 	components: { Pagination, jycTable, SearchForm, Upload },
 	data() {
 		return {
-			form: {
-			}, //查询条件
+			form: {}, //查询条件
 			labelWidth: '80px',
 			dialogStatus: false,
 			dialogTitle: '',
@@ -278,7 +268,7 @@ export default {
 								bg += 'background: #f39c12;'
 							} else if (item.labelCode == 'INDEX') {
 								bg += 'background: #18bc9c;'
-							} else if (item.labelCode == 'recommend') {
+							} else if (item.labelCode == 'RECOMMEND') {
 								bg += 'background: #e74c3c;'
 							}
 							span += `<div style="${bg}">${item.labelName}</div>`
@@ -426,18 +416,17 @@ export default {
 		searchCompanyPageHotel(params) {
 			let _this = this
 			_this.loading = true
-			getCompanyPageHotel(params)
-				.then(data => {
-					if (data.code == '200') {
-						_this.total = data.result.total
-						if (data.result.records.length > 0) {
-							_this.tableData = data.result.records
-						} else {
-							_this.tableData = [];
-						}
-					} 
-					_this.loading = false
-				})
+			getCompanyPageHotel(params).then(data => {
+				if (data.code == '200') {
+					_this.total = data.result.total
+					if (data.result.records.length > 0) {
+						_this.tableData = data.result.records
+					} else {
+						_this.tableData = []
+					}
+				}
+				_this.loading = false
+			})
 		},
 		getLabel() {
 			let _this = this
@@ -449,7 +438,10 @@ export default {
 		},
 		getApply() {
 			let _this = this
-			getApplyByCompany({isPage: 'NO',cmpId:store.state.login.companyId}).then(data => {
+			getApplyByCompany({
+				isPage: 'NO',
+				cmpId: store.state.login.companyId
+			}).then(data => {
 				if (data.code == '200') {
 					if (data.result.length > 0) {
 						_this.applyList = data.result
@@ -479,7 +471,7 @@ export default {
 						_this.alertMessage('修改成功')
 						_this.dialogStatus = false
 						_this.getList()
-					} 
+					}
 				})
 			} else {
 				addNewCompany(_this.newProd).then(data => {
@@ -487,7 +479,7 @@ export default {
 						_this.alertMessage('保存成功')
 						_this.dialogStatus = false
 						_this.getList()
-					} 
+					}
 				})
 			}
 		},
@@ -512,7 +504,7 @@ export default {
 					if (data.code == '200') {
 						_this.alertMessage('删除成功')
 						_this.getList()
-					} 
+					}
 				})
 			})
 		},
@@ -582,15 +574,15 @@ export default {
 			} else {
 				let inImg = row.images
 				row.images = []
-				row.images.push(inImg)
+				inImg ? row.images.push(inImg) : ''
 				this.newProd = { ...row }
 				this.newProd.labelList = newLabel
 			}
 		},
-		reset(){
-			let oldId = this.newProd.companyId;
-			this.resetForm();
-			this.newProd.companyId = oldId;
+		reset() {
+			let oldId = this.newProd.companyId
+			this.resetForm()
+			this.newProd.companyId = oldId
 		},
 		resetForm() {
 			this.newProd = {
@@ -602,7 +594,7 @@ export default {
 				businessHours: '',
 				companyAddr: '',
 				companyCode: '',
-				cmpId:null,
+				cmpId: null,
 				companyId: null,
 				companyName: '',
 				companyType: '',
@@ -628,4 +620,12 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/styles/my.scss';
+.img-div {
+	float: left;
+	margin: 20px;
+}
+.img-div-t{
+	display: flex;
+	flex-direction: column;
+}
 </style>
