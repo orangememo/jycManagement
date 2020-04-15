@@ -19,6 +19,7 @@
 			</el-form-item>
 			<el-form-item label="标签状态">
 				<el-select clearable="true" v-model="form.state" placeholder="请选择酒店">
+					<el-option label="全部"></el-option>
 					<el-option label="正常" value="NORMAL"></el-option>
 					<el-option label="删除" value="DELETE"></el-option>
 				</el-select>
@@ -136,7 +137,6 @@ export default {
 	data() {
 		return {
 			form: {
-				state: 'NORMAL'
 			}, //查询条件
 			hotelList: [],
 			tableLabelList: [],
@@ -270,19 +270,6 @@ export default {
 					}
 				},
 				{
-					label: '状态',
-					param: 'state',
-					type: 'text',
-					align: 'center',
-					render: row => {
-						if (row.state == 'NORMAL') {
-							return '正常'
-						} else if (row.state == 'DELETE') {
-							return '删除'
-						}
-					}
-				},
-				{
 					label: '创建人',
 					param: 'createAccountId',
 					align: 'center',
@@ -305,6 +292,19 @@ export default {
 					param: 'modifyTime',
 					align: 'center',
 					type: 'text'
+				},
+				{
+					label: '状态',
+					param: 'state',
+					type: 'text',
+					align: 'center',
+					render: row => {
+						if (row.state == 'NORMAL') {
+							return `<span style='color:#18bc9c'>正常</span>`
+						} else if (row.state == 'DELETE') {
+							return `<span style='color:#d2d6de'>删除</span>`
+						}
+					}
 				}
 			],
 			tableOption: [
@@ -315,21 +315,13 @@ export default {
 						{
 							label: '编辑',
 							type: 'primary',
-							icon: 'el-icon-edit',
 							methods: 'edit'
 						},
 						{
 							label: '删除',
 							type: 'danger',
-							icon: 'el-icon-delete',
 							methods: 'delete'
 						}
-						// {
-						// 	label: '置顶',
-						// 	type: 'warning',
-						// 	icon: 'el-icon-caret-top',
-						// 	methods: 'toTop'
-						// }
 					]
 				}
 			],
@@ -426,9 +418,11 @@ export default {
 							_this.tableData = data.result.records
 						} else {
 							_this.$alert('未获取到有效信息')
+							_this.tableData = [];
 						}
 					} else {
 						_this.$alert('未获取到有效信息')
+						_this.tableData = [];
 					}
 					_this.loading = false
 				})

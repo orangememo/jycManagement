@@ -137,7 +137,6 @@ export default {
 	data() {
 		return {
 			form: {
-				state: 'NORMAL'
 			}, //查询条件
 			labelWidth: '80px',
 			dialogStatus: false,
@@ -210,6 +209,7 @@ export default {
 						label: '状态',
 						placeholder: '状态',
 						optList: [
+							{ label: '全部' },
 							{ label: '正常', value: 'NORMAL' },
 							{ label: '删除', value: 'DELETE' }
 						]
@@ -269,10 +269,10 @@ export default {
 					align: 'center',
 					render: row => {
 						let _this = this
-						let span = `<div style="display: flex;justify-content: center;">`
+						let span = `<div style="display: flex;justify-content: center;font-size:10px">`
 						row.labelList.map(item => {
 							let bg =
-								'width: 50px;height: 35px;color: #fff;line-height: 35px;margin: 0 2px;'
+								'width: 50px;height: 25px;color: #fff;line-height: 26px;margin: 0 2px;'
 							if (item.labelCode == 'HOT') {
 								bg += 'background: #f39c12;'
 							} else if (item.labelCode == 'INDEX') {
@@ -335,11 +335,9 @@ export default {
 					align: 'center',
 					render: row => {
 						if (row.state == 'NORMAL') {
-							return '正常'
+							return `<span style='color:#18bc9c'>正常</span>`
 						} else if (row.state == 'DELETE') {
-							return '删除'
-						} else if (row.state == 'FROZEN') {
-							return '冻结'
+							return `<span style='color:#d2d6de'>删除</span>`
 						}
 					}
 				}
@@ -352,19 +350,16 @@ export default {
 						{
 							label: '编辑',
 							type: 'primary',
-							icon: 'el-icon-edit',
 							methods: 'edit'
 						},
 						{
 							label: '删除',
 							type: 'danger',
-							icon: 'el-icon-delete',
 							methods: 'delete'
 						},
 						{
 							label: '置顶',
 							type: 'warning',
-							icon: 'el-icon-caret-top',
 							methods: 'toTop'
 						}
 					]
@@ -438,9 +433,11 @@ export default {
 							_this.tableData = data.result.records
 						} else {
 							_this.$alert('未获取到有效信息')
+							_this.tableData = [];
 						}
 					} else {
 						_this.$alert('未获取到有效信息')
+						_this.tableData = [];
 					}
 					_this.loading = false
 				})

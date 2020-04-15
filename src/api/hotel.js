@@ -17,3 +17,37 @@ export function getHotelListByName(params){
       params: params
     })
 }
+
+//订单信息汇总
+
+export function getLpHotelQuyu(params){
+  return request({
+    url: '/lp/lp/lpHotel/quyu',
+    method: 'get',
+    params: params
+  })
+}
+
+export function getLpHotelSelectqykc(params){
+  return request({
+    url: '/lp/lp/lpHotel/selectqykc',
+    method: 'get',
+    params: params
+  })
+}
+
+export function getLpHotelSelectqyzxt(params){
+  return request({
+    url: '/lp/lp/lpHotel/selectqyzxt',
+    method: 'get',
+    params: params
+  })
+}
+
+export function getLpHotelCtxf(params){
+  return request({
+    url: '/lp/lp/lpHotel/selectxf',
+    method: 'get',
+    params: params
+  })
+}

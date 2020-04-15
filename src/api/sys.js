@@ -159,6 +159,18 @@ export function putManagerUserInfo(data) {
 		data
 	})
 }
+
+/**
+ * 删除用户
+ */
+
+export function deleteManagerUserInfo(params) {
+	return request({
+		url: '/manager/jyc/v1/user/del',
+		method: 'DELETE',
+		params
+	})
+}
 /**
  * 获取用户信息
  */
