@@ -3,23 +3,23 @@
     <!-- <el-card>
       <div class="topSearch">
         <div class>
-          <el-form ref="form" :model="form" label-width="80px" :inline="true" size="small">
+          <el-form ref="form" :model="form" label-width="80px" :inline="true" size="mini">
             <el-form-item label="名称">
               <el-input v-model.trim="form.value3" placeholder="请输入名称" maxlength="50" clearable />
             </el-form-item>
           </el-form>
         </div>
         <div class="searchButton">
-          <el-button size="small" type="primary" @click="search()">查询</el-button>
+          <el-button size="mini" type="primary" @click="search()">查询</el-button>
         </div>
       </div>
     </el-card>-->
     <div class="ly-flex ly-justify-sb mt40 titleAndButton">
       <div style="padding-left:15px">{{$route.meta.title}}列表</div>
       <div class="buttonCtrl">
-        <el-button size="small" type="info" @click="search()">刷新</el-button>
-        <el-button size="small" type="primary" @click="handleClick('新增')">新增</el-button>
-        <!-- <el-button size="small" type="success" @click="handleClick('编辑')">编辑</el-button> -->
+        <el-button size="mini" type="info" @click="search()">刷新</el-button>
+        <el-button size="mini" type="primary" @click="handleClick('新增')">新增</el-button>
+        <!-- <el-button size="mini" type="success" @click="handleClick('编辑')">编辑</el-button> -->
       </div>
     </div>
     <div class="mt25">
@@ -49,7 +49,6 @@
               <template slot-scope="scope">
                 <span v-if="item.prop=='isHide'">{{scope.row[scope.column.property]==0?'显示':'隐藏'}}</span>
                 <span v-else-if="item.prop=='icon'">
-                  <!-- @click="handleClick('展开',scope.row)" -->
                   <svg-icon :icon-class="scope.row[scope.column.property]" />
                 </span>
                 <span v-else>{{scope.row[scope.column.property]}}</span>
@@ -58,8 +57,8 @@
           </template>
           <el-table-column label="操作" fixed="right" width="180" align="center">
             <template slot-scope="scope">
-              <el-button size="small" type="primary" @click="handleClick('编辑',scope.row)">编辑</el-button>
-              <el-button size="small" type="danger" @click="handleClick('删除',scope.row)">删除</el-button>
+              <el-button size="mini" type="primary" @click="handleClick('编辑',scope.row)">编辑</el-button>
+              <el-button size="mini" type="danger" @click="handleClick('删除',scope.row)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -179,19 +178,7 @@ export default {
           this.getList()
           this.dialogVisible = false
           break
-        case '展开':
-          console.log(val, 'expands')
-          let id = val.id.toString()
-          if (this.expands.includes(id)) {
-            console.log(1111)
-            this.expands = []
-          } else {
-            console.log(2222)
-            let expands = [id]
-            this.expands = expands
-          }
 
-          break
         case '删除':
           this.$confirm('确认删除？', '提示', {
             cancelButtonText: '取消',

@@ -33,17 +33,17 @@
                   v-if="item.prop=='headPortrait'"
                 />
                 <span v-else-if="item.prop=='icon'">
-                  <!-- @click="handleClick('展开',scope.row)" -->
                   <svg-icon :icon-class="scope.row[scope.column.property]" />
                 </span>
                 <span v-else>{{scope.row[scope.column.property]}}</span>
               </template>
             </el-table-column>
           </template>
-          <el-table-column label="操作" fixed="right" width="180" align="center">
+          <el-table-column label="操作" fixed="right" width="250" align="center">
             <template slot-scope="scope">
               <el-button size="mini" type="primary" @click="handleClick('编辑',scope.row)">编辑</el-button>
               <el-button size="mini" type="danger" @click="handleClick('删除',scope.row)">删除</el-button>
+              <el-button size="mini" type="danger" @click="handleClick('重置密码',scope.row)">重置密码</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -81,6 +81,8 @@
 <script>
 import addAdmin from './addAdmin'
 import { getManagerUserInfoPageList, deleteManagerUserInfo } from '@/api/sys'
+import { putRetrievePassword } from '@/api/login'
+
 import SearchForm from '@/components/seachForm/seachForm'
 
 export default {
@@ -188,12 +190,6 @@ export default {
           width: '',
           align: 'center'
         }
-        // {
-        //   prop: 'i1c1o1n1',
-        //   name: '展开',
-        //   width: '',
-        //   align: 'center'
-        // }
       ],
       tableData: [],
       listLoading: false,
@@ -213,6 +209,7 @@ export default {
       this.getList()
     },
     getList: async function() {
+      this.listLoading = true
       let obj = {
         pageSize: this.page.size,
         currentPage: this.page.page,
@@ -220,6 +217,7 @@ export default {
         userName: this.form.value3
       }
       let res = await getManagerUserInfoPageList(obj)
+      this.listLoading = false
       let { result } = res
       this.tableData = result.records
       this.page.total = result.total
@@ -244,17 +242,15 @@ export default {
           this.dialogVisible = false
           this.getList()
           break
-        case '展开':
-          let id = val.id.toString()
-          if (this.expands.includes(id)) {
-            console.log(1111)
-            this.expands = []
-          } else {
-            console.log(2222)
-            let expands = [id]
-            this.expands = expands
-          }
-
+        case '重置密码':
+          let { accountNum } = val
+          putRetrievePassword({ accountNum }).then(res => {
+            this.$message({
+              type: 'success',
+              message: '重置成功'
+            })
+          })
+          thi.getList()
           break
         case '删除':
           this.$confirm('确认删除？', '提示', {

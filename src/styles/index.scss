@@ -68,18 +68,33 @@ div:focus {
 .ly-flex {
     display: flex;
 }
+
 .ly-justify-sb {
     justify-content: space-between;
 }
+
 .ly-justify-e {
     justify-content: flex-end;
 }
+.ly-direction-c{
+    flex-direction:column
+}
+.ly-justify-c {
+    justify-content: center;
+}
+
 .mt40 {
     margin-top: 40px;
 }
+
+.mb30 {
+    margin-bottom: 30px;
+}
+
 .mt25 {
     margin-top: 25px;
 }
+
 .mt10 {
     margin-top: 10px;
 }

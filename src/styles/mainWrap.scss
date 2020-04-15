@@ -21,13 +21,13 @@
 
 .dialogBody {
     .body {
-        padding: 20px 30px 20px 20px;
+        padding: 20px 30px 0px 20px;
         border-bottom: 1px solid #dcdfe6;
-        max-height: calc(100vh - 320px);
+        max-height: calc(100vh - 300px);
         overflow: auto;
     }
 
     .buttonCtrl {
-        padding: 25px 40px 0px;
+        padding: 15px 40px 0px;
     }
 }

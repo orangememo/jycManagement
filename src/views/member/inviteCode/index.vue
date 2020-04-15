@@ -254,19 +254,7 @@ export default {
           this.getList()
           this.dialogVisible = false
           break
-        case '展开':
-          console.log(val, 'expands')
-          let id = val.id.toString()
-          if (this.expands.includes(id)) {
-            console.log(1111)
-            this.expands = []
-          } else {
-            console.log(2222)
-            let expands = [id]
-            this.expands = expands
-          }
 
-          break
         case '删除':
           this.$confirm('确认删除？', '提示', {
             cancelButtonText: '取消',

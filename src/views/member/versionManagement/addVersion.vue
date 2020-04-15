@@ -7,21 +7,21 @@
                   <el-date-picker v-model="form.value2" type="date" placeholder="请选择结束日期"></el-date-picker>
         </el-form-item>-->
         <el-row>
-          <el-col :span="24">
+          <!-- <el-col :span="24">
             <el-form-item label="旧版本号" prop="roleName">
               <el-input v-model="form.roleName" placeholder="请输入名称"></el-input>
             </el-form-item>
-          </el-col>
+          </el-col>-->
           <el-col :span="24">
             <el-form-item label="新版本号" prop="roleName">
               <el-input v-model="form.roleName" placeholder="请输入名称"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="24">
+          <!-- <el-col :span="24">
             <el-form-item label="包大小" prop="roleName">
               <el-input v-model="form.roleName" placeholder="请输入名称"></el-input>
             </el-form-item>
-          </el-col>
+          </el-col>-->
 
           <el-col :span="24">
             <el-form-item label="升级内容" prop="ti1tle">
@@ -57,17 +57,16 @@
               <el-input-number v-model="form.roleCode" controls-position="right"></el-input-number>
             </el-form-item>
           </el-col>
-          <el-col :span="24">
+          <!-- <el-col :span="24">
             <el-form-item label="权重" prop="roleCode">
               <el-input-number v-model="form.roleCode" controls-position="right"></el-input-number>
             </el-form-item>
-          </el-col>
-
+          </el-col>-->
           <el-col :span="24">
             <el-form-item label="状态" prop="isHide">
               <el-radio-group v-model="form.isHide">
-                <el-radio :label="0">正常</el-radio>
-                <el-radio :label="1">隐藏</el-radio>
+                <el-radio label="NORMAL">正常</el-radio>
+                <el-radio label="DELETE">隐藏</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>

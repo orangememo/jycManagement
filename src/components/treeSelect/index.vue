@@ -86,7 +86,7 @@ export default {
     },
     defaultExpandAll: {
       type: Boolean,
-      default: true
+      default: false
     },
     expandOnClickNode: {
       type: Boolean,

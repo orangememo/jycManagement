@@ -88,7 +88,6 @@
 </template>
 
 <script>
-import { getRoleInfoTree, deleteRoleInfo } from '@/api/sys'
 import { getVersionPageInfo } from '@/api/member'
 
 import Pagination from '@/components/Pagination'
@@ -131,8 +130,8 @@ export default {
                 value: 'NORMAL'
               },
               {
-                label: '冻结',
-                value: 'FROZEN'
+                label: '隐藏',
+                value: 'DELETE'
               }
             ],
             label: '状态',
@@ -164,95 +163,92 @@ export default {
       tableTitle: [
         {
           label: 'ID',
-          param: 'id',
+          param: 'applicationId',
           align: 'center',
-
           type: 'text'
         },
-        {
-          label: '旧版本号',
-          param: 'id',
-          align: 'center',
+        // {
+        //   label: '旧版本号',
+        //   param: 'id',
+        //   align: 'center',
 
-          type: 'text'
-        },
+        //   type: 'text'
+        // },
         {
           label: '新版本号',
-          param: 'id',
+          param: 'applicationVersion',
           align: 'center',
 
           type: 'text'
         },
-        {
-          label: '包大小',
-          param: 'id',
-          align: 'center',
+        // {
+        //   label: '包大小',
+        //   param: 'id',
+        //   align: 'center',
 
-          type: 'text'
-        },
+        //   type: 'text'
+        // },
         {
           label: '升级内容',
-          param: 'id',
+          param: 'content',
           align: 'center',
 
           type: 'text'
         },
         {
           label: '图片',
-          param: 'url',
+          param: 'applicationImage',
           type: 'img',
           align: 'center'
         },
         {
           label: '下载地址',
-          param: 'id',
+          param: 'applicationUrl',
           align: 'center',
 
           type: 'text'
         },
         {
           label: '强制更新',
-          param: 'id',
+          param: 'applicationMin',
           align: 'center',
 
           type: 'text'
         },
         {
           label: '创建时间',
-          param: 'registTime',
+          param: 'createTime',
           align: 'center',
-          sortable: true,
-          type: 'text'
+          // sortable: true,
+          type: 'text',
+          width: '200'
         },
         {
           label: '更新时间',
-          param: 'registTime',
+          param: 'modifyTime',
           align: 'center',
-          sortable: true,
+          width: '200',
+          // sortable: true,
           type: 'text'
         },
-        {
-          label: '权重',
-          param: 'id',
-          align: 'center',
+        // {
+        //   label: '权重',
+        //   param: 'id',
+        //   align: 'center',
 
-          type: 'text'
-        },
+        //   type: 'text'
+        // },
         {
           label: '状态',
-          param: 'status',
+          param: 'state',
           align: 'center',
           type: 'text',
 
           render: row => {
-            if (row.status === 0) {
-              return '未审核'
-            } else if (row.status === 1) {
-              return '审核通过'
-            } else if (row.status === 2) {
-              return '审核不通过'
+            if (row.state === 'NORMAL') {
+              return '正常'
             } else {
-              return '禁用'
+              return '隐藏'
             }
           }
         }
@@ -319,19 +315,7 @@ export default {
           this.getList()
           this.dialogVisible = false
           break
-        case '展开':
-          console.log(val, 'expands')
-          let id = val.id.toString()
-          if (this.expands.includes(id)) {
-            console.log(1111)
-            this.expands = []
-          } else {
-            console.log(2222)
-            let expands = [id]
-            this.expands = expands
-          }
 
-          break
         case '删除':
           this.$confirm('确认删除？', '提示', {
             cancelButtonText: '取消',

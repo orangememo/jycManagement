@@ -182,3 +182,14 @@ export function getManagerUserInfo(params) {
 		params
 	})
 }
+/**
+ * 管理员日志
+ */
+
+export function getManagerLogInfo(params) {
+	return request({
+		url: '/manager/logInfo/page/list',
+		method: 'get',
+		params
+	})
+}

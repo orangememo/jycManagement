@@ -20,7 +20,8 @@ const getDefaultState = () => {
 		companyList: [],
 		ruleList: [],
 		permissionRoutes: [],
-		list: []
+		list: [],
+		userInfo: {}
 	}
 }
 
@@ -62,7 +63,9 @@ const mutations = {
 		state.ruleList = []
 		state.permissionRoutes = constantRoutes
 	},
-
+	SET_USER_INFO: (state, val) => {
+		state.userInfo = val
+	},
 	SET_LIST: (state, val) => {
 		state.list = val
 	}
@@ -76,11 +79,14 @@ const actions = {
 			loginJyc(obj)
 				.then(res => {
 					const { result } = res
-					commit('SET_TOKEN', result.token)
-					commit('SET_COMPANY_LIST', result.companyList)
-					commit('SET_APPLICATION_LIST', result.applicationList)
-					commit('SET_NAME', result.userName)
-					commit('SET_ACCOUNT_ID', result.accountId)
+					const { token, companyList, applicationList, userName, avatar, accountId } = result
+					commit('SET_TOKEN', token)
+					commit('SET_COMPANY_LIST', companyList)
+					commit('SET_APPLICATION_LIST', applicationList)
+					commit('SET_NAME', userName)
+					commit('SET_AVATAR', avatar)
+					commit('SET_ACCOUNT_ID', accountId)
+					commit('SET_USER_INFO', result)
 					setToken(result.token)
 					resolve()
 				})

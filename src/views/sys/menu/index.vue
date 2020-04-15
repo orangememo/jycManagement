@@ -3,10 +3,10 @@
     <div class="ly-flex ly-justify-sb mt40 titleAndButton">
       <div style="padding-left:15px">{{$route.meta.title}}列表</div>
       <div class="buttonCtrl">
-        <el-button size="small" type="info" @click="search()">刷新</el-button>
-        <el-button size="small" type="primary" @click="handleClick('新增')">新增</el-button>
-        <!-- <el-button size="small" type="success" @click="handleClick('编辑')">编辑</el-button> -->
-        <!-- <el-button size="small" type="danger" @click="handleClick('删除')">删除</el-button> -->
+        <el-button size="mini" type="info" @click="search()">刷新</el-button>
+        <el-button size="mini" type="primary" @click="handleClick('新增')">新增</el-button>
+        <!-- <el-button size="mini" type="success" @click="handleClick('编辑')">编辑</el-button> -->
+        <!-- <el-button size="mini" type="danger" @click="handleClick('删除')">删除</el-button> -->
       </div>
     </div>
     <div class="mt25">
@@ -46,7 +46,6 @@
                   v-if="item.prop=='headPortrait'"
                 />-->
                 <span v-else-if="item.prop=='icon'">
-                  <!-- @click="handleClick('展开',scope.row)" -->
                   <svg-icon :icon-class="scope.row[scope.column.property]" />
                 </span>
                 <span v-else>{{scope.row[scope.column.property]}}</span>
@@ -55,8 +54,8 @@
           </template>
           <el-table-column label="操作" fixed="right" width="180" align="center">
             <template slot-scope="scope">
-              <el-button size="small" type="primary" @click="handleClick('编辑',scope.row)">编辑</el-button>
-              <el-button size="small" type="danger" @click="handleClick('删除',scope.row)">删除</el-button>
+              <el-button size="mini" type="primary" @click="handleClick('编辑',scope.row)">编辑</el-button>
+              <el-button size="mini" type="danger" @click="handleClick('删除',scope.row)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -156,12 +155,6 @@ export default {
           width: '',
           align: 'center'
         }
-        // {
-        //   prop: 'i1c1o1n1',
-        //   name: '展开',
-        //   width: '',
-        //   align: 'center'
-        // }
       ],
       tableData: [],
       listLoading: false,
@@ -211,19 +204,7 @@ export default {
           this.getList()
           this.dialogVisible = false
           break
-        case '展开':
-          console.log(val, 'expands')
-          let id = val.id.toString()
-          if (this.expands.includes(id)) {
-            console.log(1111)
-            this.expands = []
-          } else {
-            console.log(2222)
-            let expands = [id]
-            this.expands = expands
-          }
 
-          break
         case '删除':
           this.$confirm('确认删除？', '提示', {
             cancelButtonText: '取消',

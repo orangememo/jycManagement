@@ -1,28 +1,7 @@
 <template>
-  <div id="adminLog" class="mainWrap">
-    <el-card>
-      <div class="topSearch">
-        <div class>
-          <el-form ref="form" :model="form" label-width="80px" :inline="true" size="small">
-            <el-form-item label="名称">
-              <el-input v-model.trim="form.value3" placeholder="请输入名称" maxlength="50" clearable />
-            </el-form-item>
-          </el-form>
-        </div>
-        <div class="searchButton">
-          <el-button size="small" type="primary" @click="search()">查询</el-button>
-        </div>
-      </div>
-    </el-card>
-    <div class="ly-flex ly-justify-sb mt40 titleAndButton">
-      <div style="padding-left:15px">{{$route.meta.title}}列表</div>
-      <div class="buttonCtrl">
-        <el-button size="small" type="primary" @click="handleClick('新增')">新增</el-button>
-        <!-- <el-button size="small" type="success" @click="handleClick('编辑')">编辑</el-button> -->
-        <el-button size="small" type="danger" @click="handleClick('删除')">删除</el-button>
-      </div>
-    </div>
-    <div class="mt25">
+  <div id="admins" class="mainWrap">
+    <search-form :formConfig="formConfig" :value="form" labelWidth="80px"></search-form>
+    <div class>
       <div class="tableOutBox">
         <el-table
           :data="tableData"
@@ -46,31 +25,13 @@
               :align="item.align"
             >
               <!-- show-overflow-tooltip -->
-              <template slot-scope="scope">
-                <img
-                  style="width:50px;height:50px"
-                  :src="scope.row[scope.column.property]"
-                  alt
-                  v-if="item.prop=='headPortrait'"
-                />
-                <span v-else-if="item.prop=='icon'">
-                  <!-- @click="handleClick('展开',scope.row)" -->
-                  <svg-icon :icon-class="scope.row[scope.column.property]" />
-                </span>
-                <span v-else>{{scope.row[scope.column.property]}}</span>
-              </template>
             </el-table-column>
           </template>
-          <el-table-column label="操作" fixed="right" width="180" align="center">
-            <template slot-scope="scope">
-              <el-button size="small" type="primary" @click="handleClick('编辑',scope.row)">编辑</el-button>
-              <el-button size="small" type="danger" @click="handleClick('删除',scope.row)">删除</el-button>
-            </template>
-          </el-table-column>
         </el-table>
       </div>
       <div class="mt10">
         <el-pagination
+          background
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="page.page"
@@ -81,23 +42,21 @@
         ></el-pagination>
       </div>
     </div>
-    <div class="dialog">
-      <el-dialog title="提示" :visible.sync="dialogVisible" width="50%" :close-on-click-modal="false">
-        <div slot="title" style="padding:20px 30px ;border-bottom:1px solid #DCDFE6">
-          <span>{{editTitle[edit]}}</span>
-        </div>
-        <!-- <addAdmin :propHandleClick="handleClick" v-if="dialogVisible" :edit="edit" /> -->
-        <span slot="footer" class="dialog-footer"></span>
-      </el-dialog>
-    </div>
   </div>
 </template>
 
 <script>
+import { getManagerLogInfo, deleteManagerUserInfo } from '@/api/sys'
+import SearchForm from '@/components/seachForm/seachForm'
+
 export default {
+  components: {
+    SearchForm
+  },
   data() {
     return {
       edit: 0,
+      editId: '',
       editTitle: {
         0: '新增',
         1: '编辑'
@@ -109,130 +68,109 @@ export default {
       },
       expands: [],
       form: {
-        value0: '',
-        value1: '',
-        value2: '',
         value3: ''
+      },
+      formConfig: {
+        formItemList: [
+          {
+            type: 'input',
+            prop: 'value3',
+            label: '用户名',
+            placeholder: '输入用户名'
+          }
+        ],
+        operate: [
+          {
+            icon: 'el-icon-search',
+            type: 'primary',
+            name: '查询',
+            handleClick: this.search
+          }
+        ]
       },
       tableTitle: [
         {
-          prop: 'id',
+          prop: 'createAccountId',
           name: 'ID',
           width: '',
           align: 'center'
         },
         {
-          prop: 'title',
-          name: '标题',
+          prop: 'userName',
+          name: '用户名',
           width: '',
           align: 'center'
         },
         {
-          prop: 'icon',
-          name: '图标',
+          prop: 'actionDes',
+          name: '操作内容',
           width: '',
           align: 'center'
         },
         {
-          prop: 'i1con',
-          name: '规则',
+          prop: 'actionIp',
+          name: 'IP',
           width: '',
           align: 'center'
         },
         {
-          prop: 'i1c1on',
-          name: '权重',
-          width: '',
-          align: 'center'
-        },
-        {
-          prop: 'i1c1o1n',
-          name: '状态',
+          prop: 'createTime',
+          name: '操作时间',
           width: '',
           align: 'center'
         }
-        // {
-        //   prop: 'i1c1o1n1',
-        //   name: '展开',
-        //   width: '',
-        //   align: 'center'
-        // }
       ],
-      tableData: [
-        {
-          id: 1,
-          title: '平常管理',
-          icon: 'user',
-          i1con: 'admin',
-          i1c1on: '5',
-          i1c1o1n: '正常'
-        },
-        {
-          id: 3,
-          title: '权限管理',
-          icon: 'nested',
-          i1con: 'admin',
-          i1c1on: '5',
-          i1c1o1n: '正常',
-          children: [
-            {
-              id: 31,
-              title: '角色组',
-              icon: 'user',
-              i1con: 'admin',
-              i1c1on: '5',
-              i1c1o1n: '正常'
-            },
-            {
-              id: 32,
-              title: '菜单规则',
-              icon: 'nested',
-              i1con: 'admin',
-              i1c1on: '5',
-              i1c1o1n: '正常'
-            }
-          ]
-        }
-      ],
+      tableData: [],
       listLoading: false,
       dialogVisible: false,
       dialogVisible1: false
     }
   },
+  mounted() {
+    this.getList()
+  },
   methods: {
+    addNew() {
+      this.handleClick('新增')
+    },
     search() {
       this.page.page = 1
       this.getList()
     },
-    getList: async function() {},
+    getList: async function() {
+      this.listLoading = true
+      let obj = {
+        pageSize: this.page.size,
+        currentPage: this.page.page,
+        userName: this.form.value3
+      }
+      let res = await getManagerLogInfo(obj)
+      this.listLoading = false
+      let { result } = res
+      this.tableData = result.records
+      this.page.total = result.total
+    },
     handleClick(type, val) {
       switch (type) {
         case '新增':
+          this.edit = 0
           this.dialogVisible = true
           break
         case '编辑':
+          console.log(val, 'userInfoIduserInfoId')
           this.edit = 1
+          this.editId = val.userInfoId
           this.dialogVisible = true
           break
         case '确认':
           this.dialogVisible = false
+          this.getList()
           break
         case '关闭':
           this.dialogVisible = false
+          this.getList()
           break
-        case '展开':
-          console.log(val, 'expands')
-          let id = val.id.toString()
-          if (this.expands.includes(id)) {
-            console.log(1111)
-            this.expands = []
-          } else {
-            console.log(2222)
-            let expands = [id]
-            this.expands = expands
-          }
 
-          break
         case '删除':
           this.$confirm('确认删除？', '提示', {
             cancelButtonText: '取消',
@@ -240,7 +178,16 @@ export default {
             type: 'warning'
           })
             .then(() => {
-              console.log('确定删除了')
+              let { userInfoId, accountNum } = val
+              deleteManagerUserInfo({ userInfoId, accountNum }).then(res => {
+                if (res.code === 200) {
+                  this.$message({
+                    type: 'success',
+                    message: '删除成功'
+                  })
+                  thi.getList()
+                }
+              })
             })
             .catch(() => {})
           break
@@ -263,7 +210,7 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/styles/mainWrap.scss';
-#adminLog {
+#admins {
   .topSearch {
     justify-content: space-between;
     .searchButton {

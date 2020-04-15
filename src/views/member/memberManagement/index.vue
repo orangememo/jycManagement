@@ -49,7 +49,6 @@
               <template slot-scope="scope">
                 <span v-if="item.prop=='isHide'">{{scope.row[scope.column.property]==0?'显示':'隐藏'}}</span>
                 <span v-else-if="item.prop=='icon'">
-                  <!-- @click="handleClick('展开',scope.row)" -->
                   <svg-icon :icon-class="scope.row[scope.column.property]" />
                 </span>
                 <span v-else>{{scope.row[scope.column.property]}}</span>
@@ -269,19 +268,7 @@ export default {
           this.getList()
           this.dialogVisible = false
           break
-        case '展开':
-          console.log(val, 'expands')
-          let id = val.id.toString()
-          if (this.expands.includes(id)) {
-            console.log(1111)
-            this.expands = []
-          } else {
-            console.log(2222)
-            let expands = [id]
-            this.expands = expands
-          }
 
-          break
         case '删除':
           this.$confirm('确认删除？', '提示', {
             cancelButtonText: '取消',
