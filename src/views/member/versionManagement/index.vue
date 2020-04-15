@@ -118,9 +118,9 @@ export default {
         formItemList: [
           {
             type: 'input',
-            prop: 'applicationId',
-            label: '应用id',
-            placeholder: '请输入应用id'
+            prop: 'applicationName',
+            label: '应用名称',
+            placeholder: '请输入应用名称'
           },
           {
             type: 'select',
@@ -156,11 +156,18 @@ export default {
             type: 'primary',
             name: '添加',
             handleClick: this.addNew
+          },
+          {
+            icon: 'el-icon-refresh-left',
+            type: 'primary',
+            name: '重置',
+            handleClick: this.reset
           }
         ]
       },
       form: {
-        state: ''
+        state: '',
+        applicationName: ''
       },
       tableTitle: [
         {
@@ -176,6 +183,12 @@ export default {
 
         //   type: 'text'
         // },
+        {
+          label: '应用名称',
+          param: 'applicationName',
+          align: 'center',
+          type: 'text'
+        },
         {
           label: '新版本号',
           param: 'applicationVersion',
@@ -276,6 +289,13 @@ export default {
     this.getList()
   },
   methods: {
+    reset() {
+      this.form = {
+        state: '',
+        applicationName: ''
+      }
+      this.search()
+    },
     search() {
       this.page.page = 1
       this.getList()
@@ -289,7 +309,7 @@ export default {
         currentPage: this.page.page,
         pageSize: this.page.size,
         state: this.form.state,
-        applicationId: this.form.applicationId
+        applicationName: this.form.applicationName
       }
       let res = await getVersionPageInfo(obj)
       if (res.code == 200) {

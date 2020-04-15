@@ -134,8 +134,8 @@ export default {
                 value: 'FROZEN'
               }
             ],
-            label: '用户名',
-            placeholder: '输入用户名'
+            label: '状态',
+            placeholder: '选择状态'
           }
         ],
         operate: [
@@ -150,6 +150,12 @@ export default {
             type: 'primary',
             name: '添加',
             handleClick: this.addNew
+          },
+          {
+            icon: 'el-icon-refresh-left',
+            type: 'primary',
+            name: '重置',
+            handleClick: this.reset
           }
         ]
       },
@@ -201,6 +207,13 @@ export default {
     this.getList()
   },
   methods: {
+    reset() {
+      this.form = {
+        value3: '',
+        state: 'ALL'
+      }
+      this.search()
+    },
     addNew() {
       this.handleClick('新增')
     },
@@ -229,7 +242,6 @@ export default {
           this.dialogVisible = true
           break
         case '编辑':
-          console.log(val, 'userInfoIduserInfoId')
           this.edit = 1
           this.editId = val.userInfoId
           this.dialogVisible = true
@@ -244,14 +256,20 @@ export default {
           break
         case '重置密码':
           let { accountNum } = val
-          putRetrievePassword({ accountNum }).then(res => {
-            if (res.code === 200) {
-              this.$message({
-                type: 'success',
-                message: '重置成功'
-              })
-              this.getList()
-            }
+          this.$confirm('确认重置密码？', '提示', {
+            cancelButtonText: '取消',
+            confirmButtonText: '确定',
+            type: 'warning'
+          }).then(() => {
+            putRetrievePassword({ accountNum }).then(res => {
+              if (res.code === 200) {
+                this.$message({
+                  type: 'success',
+                  message: '重置成功,初始密码和账号相同'
+                })
+                this.getList()
+              }
+            })
           })
 
           break

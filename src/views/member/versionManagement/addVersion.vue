@@ -142,6 +142,7 @@ export default {
               let obj = JSON.parse(JSON.stringify(this.form))
               if (this.edit == 1) {
                 obj.applicationVersionId = this.editRoleId
+                obj.byOperateApplicationId = obj.applicationId
                 putVersionInfo(obj).then(res => {
                   if (res.code == 200) {
                     this.$message({

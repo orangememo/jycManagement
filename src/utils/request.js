@@ -4,15 +4,16 @@ import store from '@/store'
 import { getToken } from '@/utils/auth'
 
 // create an axios instance
+// const baseURL = VUE_APP_BASE_API
 const service = axios.create({
-	baseURL: '', // url = base url + request url
+	baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
 	// withCredentials: true, // send cookies when cross-domain requests
-	timeout: 5000 // request timeout
+	timeout: 5000, // request timeout
 })
 
 // request interceptor
 service.interceptors.request.use(
-	config => {
+	(config) => {
 		// do something before request is sent
 
 		if (store.getters.token) {
@@ -25,22 +26,22 @@ service.interceptors.request.use(
 		let req = {
 			accountId,
 			applicationId,
-			companyId
+			companyId,
 		}
 		if (config.method == 'post' || config.method == 'put') {
 			config.data = {
 				...config.data,
-				...req
+				...req,
 			}
 		} else {
 			config.params = {
 				...config.params,
-				...req
+				...req,
 			}
 		}
 		return config
 	},
-	error => {
+	(error) => {
 		// do something with request error
 		console.log(error) // for debug
 		return Promise.reject(error)
@@ -59,7 +60,7 @@ service.interceptors.response.use(
 	 * Here is just an example
 	 * You can also judge the status by HTTP Status Code
 	 */
-	response => {
+	(response) => {
 		const res = response.data
 
 		// if the custom code is not 20000, it is judged as an error.
@@ -76,7 +77,7 @@ service.interceptors.response.use(
 				MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
 					confirmButtonText: 'Re-Login',
 					cancelButtonText: 'Cancel',
-					type: 'warning'
+					type: 'warning',
 				}).then(() => {
 					store.dispatch('user/resetToken').then(() => {
 						location.reload()
@@ -87,7 +88,7 @@ service.interceptors.response.use(
 				Message({
 					message: res.message,
 					type: 'error',
-					duration: 3 * 1000
+					duration: 3 * 1000,
 				})
 				// if (res.code === 500) {
 				// 	Message({
@@ -103,12 +104,12 @@ service.interceptors.response.use(
 			return res
 		}
 	},
-	error => {
+	(error) => {
 		console.log('err' + error) // for debug
 		Message({
 			message: error.message,
 			type: 'error',
-			duration: 5 * 1000
+			duration: 5 * 1000,
 		})
 		return Promise.reject(error)
 	}

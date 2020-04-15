@@ -85,6 +85,12 @@ export default {
             type: 'primary',
             name: '查询',
             handleClick: this.search
+          },
+          {
+            icon: 'el-icon-refresh-left',
+            type: 'primary',
+            name: '重置',
+            handleClick: this.reset
           }
         ]
       },
@@ -130,6 +136,12 @@ export default {
     this.getList()
   },
   methods: {
+    reset() {
+      this.form = {
+        value3: ''
+      }
+      this.search()
+    },
     addNew() {
       this.handleClick('新增')
     },

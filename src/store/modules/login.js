@@ -190,7 +190,7 @@ function operatRouter(item) {
 	if (item.pruleId !== 0) {
 		component = componentsMap[item.ruleCode]
 	}
-	if (item.isHide == 1) {
+	if (item.isHide == 1 && item.ruleType == 'MENU') {
 		return
 	}
 	router = {
@@ -208,7 +208,7 @@ function operatRouter(item) {
 	}
 	if (item.pruleId === 0 && item.children.length != 0) {
 		let requestUrl = item.children.find(el => {
-			return el.isHide !== 1
+			return el.isHide !== 1 && el.ruleType == 'MENU'
 		})
 		router.redirect = `${item.requestUrl}/${requestUrl.requestUrl}`
 	}

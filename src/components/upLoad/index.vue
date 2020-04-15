@@ -1,25 +1,30 @@
 <template>
-  <div>
+  <div id="upLoadFile">
     <el-upload
       list-type="picture-card"
+      ref="upLoadFile"
       auto-upload
-      action="http://49.234.12.49/lp/lp/lpVuser/edits"
+      :action="upLoadImg"
       accept="image/png, image/jpg, image/jpeg"
       :limit="limit"
       :before-upload="beforeAvatarUpload"
       :file-list="fileList"
       :on-success="uploads"
       :on-exceed="handleExceed"
+      v-show="false"
     >
+      <el-button size="small" type="primary">点击上传</el-button>
       <i slot="default" class="el-icon-plus"></i>
-      <!-- <div slot="file" slot-scope="{file}">
-      <img class="el-upload-list__item-thumbnail" :src="file.url" alt />
-      </div>-->
     </el-upload>
+    <div class="addFile el-upload--picture-card" @click="handleClick">
+      <i class="el-icon-plus"></i>
+    </div>
   </div>
 </template>
 
 <script>
+import { upLoadImg } from '@/api/member'
+
 export default {
   props: {
     limit: {
@@ -30,11 +35,16 @@ export default {
   },
   data() {
     return {
+      upLoadImg,
       dialogImageUrl: '',
       dialogVisible: false
     }
   },
   methods: {
+    handleClick() {
+      console.log(this.$refs, 'this.$refs')
+      this.$refs.upLoadFile.click()
+    },
     uploads(response) {
       let url = response.result
       if (url.indexOf('.com') > -1) {
@@ -57,5 +67,9 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
+#upLoadFile {
+  .addFile {
+  }
+}
 </style>

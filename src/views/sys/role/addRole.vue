@@ -142,7 +142,7 @@ export default {
         if (result.proleId == 0) {
           this.fatherDisable = true
         }
-        let ruleIdList = result.ruleIdList ? result.ruleIdList.split(',') : []
+        let ruleIdList = result.ruleIdList
         this.$refs.tree.setCheckedKeys(ruleIdList)
       })
     }
@@ -158,7 +158,9 @@ export default {
           this.$refs.form.validate(valid => {
             if (valid) {
               let obj = JSON.parse(JSON.stringify(this.form))
-              obj.ruleIdList = this.$refs.tree.getCheckedKeys()
+              obj.ruleIdList = this.$refs.tree
+                .getCheckedKeys()
+                .concat(this.$refs.tree.getHalfCheckedKeys())
               if (this.edit == 1) {
                 obj.roleId = this.editRoleId
                 putRoleInfo(obj).then(res => {
