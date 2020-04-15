@@ -83,17 +83,19 @@
 						<el-input v-model="newProd.tableExplain"></el-input>
 					</el-form-item>
 					<el-form-item label="图片" :label-width="labelWidth">
-						<div v-if="newProd.images">
+						<div v-if="newProd.images.length>0" style="display:flex;flex-direction: column;">
 							<el-image
 								v-for="(item,index) in newProd.images"
 								:key="index"
 								style="width: 150px; height: 150px"
 								:src="hostUrl+item"
+								 :preview-src-list="[hostUrl+item]"
 								fit="cover"
 							></el-image>
+							<button class="del-img-btn" @click="newProd.images.splice(index,1)">删除</button>
 						</div>
 						<div>上传图片</div>
-						<upload v-on:uploadimg="uImg" :limit="20" />
+						<upload v-on:uploadimg="uImg" />
 					</el-form-item>
 					<el-form-item label="桌位状态" :label-width="labelWidth">
 						<el-select v-model="newProd.type" placeholder="请选择...">
