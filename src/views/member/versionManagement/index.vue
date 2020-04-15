@@ -8,7 +8,7 @@
         <el-button size="small" type="primary" @click="handleClick('新增')">新增</el-button>
       </div>
     </div>-->
-    <div class="mt25">
+    <div class>
       <div class="tableOutBox">
         <jyc-table
           :loading="listLoading"
@@ -117,13 +117,19 @@ export default {
       formConfig: {
         formItemList: [
           {
+            type: 'input',
+            prop: 'applicationId',
+            label: '应用id',
+            placeholder: '请输入应用id'
+          },
+          {
             type: 'select',
             prop: 'state',
             clearable: '关闭',
             optList: [
               {
                 label: '全部',
-                value: 'ALL'
+                value: ''
               },
               {
                 label: '正常',
@@ -154,10 +160,6 @@ export default {
         ]
       },
       form: {
-        value0: '',
-        value1: '',
-        value2: '',
-        value3: '',
         state: ''
       },
       tableTitle: [
@@ -209,10 +211,9 @@ export default {
           type: 'text'
         },
         {
-          label: '强制更新',
+          label: '最低支持版本',
           param: 'applicationMin',
           align: 'center',
-
           type: 'text'
         },
         {
@@ -256,25 +257,19 @@ export default {
       tableOption: [
         {
           label: '操作',
-          width: '200',
+          width: '100',
           options: [
             {
               label: '编辑',
               type: 'primary',
               methods: '编辑'
-            },
-            {
-              label: '删除',
-              type: 'danger',
-              methods: '删除'
             }
           ]
         }
       ],
       tableData: [],
       listLoading: false,
-      dialogVisible: false,
-      dialogVisible1: false
+      dialogVisible: false
     }
   },
   mounted() {
@@ -289,8 +284,20 @@ export default {
       this.handleClick('新增')
     },
     getList: async function() {
-      let res = await getVersionPageInfo()
-      this.tableData = res.result.records
+      this.listLoading = true
+      let obj = {
+        currentPage: this.page.page,
+        pageSize: this.page.size,
+        state: this.form.state,
+        applicationId: this.form.applicationId
+      }
+      let res = await getVersionPageInfo(obj)
+      if (res.code == 200) {
+        let { result } = res
+        this.page.total = result.total
+        this.tableData = result.records
+      }
+      this.listLoading = false
     },
     handleClick(type, val) {
       switch (type) {
@@ -300,7 +307,7 @@ export default {
           break
         case '编辑':
           this.edit = 1
-          this.editRoleId = val.roleId
+          this.editRoleId = val.applicationVersionId
           this.dialogVisible = true
           break
         case '确认':
@@ -349,8 +356,7 @@ export default {
     handleSelectionChange() {},
     handleSortChange() {},
     handleButton(a) {
-      this.handleClick('编辑', a.row)
-      console.log(a)
+      this.handleClick(a.methods, a.row)
     },
     handleSelectionChange() {}
   }

@@ -32,7 +32,6 @@ export default {
   },
   created() {
     this.$store.dispatch('login/resetRouter').then(() => {
-      console.log(1111111, 'login/resetRouter')
       // this.$router.options.routes = this.$router.options.routes.concat(res)
     })
   },
@@ -67,7 +66,6 @@ export default {
         }
         this.$store.commit('login/SET_APPLICATION_ID', applicationId)
         this.$store.dispatch('login/loginInfo', obj).then(res => {
-          console.log(res, ' this.$router.addRoutes(res)')
           this.$router.addRoutes(res)
           this.$router.push({ path: '/dashboard' })
         })

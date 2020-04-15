@@ -15,36 +15,33 @@ router.beforeEach(async (to, from, next) => {
 	document.title = getPageTitle(to.meta.title)
 	const hasToken = getToken()
 	if (hasToken) {
-		console.log(111111)
 		if (to.path === '/login' || to.path === '/selectCompanyApp') {
-			console.log(2222222)
 			next()
 			NProgress.done()
 		} else {
-			console.log(333333)
 			const hasGetRuleList = store.getters.ruleList && store.getters.ruleList.length
-			console.log(hasGetRuleList, 'hasGetRuleList')
+
 			if (hasGetRuleList == 0) {
 				next(`/selectCompanyApp`)
 				NProgress.done()
 				Message.error('请选择公司和应用')
 			} else {
 				if (flag === 0) {
-					console.log(444444)
 					try {
-						console.log(555555)
 						const accessRoutes = await store.dispatch('login/getRouter')
 						router.addRoutes(accessRoutes)
 						flag++
 						next({ ...to, replace: true })
 					} catch (error) {
-						console.log(666666)
 						next(`/selectCompanyApp`)
 						Message.error('请选择公司和应用')
 					}
 				} else {
-					console.log(77777)
-					next()
+					if (to.meta.isHide == 1) {
+						next('/404')
+					} else {
+						next()
+					}
 				}
 			}
 

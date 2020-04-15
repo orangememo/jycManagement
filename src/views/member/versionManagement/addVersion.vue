@@ -2,35 +2,26 @@
   <div class="dialogBody" id="addMember">
     <div class="body">
       <el-form ref="form" :model="form" :rules="formRules" label-width="140px" size="small">
-        <!-- <el-form-item label="创建时间">
-                  <el-date-picker v-model="form.value1" type="date" placeholder="请选择开始日期"></el-date-picker>-
-                  <el-date-picker v-model="form.value2" type="date" placeholder="请选择结束日期"></el-date-picker>
-        </el-form-item>-->
         <el-row>
-          <!-- <el-col :span="24">
-            <el-form-item label="旧版本号" prop="roleName">
-              <el-input v-model="form.roleName" placeholder="请输入名称"></el-input>
-            </el-form-item>
-          </el-col>-->
           <el-col :span="24">
-            <el-form-item label="新版本号" prop="roleName">
-              <el-input v-model="form.roleName" placeholder="请输入名称"></el-input>
+            <el-form-item label="应用id" prop="applicationId">
+              <el-input v-model.number="form.applicationId" placeholder="请输入应用id"></el-input>
             </el-form-item>
           </el-col>
-          <!-- <el-col :span="24">
-            <el-form-item label="包大小" prop="roleName">
-              <el-input v-model="form.roleName" placeholder="请输入名称"></el-input>
-            </el-form-item>
-          </el-col>-->
-
           <el-col :span="24">
-            <el-form-item label="升级内容" prop="ti1tle">
-              <el-input v-model="form.ti1tle" placeholder="请输入Email"></el-input>
+            <el-form-item label="新版本号" prop="applicationVersion">
+              <el-input v-model="form.applicationVersion" placeholder="请输入新版本号"></el-input>
             </el-form-item>
           </el-col>
 
           <el-col :span="24">
-            <el-form-item label="图片" prop="headPortrait">
+            <el-form-item label="升级内容" prop="content">
+              <el-input v-model="form.content" placeholder="请输入升级内容"></el-input>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="24">
+            <el-form-item label="图片" prop="applicationImage">
               <div>格式要求：支持jpg/png/jpeg/bmp格式照片，大小不超过5m</div>
               <el-upload
                 class="avatar-uploader"
@@ -40,31 +31,30 @@
                 :before-upload="beforeAvatarUpload"
                 accept="image/bmp, image/jpeg, image/jpg, image/png"
               >
-                <img v-if="form.headPortrait" :src="form.headPortrait" class="avatar" />
+                <img
+                  v-if="form.applicationImage"
+                  :src="`${hostUrl}/${form.applicationImage}`"
+                  class="avatar"
+                />
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
             </el-form-item>
           </el-col>
 
           <el-col :span="24">
-            <el-form-item label="下载地址" prop="roleCode">
-              <el-input v-model="form.roleCode" placeholder="这个用户很懒，什么也没有写！"></el-input>
+            <el-form-item label="下载地址" prop="applicationUrl">
+              <el-input v-model="form.applicationUrl" placeholder="请输入下载地址"></el-input>
             </el-form-item>
           </el-col>
 
           <el-col :span="24">
-            <el-form-item label="强制更新" prop="roleCode">
-              <el-input-number v-model="form.roleCode" controls-position="right"></el-input-number>
+            <el-form-item label="最低支持版本" prop="applicationMin">
+              <el-input v-model="form.applicationMin" placeholder="请输入最低支持版本"></el-input>
             </el-form-item>
           </el-col>
-          <!-- <el-col :span="24">
-            <el-form-item label="权重" prop="roleCode">
-              <el-input-number v-model="form.roleCode" controls-position="right"></el-input-number>
-            </el-form-item>
-          </el-col>-->
           <el-col :span="24">
-            <el-form-item label="状态" prop="isHide">
-              <el-radio-group v-model="form.isHide">
+            <el-form-item label="状态" prop="state">
+              <el-radio-group v-model="form.state">
                 <el-radio label="NORMAL">正常</el-radio>
                 <el-radio label="DELETE">隐藏</el-radio>
               </el-radio-group>
@@ -84,15 +74,13 @@
 
 <script>
 import { validateMobile } from '@/utils/validate'
-import { mapGetters, mapActions, mapState } from 'vuex'
-import {
-  getRoleInfoTree,
-  getRuleInfoTree,
-  addRoleInfo,
-  getRoleInfo,
-  putRoleInfo
-} from '@/api/sys'
 import treeSelect from '@/components/treeSelect'
+import {
+  addVersionInfo,
+  getVersionInfo,
+  putVersionInfo,
+  upLoadImg
+} from '@/api/member'
 
 export default {
   components: {
@@ -111,61 +99,40 @@ export default {
   },
   data() {
     return {
-      proleId: '',
+      upLoadImg,
       sumbitLoading: false,
-      fatherDisable: false,
-      roleProps: {
-        label: 'roleName',
-        children: 'children',
-        disabled: 'disabled'
-      },
       form: {
-        proleId: '',
-        component: '',
-        roleName: '',
-        isHide: 0,
-        roleCode: ''
+        applicationId: '',
+        applicationVersion: '',
+        content: '',
+        state: 'NORMAL',
+        applicationUrl: '',
+        applicationImage: '',
+        applicationMin: ''
       },
-
       formRules: {
-        proleId: [{ required: true, message: '请选择父级', trigger: 'change' }],
-        roleName: [
-          { required: true, message: '请填写角色名称', trigger: 'blur' }
+        applicationId: [
+          { required: true, message: '请填写应用id', trigger: 'blur' }
         ],
-        roleCode: [{ required: true, message: '请填写Code', trigger: 'blur' }]
-      },
-      defaultProps: {
-        children: 'children',
-        label: 'ruleName'
-      },
-      options: {
-        proleIdOptions: [],
-        ruleOptions: []
+        applicationVersion: [
+          { required: true, message: '请填写版本号', trigger: 'blur' }
+        ],
+        applicationUrl: [
+          { required: true, message: '请填写Code', trigger: 'blur' }
+        ]
       }
     }
   },
   mounted() {
-    getRoleInfoTree().then(res => {
-      this.options.proleIdOptions = res.result.list
-    })
-
     if (this.edit == 1) {
-      let roleId = this.editRoleId
-      getRoleInfo({ roleId }).then(res => {
+      let applicationVersionId = this.editRoleId
+      getVersionInfo({ applicationVersionId }).then(res => {
         this.form = res.result
-        let { result } = res
-        if (result.proleId == 0) {
-          this.fatherDisable = true
-        }
-        let ruleIdList = result.ruleIdList ? result.ruleIdList.split(',') : []
-        this.$refs.tree.setCheckedKeys(ruleIdList)
       })
     }
   },
 
   methods: {
-    getPositionPageList: async function() {},
-
     handleClick(type) {
       switch (type) {
         case '确认':
@@ -173,11 +140,9 @@ export default {
           this.$refs.form.validate(valid => {
             if (valid) {
               let obj = JSON.parse(JSON.stringify(this.form))
-              obj.ruleIdList = this.$refs.tree.getCheckedKeys()
-
               if (this.edit == 1) {
-                obj.roleId = this.editRoleId
-                putRoleInfo(obj).then(res => {
+                obj.applicationVersionId = this.editRoleId
+                putVersionInfo(obj).then(res => {
                   if (res.code == 200) {
                     this.$message({
                       type: 'success',
@@ -187,7 +152,7 @@ export default {
                   }
                 })
               } else {
-                addRoleInfo(obj).then(res => {
+                addVersionInfo(obj).then(res => {
                   if (res.code == 200) {
                     this.$message({
                       type: 'success',
@@ -213,7 +178,11 @@ export default {
     },
     handleChange() {},
     handleAvatarSuccess(res, file) {
-      this.form.headPortrait = res
+      let url = res.result
+      if (url.indexOf('.com') > -1) {
+        url = url.split('.com')[1]
+      }
+      this.form.applicationImage = url
     },
     beforeAvatarUpload(file) {
       let arr = ['image/bmp', 'image/jpeg', 'image/jpg', 'image/png']
@@ -229,22 +198,22 @@ export default {
       }
       return isJPG && isLt5M
     }
-  },
-  watch: {
-    form: {
-      handler(newValue, oldValue) {
-        let roleId = newValue.proleId
-        let operationType = 'operationType'
-        if (this.proleId !== roleId) {
-          this.proleId = roleId
-          getRuleInfoTree({ operationType, roleId }).then(res => {
-            this.options.ruleOptions = res.result.list
-          })
-        }
-      },
-      deep: true
-    }
   }
+  // watch: {
+  //   form: {
+  //     handler(newValue, oldValue) {
+  //       let roleId = newValue.proleId
+  //       let operationType = 'operationType'
+  //       if (this.proleId !== roleId) {
+  //         this.proleId = roleId
+  //         getRuleInfoTree({ operationType, roleId }).then(res => {
+  //           this.options.ruleOptions = res.result.list
+  //         })
+  //       }
+  //     },
+  //     deep: true
+  //   }
+  // }
 }
 </script>
 
