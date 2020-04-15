@@ -118,9 +118,9 @@ export default {
         formItemList: [
           {
             type: 'input',
-            prop: 'applicationId',
-            label: '应用id',
-            placeholder: '请输入应用id'
+            prop: 'applicationName',
+            label: '应用名称',
+            placeholder: '请输入应用名称'
           },
           {
             type: 'select',
@@ -160,7 +160,8 @@ export default {
         ]
       },
       form: {
-        state: ''
+        state: '',
+        applicationName: ''
       },
       tableTitle: [
         {
@@ -176,6 +177,12 @@ export default {
 
         //   type: 'text'
         // },
+        {
+          label: '应用名称',
+          param: 'applicationName',
+          align: 'center',
+          type: 'text'
+        },
         {
           label: '新版本号',
           param: 'applicationVersion',
@@ -289,7 +296,7 @@ export default {
         currentPage: this.page.page,
         pageSize: this.page.size,
         state: this.form.state,
-        applicationId: this.form.applicationId
+        applicationName: this.form.applicationName
       }
       let res = await getVersionPageInfo(obj)
       if (res.code == 200) {
