@@ -67,7 +67,7 @@
 							<button class="del-img-btn" @click="newProd.image=''">删除</button>
 						</div>
 						<div>上传图片</div>
-						<upload v-on:uploadimg="uImg" />
+						<upload :showFileList="false"  v-on:uploadimg="uImg" />
 					</el-form-item>
 					<el-form-item label="权重" :label-width="labelWidth">
 						<el-input v-model="newProd.weight"></el-input>

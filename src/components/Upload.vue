@@ -11,6 +11,7 @@
     :on-success="uploads"
     :on-exceed="handleExceed"
     :on-remove="handleRemove"
+    :show-file-list="showFileList"
   >
     <i slot="default" class="el-icon-plus"></i>
     <!-- <div slot="file" slot-scope="{file}">
@@ -26,11 +27,12 @@
 <script>
 export default {
   props: {
-    limit: {
-      type: Number,
-      default: 1
-    },
-    fileList: Array
+    limit: Number,
+    fileList: Array,
+    showFileList: {
+      type: Boolean,
+      default: true
+    }
   },
   data(){
     return {
