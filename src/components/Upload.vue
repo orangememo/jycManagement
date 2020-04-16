@@ -18,7 +18,7 @@
       <img class="el-upload-list__item-thumbnail" :src="file.url" alt />
     </div> -->
   </el-upload>
-  
+  <div class="padding-tb secondary">格式要求：支持jpg.png.jpeg.bmp格式照片，大小不能超过5M。</div>
 </div>
   
   
@@ -43,8 +43,8 @@ export default {
   methods: {
     uploads(response) {
       let url = response.result;
-      if(url.indexOf(".com") > -1){
-         url = url.split(".com")[1]
+      if(url.indexOf(this.hostUrl) > -1){
+         url = url.replace(this.hostUrl,'');
       }
        this.$emit("uploadimg", url);
     },

@@ -57,7 +57,7 @@
 				<el-form-item label="酒店图像" prop="image">
 					<el-image  v-if="ruleForm.image" style="width: 200px; height: 200px;" :src="hostUrl+ruleForm.image" fit="cover"></el-image>
 					<div v-if="!dialogEditStatus">
-						<div>请上传酒店缩略图</div>
+						
 						<div class="padding-tb secondary">格式要求：支持jpg.png.jpeg.bmp格式照片，大小不能超过3M。</div>
 						<upload :showFileList="false"  v-on:uploadimg="uImg" />
 					</div>
@@ -69,7 +69,7 @@
 						fit="cover"
 					></el-image>
 					<div v-if="!dialogEditStatus">
-						<div>请上传酒店背景图</div>
+						
 						<div class="padding-tb secondary">格式要求：支持jpg.png.jpeg.bmp格式照片，大小不能超过3M。</div>
 						<upload :showFileList="false"  v-on:uploadimg="uBgImg" />
 					</div>

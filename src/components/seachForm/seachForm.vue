@@ -57,7 +57,6 @@
 					:icon="item.icon"
 					@click="item.handleClick"
 				>{{item.name}}</el-button>
-				<el-button size="small" type="primary" icon="el-icon-refresh-left" @click="resetForm">重置</el-button>
 			</el-button-group>
 			<slot name="operate"></slot>
 		</div>
@@ -90,9 +89,6 @@ export default {
 				}
 			})
 			this.$emit('input', formData)
-    },
-    resetForm(){
-      this.$refs['searchForm'].resetFields();
     }
 	},
 	mounted() {

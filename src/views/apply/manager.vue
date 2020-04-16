@@ -160,14 +160,14 @@ export default {
 						type: 'primary',
 						name: '删除',
 						handleClick: this.delAll
+					},
+					{
+						icon: 'el-icon-refresh-left',
+						type: 'primary',
+						name: '重置',
+						slot: 'reference',
+						handleClick: this.resetSearch
 					}
-					// {
-					// 	icon: 'el-icon-setting',
-					// 	type: 'primary',
-					// 	name: '更多',
-					// 	slot: 'reference',
-					// 	handleClick: this.more
-					// }
 				]
 			},
 			tableData: [],
@@ -473,6 +473,11 @@ export default {
 				applicationType: '',
 				weight: 0
 			}
+		},
+		resetSearch(){
+			this.form = {}
+			this.listQuery.page = 1;
+			this.getList()
 		}
 	}
 }
