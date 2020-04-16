@@ -17,7 +17,6 @@
           :table-option="tableOption"
           :selectionShow="true"
           @handleButton="handleButton"
-          @handleSortChange="handleSortChange"
           @handleSelectionChange="handleSelectionChange"
         ></jyc-table>
         <!-- <el-table
