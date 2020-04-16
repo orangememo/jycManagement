@@ -373,8 +373,7 @@ export default {
       this.page.page = page
       this.getList()
     },
-    handleSelectionChange() {},
-    handleSortChange() {},
+
     handleButton(a) {
       this.handleClick(a.methods, a.row)
     },
