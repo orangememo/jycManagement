@@ -72,7 +72,7 @@
 					<el-form-item label="菜品图片" prop="businessLicense">
 						<div>请上传菜品图片</div>
 						<div class="padding-tb secondary">格式要求：支持jpg.png.jpeg.bmp格式照片，大小不能超过5M。</div>
-						<upload v-on:uploadimg="uploadimg" :fileList="[{name: 'food.jpeg', url:form.img}]" />
+						<upload :showFileList="false"  v-on:uploadimg="uploadimg" :fileList="[{name: 'food.jpeg', url:form.img}]" />
 					</el-form-item>
 				</el-form>
 			</div>

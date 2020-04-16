@@ -95,7 +95,7 @@
 							<button class="del-img-btn" @click="newProd.images.splice(index,1)">删除</button>
 						</div>
 						<div>上传图片</div>
-						<upload v-on:uploadimg="uImg" />
+						<upload :showFileList="false"  v-on:uploadimg="uImg" />
 					</el-form-item>
 					<el-form-item label="桌位状态" :label-width="labelWidth">
 						<el-select v-model="newProd.type" placeholder="请选择...">

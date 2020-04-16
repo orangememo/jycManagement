@@ -55,7 +55,7 @@
 							<button class="del-img-btn" @click="newProd.abbreviateImg=''">删除</button>
 						</div>
 						<div>请上传酒店缩略图</div>
-						<upload v-on:uploadimg="uImg" />
+						<upload :showFileList="false"  v-on:uploadimg="uImg" />
 					</el-form-item>
 					<el-form-item label="背景图片" :label-width="labelWidth">
 						<div v-if="newProd.backgroundImg" class="img-div-t">
@@ -68,7 +68,7 @@
 							<button class="del-img-btn" @click="newProd.backgroundImg=''">删除</button>
 						</div>
 						<div>请上传酒店背景图</div>
-						<upload v-on:uploadimg="uBgImg" />
+						<upload :showFileList="false"  v-on:uploadimg="uBgImg" />
 					</el-form-item>
 					<el-form-item label="图片组" :label-width="labelWidth">
 						<div v-if="newProd.images" style="display:inline">
@@ -85,7 +85,7 @@
 							</div>
 						</div>
 						<div>上传图片组</div>
-						<upload v-on:uploadimg="uInImg" :limit="pageSize" />
+						<upload :showFileList="false"  v-on:uploadimg="uInImg" />
 					</el-form-item>
 					<el-form-item label="营业时间" :label-width="labelWidth" prop="businessHours">
 						<el-input v-model="newProd.businessHours"></el-input>
@@ -566,10 +566,11 @@ export default {
 			} else {
 				let inImg = row.images
 				row.images = []
-				row.images.push(inImg)
+				inImg ? row.images.push(inImg) : ''
 				this.newProd = { ...row }
 				this.newProd.labelList = newLabel
 			}
+			console.log(this.newProd.images);
 		},
 		reset() {
 			let oldId = this.newProd.companyId
@@ -610,4 +611,12 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/styles/my.scss';
+.img-div {
+	float: left;
+	margin: 20px;
+}
+.img-div-t{
+	display: flex;
+	flex-direction: column;
+}
 </style>
