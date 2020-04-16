@@ -59,12 +59,12 @@
         </el-table>-->
       </div>
       <div class="mt10">
-        <pagination
+        <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="page.page"
           :page-sizes="[10, 20,50]"
-          :page-size="100"
+          :page-size.sync="page.size"
           layout="total, sizes, prev, pager, next, jumper"
           :total="page.total"
         />

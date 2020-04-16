@@ -64,7 +64,7 @@
         </el-table>
       </div>
       <div class="mt10">
-        <pagination
+        <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="page.page"
