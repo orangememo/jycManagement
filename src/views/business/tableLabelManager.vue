@@ -1,7 +1,7 @@
 <template>
 	<div class="app-container">
 		<el-form inline="true" model="form" label-width="80px" size="mini" style="display:flex">
-			<el-form-item label="选择酒店">
+			<el-form-item label="选择酒店" prop="cmpId">
 				<el-select clearable="true" v-model="form.cmpId" placeholder="请选择酒店">
 					<el-option
 						v-for="(item,index) in cmpList"
@@ -46,8 +46,8 @@
 
 		<el-dialog :title="dialogTitle" :visible.sync="dialogStatus" width="800px">
 			<div>
-				<el-form :model="newProd" ref="roleFrom">
-					<el-form-item label="选择酒店" :label-width="labelWidth">
+				<el-form :model="newProd" :rules="formRules" ref="roleFrom">
+					<el-form-item label="选择酒店" :label-width="labelWidth" prop="companyId">
 						<el-select v-model="newProd.companyId" placeholder="请选择...">
 							<el-option
 								v-for="(item,index) in hotelList"
@@ -58,10 +58,10 @@
 						</el-select>
 					</el-form-item>
 
-					<el-form-item label="名称" :label-width="labelWidth">
+					<el-form-item label="名称" :label-width="labelWidth" prop="name">
 						<el-input v-model="newProd.name"></el-input>
 					</el-form-item>
-					<el-form-item label="图标" :label-width="labelWidth">
+					<el-form-item label="图标" :label-width="labelWidth" prop="image">
 						<div v-if="newProd.image" style="display:flex;flex-direction: column;">
 							<el-image style="width: 150px; height: 150px" :src="hostUrl+newProd.image" :preview-src-list="[hostUrl+newProd.image]" fit="cover"></el-image>
 							<button class="del-img-btn" @click="newProd.image=''">删除</button>
@@ -108,6 +108,11 @@ export default {
 		return {
 			form: {
 			}, //查询条件
+			formRules: {
+				companyId: [{ required: true, message: '请选择酒店', trigger: 'blur' }],
+				name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
+				image: [{ required: true, message: '请上传图标', trigger: 'blur' }]
+			},
 			hotelList: [],
 			tableLabelList: [],
 			cmpList: [

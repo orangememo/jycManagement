@@ -21,20 +21,20 @@
 
 		<el-dialog :title="dialogTitle" :visible.sync="dialogStatus" width="800px">
 			<div>
-				<el-form :model="newProd" ref="roleFrom">
-					<el-form-item label="应用Key" :label-width="labelWidth">
+				<el-form :model="newProd" :rules="formRules" ref="roleFrom">
+					<el-form-item label="应用Key" :label-width="labelWidth" prop="applicationKey">
 						<el-input v-model="newProd.applicationKey"></el-input>
 					</el-form-item>
-					<el-form-item label="应用名称" :label-width="labelWidth">
+					<el-form-item label="应用名称" :label-width="labelWidth" prop="applicationName">
 						<el-input v-model="newProd.applicationName"></el-input>
 					</el-form-item>
-					<el-form-item label="应用端" :label-width="labelWidth">
+					<el-form-item label="应用端" :label-width="labelWidth"  prop="applicationSource">
 						<el-select v-model="newProd.applicationSource" placeholder="请选择...">
 							<el-option label="电脑端" value="PC"></el-option>
 							<el-option label="移动端" value="MOBILE"></el-option>
 						</el-select>
 					</el-form-item>
-					<el-form-item label="类型" :label-width="labelWidth">
+					<el-form-item label="应用类型" :label-width="labelWidth" prop="applicationType">
 						<el-select v-model="newProd.applicationType" placeholder="请选择...">
 							<el-option label="后台管理" value="WEB-MANAGE"></el-option>
 							<el-option label="客户端" value="APP"></el-option>
@@ -75,6 +75,12 @@ export default {
 	data() {
 		return {
 			form: {}, //查询条件
+			formRules: {
+				applicationKey: [{ required: true, message: '请输入应用Key', trigger: 'blur' }],
+				applicationName: [{ required: true, message: '请输入应用名称', trigger: 'blur' }],
+				applicationSource: [{ required: true, message: '请选择应用端', trigger: 'blur' }],
+				applicationType: [{ required: true, message: '请选择应用类型', trigger: 'blur' }],
+			},
 			labelWidth: '80px',
 			dialogStatus: false,
 			dialogTitle: '',
@@ -343,7 +349,7 @@ export default {
 					if (data.result.records.length > 0) {
 						_this.tableData = data.result.records
 					} else {
-						_this.$message.error('未获取到有效信息')
+						_this.tableData = []
 					}
 				}
 				_this.loading = false

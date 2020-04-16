@@ -24,11 +24,11 @@
 
 		<el-dialog :title="dialogTitle" :visible.sync="dialogStatus" width="800px">
 			<div>
-				<el-form :model="newProd" ref="roleFrom">
-					<el-form-item label="标签名称" :label-width="labelWidth">
+				<el-form :model="newProd" :rules="formRules" ref="roleFrom">
+					<el-form-item label="标签名称" :label-width="labelWidth" prop="labelName">
 						<el-input v-model="newProd.labelName"></el-input>
 					</el-form-item>
-					<el-form-item label="标签代码" :label-width="labelWidth">
+					<el-form-item label="标签代码" :label-width="labelWidth" prop="labelCode">
 						<el-input v-model="newProd.labelCode"></el-input>
 					</el-form-item>
 					<el-form-item label="状态" :label-width="labelWidth">
@@ -58,6 +58,10 @@ export default {
 		return {
 			form: {
 			}, //查询条件
+			formRules: {
+				labelName: [{ required: true, message: '请输入标签名称', trigger: 'blur' }],
+				labelCode: [{ required: true, message: '请输入标签代码', trigger: 'blur' }],
+			},
 			labelWidth: '80px',
 			dialogStatus: false,
 			dialogTitle: '',

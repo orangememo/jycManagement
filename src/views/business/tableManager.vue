@@ -49,8 +49,8 @@
 
 		<el-dialog :title="dialogTitle" :visible.sync="dialogStatus" width="800px">
 			<div>
-				<el-form :model="newProd" ref="roleFrom">
-					<el-form-item label="选择酒店" :label-width="labelWidth">
+				<el-form :model="newProd" :rules="formRules" ref="roleFrom">
+					<el-form-item label="选择酒店" :label-width="labelWidth" prop="companyId">
 						<el-select v-model="newProd.companyId" placeholder="请选择...">
 							<el-option
 								v-for="(item,index) in hotelList"
@@ -60,7 +60,7 @@
 							></el-option>
 						</el-select>
 					</el-form-item>
-					<el-form-item label="座椅标签" :label-width="labelWidth">
+					<el-form-item label="座椅标签" :label-width="labelWidth" prop="hotelTableId">
 						<el-select v-model="newProd.hotelTableId" placeholder="请选择...">
 							<el-option
 								v-for="(item,index) in tableLabelList"
@@ -70,19 +70,19 @@
 							></el-option>
 						</el-select>
 					</el-form-item>
-					<el-form-item label="餐桌编号" :label-width="labelWidth">
+					<el-form-item label="餐桌编号" :label-width="labelWidth"  prop="number">
 						<el-input v-model="newProd.number"></el-input>
 					</el-form-item>
-					<el-form-item label="餐桌名称" :label-width="labelWidth">
+					<el-form-item label="餐桌名称" :label-width="labelWidth" prop="name">
 						<el-input v-model="newProd.name"></el-input>
 					</el-form-item>
 					<el-form-item label="权重" :label-width="labelWidth">
 						<el-input v-model="newProd.weight"></el-input>
 					</el-form-item>
-					<el-form-item label="说明" :label-width="labelWidth">
+					<el-form-item label="说明" :label-width="labelWidth" prop="tableExplain">
 						<el-input v-model="newProd.tableExplain"></el-input>
 					</el-form-item>
-					<el-form-item label="图片" :label-width="labelWidth">
+					<el-form-item label="图片" :label-width="labelWidth" prop="images">
 						<div v-if="newProd.images.length>0" style="display:flex;flex-direction: column;">
 							<el-image
 								v-for="(item,index) in newProd.images"
@@ -97,7 +97,7 @@
 						<div>上传图片</div>
 						<upload :showFileList="false"  v-on:uploadimg="uImg" />
 					</el-form-item>
-					<el-form-item label="桌位状态" :label-width="labelWidth">
+					<el-form-item label="桌位状态" :label-width="labelWidth" prop="type">
 						<el-select v-model="newProd.type" placeholder="请选择...">
 							<el-option label="普通" value="ORDINARY"></el-option>
 							<el-option label="包厢" value="BALCONY"></el-option>
@@ -138,6 +138,15 @@ export default {
 		return {
 			form: {
 			}, //查询条件
+			formRules:{
+				companyId: [{ required: true, message: '请选择酒店', trigger: 'blur' }],
+				hotelTableId: [{ required: true, message: '请选择座椅标签', trigger: 'blur' }],
+				number: [{ required: true, message: '请输入餐桌编号', trigger: 'blur' }],
+				name: [{ required: true, message: '请输入餐桌名称', trigger: 'blur' }],
+				tableExplain: [{ required: true, message: '请输入餐桌名称', trigger: 'blur' }],
+				images: [{ required: true, message: '请上传图片', trigger: 'blur' }],
+				type: [{ required: true, message: '请选择桌位状态', trigger: 'blur' }]
+			},
 			hotelList: [],
 			tableLabelList: [],
 			cmpList:[],

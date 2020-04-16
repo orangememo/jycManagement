@@ -22,7 +22,7 @@
 
 		<el-dialog :title="dialogTitle" :visible.sync="dialogStatus" width="800px">
 			<div>
-				<el-form :model="newProd" ref="roleFrom">
+				<el-form :model="newProd" :rules="formRules" ref="roleFrom">
 					<el-form-item label="选择应用" :label-width="labelWidth" style="margin-right: -80px;">
 						<el-select v-model="newProd.applyList" multiple placeholder="请选择...">
 							<el-option
@@ -43,7 +43,7 @@
 							></el-option>
 						</el-select>
 					</el-form-item>
-					<el-form-item label="名称" :label-width="labelWidth">
+					<el-form-item label="名称" :label-width="labelWidth" prop="companyName">
 						<el-input v-model="newProd.companyName"></el-input>
 					</el-form-item>
 					<el-form-item label="联系人" :label-width="labelWidth" prop="linkMan">
@@ -55,38 +55,51 @@
 					<el-form-item label="地址" :label-width="labelWidth" prop="companyAddr">
 						<el-input v-model="newProd.companyAddr"></el-input>
 					</el-form-item>
-					<el-form-item label="缩略图" :label-width="labelWidth">
+					<el-form-item label="缩略图" :label-width="labelWidth" prop="abbreviateImg">
 						<div v-if="newProd.abbreviateImg" class="img-div-t">
-							<el-image style="width: 150px; height: 150px" :src="hostUrl+newProd.abbreviateImg" :preview-src-list="[hostUrl+newProd.abbreviateImg]" />
+							<el-image
+								style="width: 150px; height: 150px"
+								:src="hostUrl+newProd.abbreviateImg"
+								:preview-src-list="[hostUrl+newProd.abbreviateImg]"
+							/>
 							<button class="del-img-btn" @click="newProd.abbreviateImg=''">删除</button>
 						</div>
 						<div>请上传酒店缩略图</div>
-						<upload :showFileList="false"  v-on:uploadimg="uImg" />
+						<upload :showFileList="false" v-on:uploadimg="uImg" />
 					</el-form-item>
-					<el-form-item label="背景图片" :label-width="labelWidth">
+					<el-form-item label="背景图片" :label-width="labelWidth" prop="backgroundImg">
 						<div v-if="newProd.backgroundImg" class="img-div-t">
-							<el-image style="width: 150px; height: 150px" :src="hostUrl+newProd.backgroundImg"  :preview-src-list="[hostUrl+newProd.backgroundImg]" />
+							<el-image
+								style="width: 150px; height: 150px"
+								:src="hostUrl+newProd.backgroundImg"
+								:preview-src-list="[hostUrl+newProd.backgroundImg]"
+							/>
 							<button class="del-img-btn" @click="newProd.backgroundImg=''">删除</button>
 						</div>
 						<div>请上传酒店背景图</div>
-						<upload :showFileList="false"  v-on:uploadimg="uBgImg" />
+						<upload :showFileList="false" v-on:uploadimg="uBgImg" />
 					</el-form-item>
-					<el-form-item label="图片组" :label-width="labelWidth">
+					<el-form-item label="图片组" :label-width="labelWidth" prop="images">
 						<div v-if="newProd.images" style="display:inline">
 							<div v-for="(item,index) in newProd.images" :key="index" class="img-div">
 								<div class="img-div-t">
-									<el-image style="width: 150px; height: 150px" :src="hostUrl+item" :preview-src-list="[hostUrl+item]" fit="cover"></el-image>
+									<el-image
+										style="width: 150px; height: 150px"
+										:src="hostUrl+item"
+										:preview-src-list="[hostUrl+item]"
+										fit="cover"
+									></el-image>
 									<button class="del-img-btn" @click="newProd.images.splice(index,1)">删除</button>
 								</div>
 							</div>
 						</div>
 						<div style="clear:both">上传图片组</div>
-						<upload :showFileList="false"  v-on:uploadimg="uInImg" />
+						<upload :showFileList="false" v-on:uploadimg="uInImg" />
 					</el-form-item>
 					<el-form-item label="营业时间" :label-width="labelWidth" prop="businessHours">
 						<el-input v-model="newProd.businessHours"></el-input>
 					</el-form-item>
-					<el-form-item label="描述" :label-width="labelWidth">
+					<el-form-item label="描述" :label-width="labelWidth" prop="description">
 						<el-input v-model="newProd.description"></el-input>
 					</el-form-item>
 					<el-form-item label="X" :label-width="labelWidth">
@@ -137,6 +150,17 @@ export default {
 			labelList: [],
 			applyList: [],
 			isEdit: false,
+			formRules: {
+				companyName: [{ required: true, message: '请输入名称', trigger: 'blur' }],
+				linkMan: [{ required: true, message: '请输入联系人', trigger: 'blur' }],
+				mobile: [{ required: true, message: '请输入电话', trigger: 'blur' }],
+				companyAddr: [{ required: true, message: '请输入地址', trigger: 'blur' }],
+				abbreviateImg: [{ required: true, message: '请上传酒店缩略图', trigger: 'blur' }],
+				backgroundImg: [{ required: true, message: '请上传酒店背景图', trigger: 'blur' }],
+				images: [{ required: true, message: '请上传酒店图片组', trigger: 'blur' }],
+				businessHours: [{ required: true, message: '请输入营业时间', trigger: 'blur' }],
+				description: [{ required: true, message: '请输入描述信息', trigger: 'blur' }]
+			},
 			newProd: {
 				abbreviateImg: '',
 				backgroundImg: '',
@@ -624,7 +648,7 @@ export default {
 	float: left;
 	margin: 20px;
 }
-.img-div-t{
+.img-div-t {
 	display: flex;
 	flex-direction: column;
 }
