@@ -62,12 +62,15 @@
 						<el-input v-model="newProd.name"></el-input>
 					</el-form-item>
 					<el-form-item label="图标" :label-width="labelWidth" prop="image">
-						<div v-if="newProd.image" style="display:flex;flex-direction: column;">
-							<el-image style="width: 150px; height: 150px" :src="hostUrl+newProd.image" :preview-src-list="[hostUrl+newProd.image]" fit="cover"></el-image>
-							<button class="del-img-btn" @click="newProd.image=''">删除</button>
+						<div style="display:flex">
+							<div v-if="newProd.image" style="display:flex;flex-direction: column;margin-right:30px">
+								<el-image style="width: 150px; height: 150px" :src="hostUrl+newProd.image" :preview-src-list="[hostUrl+newProd.image]" fit="cover"></el-image>
+								<button class="del-img-btn" @click="newProd.image=''">删除</button>
+							</div>
+							<div class="img-div-t">
+								<upload :showFileList="false"  v-on:uploadimg="uImg" />
+							</div>
 						</div>
-						<div>上传图片</div>
-						<upload :showFileList="false"  v-on:uploadimg="uImg" />
 					</el-form-item>
 					<el-form-item label="权重" :label-width="labelWidth">
 						<el-input v-model="newProd.weight"></el-input>
