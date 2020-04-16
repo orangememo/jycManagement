@@ -64,7 +64,6 @@
 							/>
 							<button class="del-img-btn" @click="newProd.abbreviateImg=''">删除</button>
 						</div>
-						<div>请上传酒店缩略图</div>
 						<upload :showFileList="false" v-on:uploadimg="uImg" />
 					</el-form-item>
 					<el-form-item label="背景图片" :label-width="labelWidth" prop="backgroundImg">
@@ -76,7 +75,7 @@
 							/>
 							<button class="del-img-btn" @click="newProd.backgroundImg=''">删除</button>
 						</div>
-						<div>请上传酒店背景图</div>
+						
 						<upload :showFileList="false" v-on:uploadimg="uBgImg" />
 					</el-form-item>
 					<el-form-item label="图片组" :label-width="labelWidth" prop="images">
@@ -93,7 +92,7 @@
 								</div>
 							</div>
 						</div>
-						<div style="clear:both">上传图片组</div>
+						
 						<upload :showFileList="false" v-on:uploadimg="uInImg" />
 					</el-form-item>
 					<el-form-item label="营业时间" :label-width="labelWidth" prop="businessHours">
@@ -254,14 +253,14 @@ export default {
 						type: 'primary',
 						name: '删除',
 						handleClick: this.delAll
+					},
+					{
+						icon: 'el-icon-refresh-left',
+						type: 'primary',
+						name: '重置',
+						slot: 'reference',
+						handleClick: this.resetSearch
 					}
-					// {
-					// 	icon: 'el-icon-setting',
-					// 	type: 'primary',
-					// 	name: '更多',
-					// 	slot: 'reference',
-					// 	handleClick: this.more
-					// }
 				]
 			},
 			tableData: [],
@@ -637,6 +636,11 @@ export default {
 				vrimage: '',
 				weight: 0
 			}
+		},
+		resetSearch(){
+			this.form = {}
+			this.listQuery.page = 1;
+			this.getList()
 		}
 	}
 }
