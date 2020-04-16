@@ -10,13 +10,15 @@
     :file-list="fileList"
     :on-success="uploads"
     :on-exceed="handleExceed"
+    :on-remove="handleRemove"
+    :show-file-list="showFileList"
   >
     <i slot="default" class="el-icon-plus"></i>
     <!-- <div slot="file" slot-scope="{file}">
       <img class="el-upload-list__item-thumbnail" :src="file.url" alt />
     </div> -->
   </el-upload>
-  
+  <div class="padding-tb secondary">格式要求：支持jpg.png.jpeg.bmp格式照片，大小不能超过5M。</div>
 </div>
   
   
@@ -25,11 +27,12 @@
 <script>
 export default {
   props: {
-    limit: {
-      type: Number,
-      default: 1
-    },
-    fileList: Array
+    limit: Number,
+    fileList: Array,
+    showFileList: {
+      type: Boolean,
+      default: true
+    }
   },
   data(){
     return {
@@ -40,13 +43,16 @@ export default {
   methods: {
     uploads(response) {
       let url = response.result;
-      if(url.indexOf(".com") > -1){
-         url = url.split(".com")[1]
+      if(url.indexOf(this.hostUrl) > -1){
+         url = url.replace(this.hostUrl,'');
       }
        this.$emit("uploadimg", url);
     },
     handleExceed() {
       this.$message.warning(`当前限制选择 ${this.limit}个文件`);
+    },
+    handleRemove(file, fileList){
+      this.$emit("removeimg", file, fileList);
     },
     beforeAvatarUpload(file) {
       console.log(file);

@@ -21,7 +21,7 @@
 
 		<el-dialog :title="dialogTitle" :visible.sync="dialogStatus" width="800px">
 			<div>
-				<el-form :model="newProd" ref="roleFrom">
+				<el-form :model="newProd" :rules="formRules" ref="roleFrom">
 					<el-form-item label="标志" :label-width="labelWidth" style="margin-right: -80px;">
 						<el-select v-model="newProd.labelList" multiple placeholder="请选择...">
 							<el-option
@@ -32,7 +32,7 @@
 							></el-option>
 						</el-select>
 					</el-form-item>
-					<el-form-item label="名称" :label-width="labelWidth">
+					<el-form-item label="名称" :label-width="labelWidth" prop="companyName">
 						<el-input v-model="newProd.companyName"></el-input>
 					</el-form-item>
 					<el-form-item label="联系人" :label-width="labelWidth" prop="linkMan">
@@ -44,44 +44,53 @@
 					<el-form-item label="地址" :label-width="labelWidth" prop="companyAddr">
 						<el-input v-model="newProd.companyAddr"></el-input>
 					</el-form-item>
-					<el-form-item label="缩略图" :label-width="labelWidth">
-						<el-image
-							v-if="newProd.abbreviateImg"
-							style="width: 150px; height: 150px"
-							:src="hostUrl+newProd.abbreviateImg"
-							fit="cover"
-						>
-						</el-image>
-						<div>请上传酒店缩略图</div>
-						<upload v-on:uploadimg="uImg" />
-					</el-form-item>
-					<el-form-item label="背景图片" :label-width="labelWidth">
-						<el-image
-							v-if="newProd.backgroundImg"
-							style="width: 150px; height: 150px"
-							:src="hostUrl+newProd.backgroundImg"
-							fit="cover"
-						></el-image>
-						<div>请上传酒店背景图</div>
-						<upload v-on:uploadimg="uBgImg" />
-					</el-form-item>
-					<el-form-item label="图片组" :label-width="labelWidth">
-						<div v-if="newProd.images">
+					<el-form-item label="缩略图" :label-width="labelWidth" prop="abbreviateImg">
+						<div v-if="newProd.abbreviateImg" class="img-div-t">
 							<el-image
-								v-for="(item,index) in newProd.images"
-								:key="index"
-								style="width: 150px; height: 150px;margin:0 20px 20px 0;"
-								:src="hostUrl+item"
+								style="width: 150px; height: 150px"
+								:src="hostUrl+newProd.abbreviateImg"
+								:preview-src-list="[hostUrl+newProd.abbreviateImg]"
 								fit="cover"
 							></el-image>
+							<button class="del-img-btn" @click="newProd.abbreviateImg=''">删除</button>
+						</div>
+						
+						<upload :showFileList="false"  v-on:uploadimg="uImg" />
+					</el-form-item>
+					<el-form-item label="背景图片" :label-width="labelWidth"  prop="backgroundImg">
+						<div v-if="newProd.backgroundImg" class="img-div-t">
+							<el-image
+								style="width: 150px; height: 150px"
+								:src="hostUrl+newProd.backgroundImg"
+								:preview-src-list="[hostUrl+newProd.backgroundImg]"
+								fit="cover"
+							></el-image>
+							<button class="del-img-btn" @click="newProd.backgroundImg=''">删除</button>
+						</div>
+						
+						<upload :showFileList="false"  v-on:uploadimg="uBgImg" />
+					</el-form-item>
+					<el-form-item label="图片组" :label-width="labelWidth"  prop="images">
+						<div v-if="newProd.images" style="display:inline">
+							<div v-for="(item,index) in newProd.images" :key="index" class="img-div">
+								<div class="img-div-t">
+									<el-image
+										style="width: 150px; height: 150px"
+										:src="hostUrl+item"
+										:preview-src-list="[hostUrl+item]"
+										fit="cover"
+									></el-image>
+									<button class="del-img-btn" @click="newProd.images.splice(index,1)">删除</button>
+								</div>
+							</div>
 						</div>
 						<div>上传图片组</div>
-						<upload v-on:uploadimg="uInImg" :limit="pageSize" />
+						<upload :showFileList="false"  v-on:uploadimg="uInImg" />
 					</el-form-item>
 					<el-form-item label="营业时间" :label-width="labelWidth" prop="businessHours">
 						<el-input v-model="newProd.businessHours"></el-input>
 					</el-form-item>
-					<el-form-item label="描述" :label-width="labelWidth">
+					<el-form-item label="描述" :label-width="labelWidth" prop="description">
 						<el-input v-model="newProd.description"></el-input>
 					</el-form-item>
 					<el-form-item label="X" :label-width="labelWidth">
@@ -127,8 +136,18 @@ export default {
 	components: { Pagination, jycTable, SearchForm, Upload },
 	data() {
 		return {
-			form: {
-			}, //查询条件
+			form: {}, //查询条件
+			formRules: {
+				companyName: [{ required: true, message: '请输入名称', trigger: 'blur' }],
+				linkMan: [{ required: true, message: '请输入联系人', trigger: 'blur' }],
+				mobile: [{ required: true, message: '请输入电话', trigger: 'blur' }],
+				companyAddr: [{ required: true, message: '请输入地址', trigger: 'blur' }],
+				abbreviateImg: [{ required: true, message: '请上传酒店缩略图', trigger: 'blur' }],
+				backgroundImg: [{ required: true, message: '请上传酒店背景图', trigger: 'blur' }],
+				images: [{ required: true, message: '请上传酒店图片组', trigger: 'blur' }],
+				businessHours: [{ required: true, message: '请输入营业时间', trigger: 'blur' }],
+				description: [{ required: true, message: '请输入描述信息', trigger: 'blur' }],
+			},
 			labelWidth: '80px',
 			dialogStatus: false,
 			dialogTitle: '',
@@ -228,14 +247,14 @@ export default {
 						type: 'primary',
 						name: '删除',
 						handleClick: this.delAll
+					},
+					{
+						icon: 'el-icon-refresh-left',
+						type: 'primary',
+						name: '重置',
+						slot: 'reference',
+						handleClick: this.resetSearch
 					}
-					// {
-					// 	icon: 'el-icon-setting',
-					// 	type: 'primary',
-					// 	name: '更多',
-					// 	slot: 'reference',
-					// 	handleClick: this.more
-					// }
 				]
 			},
 			tableData: [],
@@ -266,7 +285,7 @@ export default {
 								bg += 'background: #f39c12;'
 							} else if (item.labelCode == 'INDEX') {
 								bg += 'background: #18bc9c;'
-							} else if (item.labelCode == 'recommend') {
+							} else if (item.labelCode == 'RECOMMEND') {
 								bg += 'background: #e74c3c;'
 							}
 							span += `<div style="${bg}">${item.labelName}</div>`
@@ -399,32 +418,32 @@ export default {
 			this.chooseList = row
 		},
 		getList() {
-			let _this = this;
+			let _this = this
 			const params = {
 				isPage: 'YES',
 				currentPage: _this.listQuery.page,
 				pageSize: _this.listQuery.limit
 			}
 			let p = { ...params, ..._this.form }
-			console.log('form:'+JSON.stringify(_this.form));
-			console.log('p:'+JSON.stringify(p));
+			console.log('form:' + JSON.stringify(_this.form))
+			console.log('p:' + JSON.stringify(p))
 			this.searchCompanyPageHotel(p)
 		},
 		searchCompanyPageHotel(params) {
 			let _this = this
-			_this.loading = true;
+			_this.loading = true
 			getCompanyPageHotel(params).then(data => {
 				if (data.code == '200') {
 					_this.total = data.result.total
 					if (data.result.records.length > 0) {
 						_this.tableData = data.result.records
 					} else {
-						_this.tableData = [];
+						_this.tableData = []
 					}
 				} else {
-					_this.tableData = [];
+					_this.tableData = []
 				}
-				_this.loading = false;
+				_this.loading = false
 			})
 		},
 		getLabel() {
@@ -449,14 +468,14 @@ export default {
 			_this.newProd.images instanceof Array
 				? (_this.newProd.images = _this.newProd.images.join(','))
 				: ''
-			_this.newProd.companyType = 'HOTEL';
+			_this.newProd.companyType = 'HOTEL'
 			if (_this.editStatus) {
 				updateCompany(_this.newProd).then(data => {
 					if (data.code == '200') {
 						_this.alertMessage('修改成功')
 						_this.dialogStatus = false
 						_this.getList()
-					} 
+					}
 				})
 			} else {
 				addNewCompany(_this.newProd).then(data => {
@@ -500,11 +519,11 @@ export default {
 		},
 		delAll() {
 			if (this.chooseList.length > 0) {
-				let companyIds = [];
-				this.chooseList.map(item=>{
+				let companyIds = []
+				this.chooseList.map(item => {
 					companyIds.push(item.companyId)
 				})
-				this.delete(companyIds.join(','));
+				this.delete(companyIds.join(','))
 			} else {
 				_this.$message.error('请先选择要删除项')
 			}
@@ -558,15 +577,16 @@ export default {
 			} else {
 				let inImg = row.images
 				row.images = []
-				row.images.push(inImg)
+				inImg ? row.images.push(inImg) : ''
 				this.newProd = { ...row }
 				this.newProd.labelList = newLabel
 			}
+			console.log(this.newProd.images);
 		},
-		reset(){
-			let oldId = this.newProd.companyId;
-			this.resetForm();
-			this.newProd.cmpId = oldId;
+		reset() {
+			let oldId = this.newProd.companyId
+			this.resetForm()
+			this.newProd.cmpId = oldId
 		},
 		resetForm() {
 			this.newProd = {
@@ -595,6 +615,11 @@ export default {
 				vrimage: '',
 				weight: 0
 			}
+		},
+		resetSearch(){
+			this.form = {}
+			this.listQuery.page = 1;
+			this.getList()
 		}
 	}
 }
@@ -602,4 +627,12 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/styles/my.scss';
+.img-div {
+	float: left;
+	margin: 20px;
+}
+.img-div-t{
+	display: flex;
+	flex-direction: column;
+}
 </style>

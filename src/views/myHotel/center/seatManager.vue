@@ -45,7 +45,7 @@
 					<el-form-item label="包厢图片" :label-width="formLabelWidth">
 						<div>请上传包厢图片</div>
 						<div class="padding-tb secondary">格式要求：支持jpg.png.jpeg.bmp格式照片，大小不能超过3M。</div>
-						<upload v-on:uploadimg="uImg" />
+						<upload :showFileList="false"  v-on:uploadimg="uImg" />
 					</el-form-item>
 				</el-form>
 			</div>
