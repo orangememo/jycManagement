@@ -29,11 +29,10 @@ Vue.prototype.$getRsaCode = function(str) {
 	let data = encryptStr.encrypt(str.toString()) // 进行加密
 	return data
 }
-//my
 //全局弹窗
 //正确
 Vue.prototype.alertMessage = param => {
-  Message({
+	Vue.prototype.$message({
     message: param,
     type: 'success',
     duration: 5 * 1000
@@ -54,22 +53,6 @@ Vue.prototype.$dateFormat = param => {
 	const mm = dateMat.getMinutes()
 	let timeFormat = year + '/' + filerdata(month) + '/' + filerdata(day) + ' ' + filerdata(hh) + ':' + filerdata(mm)
 	return timeFormat
-}
-//提示信息
-Vue.prototype.$alert_my = param => {
-	this.$message({
-		type: 'success',
-		message: param
-	})
-}
-Vue.prototype.$confirm_my = param => {
-	this.$confirm(param.message, param.title, {
-		confirmButtonText: '确定',
-		cancelButtonText: '取消',
-		type: 'warning'
-	})
-		.then(() => {})
-		.catch(() => {})
 }
 //地图
 import VueAMap from 'vue-amap'
