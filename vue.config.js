@@ -38,7 +38,7 @@ module.exports = {
 		},
 		proxy: {
 			// 服务器ip
-			'/': {
+			'/development_api/': {
 				target: 'http://192.168.0.106:8085',
 				changeOrigin: true,
 			},
