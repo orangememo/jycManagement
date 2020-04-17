@@ -41,6 +41,9 @@ module.exports = {
 			'/development_api/': {
 				target: 'http://192.168.0.106:8085',
 				changeOrigin: true,
+				pathRewrite: {
+					'^/development_api': '',
+				},
 			},
 		},
 		after: require('./mock/mock-server.js'),
