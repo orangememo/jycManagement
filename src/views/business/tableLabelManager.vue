@@ -133,7 +133,8 @@ export default {
 				image: '',
 				name: '',
 				state: '',
-				weight: 0
+				weight: 0,
+				cmpId:null
 			},
 			pageSize: 10,
 			listQuery: {
@@ -361,6 +362,7 @@ export default {
 		},
 		save() {
 			let _this = this
+			_this.newProd.cmpId = _this.newProd.companyId
 			if (_this.editStatus) {
 				updatetableLabel(_this.newProd).then(data => {
 					if (data.code == '200') {
@@ -440,16 +442,6 @@ export default {
 		setRuleFrom(row) {
 			this.newProd = { ...row }
 		},
-		//置顶
-		toTop(row) {
-			let _this = this
-			companyTopWeight({ companyId: row.companyId }).then(data => {
-				if (data.code == '200') {
-					_this.alertMessage('置顶成功')
-					_this.getList()
-				}
-			})
-		},
 		uImg(img) {
 			this.newProd.image = img
 		},
@@ -465,7 +457,8 @@ export default {
 				image: '',
 				name: '',
 				state: '',
-				weight: 0
+				weight: 0,
+				cmpId: null
 			}
 		},
 		resetSearch(){
