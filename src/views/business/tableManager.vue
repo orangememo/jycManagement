@@ -1,8 +1,8 @@
 <template>
 	<div class="app-container">
-		<el-form inline="true" model="form" label-width="80px" size="mini" style="display:flex">
+		<el-form :inline="true" model="form" label-width="80px" size="mini" style="display:flex">
 			<el-form-item label="选择酒店">
-				<el-select clearable="true" v-model="form.cmpId" placeholder="请选择酒店">
+				<el-select :clearable="true" v-model="form.cmpId" placeholder="请选择酒店">
 					<el-option
 						v-for="(item,index) in cmpList"
 						:key="index"
@@ -18,7 +18,7 @@
 				<el-input v-model="form.number" :clearable="true" placeholder="请输入餐桌编号"></el-input>
 			</el-form-item>
 			<el-form-item label="标签状态">
-				<el-select clearable="true" v-model="form.state" placeholder="请选择酒店">
+				<el-select :clearable="true" v-model="form.state" placeholder="请选择酒店">
 					<el-option label="全部"></el-option>
 					<el-option label="正常" value="NORMAL"></el-option>
 					<el-option label="删除" value="DELETE"></el-option>
@@ -84,16 +84,14 @@
 					</el-form-item>
 					<el-form-item label="图片" :label-width="labelWidth" prop="images">
 						<div style="display:flex">
-							<div v-if="newProd.images.length>0" style="display:flex;flex-direction: column;margin-right:30px">
+							<div v-if="newProd.images" style="display:flex;flex-direction: column;margin-right:30px">
 							<el-image
-								v-for="(item,index) in newProd.images"
-								:key="index"
 								style="width: 150px; height: 150px"
-								:src="hostUrl+item"
-								 :preview-src-list="[hostUrl+item]"
+								:src="hostUrl+newProd.images"
+								 :preview-src-list="[hostUrl+newProd.images]"
 								fit="cover"
 							></el-image>
-							<button class="del-img-btn" @click="newProd.images.splice(index,1)">删除</button>
+							<button class="del-img-btn" @click="newProd.images=''">删除</button>
 						</div>
 							<div class="img-div-t">
 								<upload :showFileList="false"  v-on:uploadimg="uImg" />
@@ -164,13 +162,14 @@ export default {
 				companyId: null,
 				hotelTableId: null,
 				id: null,
-				images: [],
+				images: '',
 				name: '',
 				number: '',
 				state: '',
 				tableExplain: '',
 				type: '',
-				weight: 0
+				weight: 0,
+				cmpId: null
 			},
 			pageSize: 10,
 			listQuery: {
@@ -243,7 +242,7 @@ export default {
 					type: 'text'
 				},
 				{
-					label: '名称',
+					label: '桌位名称',
 					param: 'name',
 					align: 'center',
 					type: 'text'
@@ -443,7 +442,7 @@ export default {
 		},
 		save() {
 			let _this = this
-			_this.newProd.images = _this.newProd.images.join(',')
+			_this.newProd.cmpId = _this.newProd.companyId
 			if (_this.editStatus) {
 				updatetable(_this.newProd).then(data => {
 					if (data.code == '200') {
@@ -522,20 +521,9 @@ export default {
 
 		setRuleFrom(row) {
 			this.newProd = { ...row }
-			this.newProd.images = this.newProd.images.split(',')
-		},
-		//置顶
-		toTop(row) {
-			let _this = this
-			companyTopWeight({ companyId: row.companyId }).then(data => {
-				if (data.code == '200') {
-					_this.alertMessage('置顶成功')
-					_this.getList()
-				}
-			})
 		},
 		uImg(img) {
-			this.newProd.images.push(img)
+			this.newProd.images = img
 		},
 		reset() {
 			let oldId = this.newProd.id
@@ -547,13 +535,14 @@ export default {
 				companyId: null,
 				hotelTableId: null,
 				id: null,
-				images: [],
+				images: '',
 				name: '',
 				number: '',
 				state: '',
 				tableExplain: '',
 				type: '',
-				weight: 0
+				weight: 0,
+				cmpId: null
 			}
 		},
 		resetSearch(){
