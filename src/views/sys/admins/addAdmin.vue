@@ -94,7 +94,8 @@ export default {
         userName: '',
         email: '',
         nickName: '',
-        accountNum: null
+        accountNum: null,
+        state: 'NORMAL'
       },
 
       formRules: {

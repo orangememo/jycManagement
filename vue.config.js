@@ -38,50 +38,8 @@ module.exports = {
 		},
 		proxy: {
 			// 服务器ip
-			'/rule/': {
+			'/': {
 				target: 'http://192.168.0.106:8085',
-				changeOrigin: true,
-			},
-			'/role/': {
-				target: 'http://192.168.0.106:8085',
-				changeOrigin: true,
-			},
-			'/manager/': {
-				target: 'http://192.168.0.106:8085',
-				changeOrigin: true,
-			},
-			'/version/': {
-				target: 'http://192.168.0.106:8085',
-				changeOrigin: true,
-			},
-
-			'/account/': {
-				target: 'http://192.168.0.106:8085',
-				changeOrigin: true,
-			},
-			'/company/': {
-				target: 'http://192.168.0.106:8085',
-				changeOrigin: true,
-			},
-			'/HotelTable': {
-				target: 'http://192.168.0.106:8085',
-				changeOrigin: true,
-			},
-			'/HotelTableInfo': {
-				target: 'http://192.168.0.106:8085',
-				changeOrigin: true,
-			},
-			'/label': {
-				target: 'http://192.168.0.106:8085',
-				changeOrigin: true,
-			},
-			'/application': {
-				target: 'http://192.168.0.106:8085',
-				changeOrigin: true,
-			},
-			'/lp': {
-				target: 'http://49.234.12.49:9090',
-				changeOrigin: true,
 				changeOrigin: true,
 			},
 		},
