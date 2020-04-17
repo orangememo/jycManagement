@@ -74,7 +74,7 @@
 							</div>
 						</div>
 					</el-form-item>
-					<el-form-item label="图片组" label-width="91.5px"  prop="images">
+					<el-form-item label="图片组" :label-width="labelWidth"  prop="images">
 						<div v-if="newProd.images" style="display:inline">
 							<div v-for="(item,index) in newProd.images" :key="index" class="img-div">
 								<div class="img-div-t">
@@ -88,7 +88,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="img-div-t" style="float:left;padding:20px 0 0 20px">
+						<div class="img-div-t" style="float:left;">
 							<upload :showFileList="false" v-on:uploadimg="uInImg" />
 						</div>
 					</el-form-item>
@@ -467,15 +467,18 @@ export default {
 		},
 		save() {
 			let _this = this
+			let sessionProd = {..._this.newProd}
+			sessionProd.companyType = 'HOTEL'
+
 			_this.newProd.labelList instanceof Array
-				? (_this.newProd.flags = _this.newProd.labelList.join(','))
+				? (sessionProd.flags = _this.newProd.labelList.join(','))
 				: ''
 			_this.newProd.images instanceof Array
-				? (_this.newProd.images = _this.newProd.images.join(','))
+				? (sessionProd.images = _this.newProd.images.join(','))
 				: ''
-			_this.newProd.companyType = 'HOTEL'
+			
 			if (_this.editStatus) {
-				updateCompany(_this.newProd).then(data => {
+				updateCompany(sessionProd).then(data => {
 					if (data.code == '200') {
 						_this.alertMessage('修改成功')
 						_this.dialogStatus = false
@@ -483,7 +486,7 @@ export default {
 					}
 				})
 			} else {
-				addNewCompany(_this.newProd).then(data => {
+				addNewCompany(sessionProd).then(data => {
 					if (data.code == '200') {
 						_this.alertMessage('保存成功')
 						_this.dialogStatus = false
@@ -634,7 +637,7 @@ export default {
 @import '@/styles/my.scss';
 .img-div {
 	float: left;
-	margin: 20px;
+	margin: 0 30px 30px 0;
 }
 .img-div-t{
 	display: flex;
