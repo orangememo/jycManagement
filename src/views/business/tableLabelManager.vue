@@ -58,7 +58,7 @@
 						</el-select>
 					</el-form-item>
 
-					<el-form-item label="名称" :label-width="labelWidth" prop="name">
+					<el-form-item label="标签名称" :label-width="labelWidth" prop="name">
 						<el-input v-model="newProd.name"></el-input>
 					</el-form-item>
 					<el-form-item label="图标" :label-width="labelWidth" prop="image">
@@ -194,7 +194,7 @@ export default {
 					type: 'text'
 				},
 				{
-					label: '名称',
+					label: '标签名称',
 					param: 'name',
 					align: 'center',
 					type: 'text'
