@@ -21,7 +21,7 @@
 		/>
 
 		<el-dialog :title="dialogTitle" :visible.sync="dialogStatus" width="800px">
-			<div>
+			<div v-if="dialogStatus">
 				<el-form :model="newProd" :rules="formRules" ref="roleFrom">
 					<el-form-item label="标签名称" :label-width="labelWidth" prop="labelName">
 						<el-input v-model="newProd.labelName"></el-input>
