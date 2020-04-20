@@ -170,7 +170,7 @@ export default {
       },
       tableTitle: [
         {
-          label: 'ID',
+          label: '应用ID',
           param: 'applicationId',
           align: 'center',
           type: 'text'

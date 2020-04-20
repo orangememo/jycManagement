@@ -3,9 +3,26 @@
     <div class="body">
       <el-form ref="form" :model="form" :rules="formRules" label-width="140px" size="small">
         <el-row>
-          <el-col :span="24">
+          <!-- <el-col :span="24">
             <el-form-item label="应用id" prop="applicationId">
               <el-input v-model.number="form.applicationId" placeholder="请输入应用id"></el-input>
+            </el-form-item>
+          </el-col>-->
+          <el-col :span="24">
+            <el-form-item label="应用" prop="applicationId">
+              <el-select
+                v-model="form.applicationId"
+                placeholder="请选择应用"
+                filterable
+                style="width:100%"
+              >
+                <el-option
+                  v-for="(item,index) in options.appIdOptions"
+                  :key="index"
+                  :label="item.applicationName"
+                  :value="item.applicationId"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -79,7 +96,8 @@ import {
   addVersionInfo,
   getVersionInfo,
   putVersionInfo,
-  upLoadImg
+  upLoadImg,
+  getApplication
 } from '@/api/member'
 
 export default {
@@ -120,6 +138,9 @@ export default {
         applicationUrl: [
           { required: true, message: '请填写Code', trigger: 'blur' }
         ]
+      },
+      options: {
+        appIdOptions: []
       }
     }
   },
@@ -130,6 +151,9 @@ export default {
         this.form = res.result
       })
     }
+    getApplication().then(res => {
+      this.options.appIdOptions = res.result
+    })
   },
 
   methods: {
@@ -140,9 +164,9 @@ export default {
           this.$refs.form.validate(valid => {
             if (valid) {
               let obj = JSON.parse(JSON.stringify(this.form))
+              obj.byOperateApplicationId = obj.applicationId
               if (this.edit == 1) {
                 obj.applicationVersionId = this.editRoleId
-                obj.byOperateApplicationId = obj.applicationId
                 putVersionInfo(obj).then(res => {
                   if (res.code == 200) {
                     this.$message({
