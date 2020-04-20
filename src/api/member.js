@@ -8,7 +8,7 @@ export function getVersionPageInfo(params) {
 	return request({
 		url: '/version/page/info',
 		method: 'get',
-		params
+		params,
 	})
 }
 
@@ -20,7 +20,7 @@ export function addVersionInfo(data) {
 	return request({
 		url: '/version/info',
 		method: 'post',
-		data
+		data,
 	})
 }
 /**
@@ -31,7 +31,7 @@ export function putVersionInfo(data) {
 	return request({
 		url: '/version/info',
 		method: 'PUT',
-		data
+		data,
 	})
 }
 /**
@@ -42,8 +42,15 @@ export function getVersionInfo(params) {
 	return request({
 		url: '/version/versionInfo/id',
 		method: 'get',
-		params
+		params,
 	})
 }
 
 export const upLoadImg = `http://49.234.12.49/lp/lp/lpVuser/edits`
+export function getApplication(params) {
+	return request({
+		url: '/application/list',
+		method: 'get',
+		params,
+	})
+}

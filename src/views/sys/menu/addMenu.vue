@@ -46,7 +46,7 @@
           </el-col>
           <el-col :span="24">
             <el-form-item label="权重" prop="weight">
-              <el-input v-model.number="form.weight" placeholder="权重"></el-input>
+              <el-input v-model.number="form.weight" placeholder="请输入权重"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -135,6 +135,7 @@ export default {
 
       formRules: {
         ruleType: [{ required: true, message: '请选择菜单', trigger: 'blur' }],
+        weight: [{ required: true, message: '请输入权重', trigger: 'blur' }],
         pruleId: [{ required: true, message: '请选择父级', trigger: 'change' }],
         component: [
           { required: true, message: '请选择component', trigger: 'blur' }
