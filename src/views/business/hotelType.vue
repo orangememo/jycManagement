@@ -286,7 +286,7 @@ export default {
 						icon: 'el-icon-search',
 						type: 'primary',
 						name: '查询',
-						handleClick: this.getList
+						handleClick: this.getSearchList
 					},
 					{
 						icon: 'el-icon-document-add',
@@ -475,6 +475,10 @@ export default {
 		},
 		handleSelectionChange(row) {
 			this.chooseList = row
+		},
+		getSearchList(){
+			this.listQuery.page = 1
+			this.getList()
 		},
 		getList() {
 			let _this = this
