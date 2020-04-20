@@ -21,7 +21,7 @@
 		/>
 
 		<el-dialog :title="dialogTitle" :visible.sync="dialogStatus" width="800px">
-			<div>
+			<div v-if="dialogStatus">
 				<el-form :model="newProd" :rules="formRules" ref="roleFrom">
 					<el-form-item label="选择应用" :label-width="labelWidth" style="margin-right: -80px;" prop="applyList">
 						<el-select v-model="newProd.applyList" multiple placeholder="请选择...">
