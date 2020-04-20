@@ -1,9 +1,7 @@
 <template>
 	<div class="app-container">
 		<search-form :formConfig="formConfig" :value="form" labelWidth="80px"></search-form>
-		<el-popover placement="top-end" trigger="click" v-model="moreStatus">
-			
-		</el-popover>
+		<el-popover placement="top-end" trigger="click" v-model="moreStatus"></el-popover>
 		<jyc-table
 			:loading="loading"
 			:table-data="tableData"
@@ -31,7 +29,7 @@
 					<el-form-item label="标签代码" :label-width="labelWidth" prop="labelCode">
 						<el-input v-model="newProd.labelCode"></el-input>
 					</el-form-item>
-					<el-form-item label="状态" :label-width="labelWidth">
+					<el-form-item label="状态" :label-width="labelWidth" prop="state">
 						<el-select v-model="newProd.state" placeholder="请选择...">
 							<el-option label="正常" value="NORMAL"></el-option>
 							<el-option label="删除" value="DELETE"></el-option>
@@ -56,11 +54,25 @@ export default {
 	components: { Pagination, jycTable, SearchForm },
 	data() {
 		return {
-			form: {
-			}, //查询条件
+			form: {}, //查询条件
 			formRules: {
-				labelName: [{ required: true, message: '请输入标签名称', trigger: 'blur' }],
-				labelCode: [{ required: true, message: '请输入标签代码', trigger: 'blur' }],
+				labelName: [
+					{
+						required: true,
+						message: '请输入标签名称',
+						trigger: 'blur'
+					}
+				],
+				labelCode: [
+					{
+						required: true,
+						message: '请输入标签代码',
+						trigger: 'blur'
+					}
+				],
+				state: [
+					{ required: true, message: '请选择状态', trigger: 'blur' }
+				]
 			},
 			labelWidth: '80px',
 			dialogStatus: false,
@@ -260,7 +272,7 @@ export default {
 		handleSelectionChange(row) {
 			this.chooseList = row
 		},
-		getSearchList(){
+		getSearchList() {
 			this.listQuery.page = 1
 			this.getList()
 		},
@@ -277,18 +289,17 @@ export default {
 		searchApplyPageInfo(params) {
 			let _this = this
 			_this.loading = true
-			getLabelList(params)
-				.then(data => {
-					if (data.code == '200') {
-						_this.total = data.result.total
-						if (data.result.records.length > 0) {
-							_this.tableData = data.result.records
-						} else {
-							_this.tableData = [];
-						}
+			getLabelList(params).then(data => {
+				if (data.code == '200') {
+					_this.total = data.result.total
+					if (data.result.records.length > 0) {
+						_this.tableData = data.result.records
+					} else {
+						_this.tableData = []
 					}
-					_this.loading = false
-				})
+				}
+				_this.loading = false
+			})
 		},
 		addNew() {
 			this.editStatus = false
@@ -298,23 +309,27 @@ export default {
 		},
 		save() {
 			let _this = this
-			if (_this.editStatus) {
-				updateLabel(_this.newProd).then(data => {
-					if (data.code == '200') {
-						_this.alertMessage('修改成功')
-						_this.dialogStatus = false
-						_this.getList()
+			this.$refs.roleFrom.validate(valid => {
+				if (valid) {
+					if (_this.editStatus) {
+						updateLabel(_this.newProd).then(data => {
+							if (data.code == '200') {
+								_this.alertMessage('修改成功')
+								_this.dialogStatus = false
+								_this.getList()
+							}
+						})
+					} else {
+						addNewLabel(_this.newProd).then(data => {
+							if (data.code == '200') {
+								_this.alertMessage('保存成功')
+								_this.dialogStatus = false
+								_this.getList()
+							}
+						})
 					}
-				})
-			} else {
-				addNewLabel(_this.newProd).then(data => {
-					if (data.code == '200') {
-						_this.alertMessage('保存成功')
-						_this.dialogStatus = false
-						_this.getList()
-					}
-				})
-			}
+				}
+			})
 		},
 		edit(row) {
 			this.editStatus = true
@@ -336,7 +351,7 @@ export default {
 					if (data.code == '200') {
 						_this.alertMessage('删除成功')
 						_this.getList()
-					} 
+					}
 				})
 			})
 		},
@@ -371,14 +386,14 @@ export default {
 			this.alertMessage('修改成功')
 			this.moreStatus = false
 		},
-		
+
 		setRuleFrom(row) {
 			this.newProd = { ...row }
 		},
-		reset(){
-			let oldId = this.newProd.labelId;
-			this.resetForm();
-			this.newProd.labelId = oldId;
+		reset() {
+			let oldId = this.newProd.labelId
+			this.resetForm()
+			this.newProd.labelId = oldId
 		},
 		resetForm() {
 			this.newProd = {
@@ -388,9 +403,9 @@ export default {
 				state: ''
 			}
 		},
-		resetSearch(){
+		resetSearch() {
 			this.form = {}
-			this.listQuery.page = 1;
+			this.listQuery.page = 1
 			this.getList()
 		}
 	}

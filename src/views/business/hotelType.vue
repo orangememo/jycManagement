@@ -23,7 +23,7 @@
 		<el-dialog :title="dialogTitle" :visible.sync="dialogStatus" width="800px">
 			<div>
 				<el-form :model="newProd" :rules="formRules" ref="roleFrom">
-					<el-form-item label="选择应用" :label-width="labelWidth" style="margin-right: -80px;">
+					<el-form-item label="选择应用" :label-width="labelWidth" style="margin-right: -80px;" prop="applyList">
 						<el-select v-model="newProd.applyList" multiple placeholder="请选择...">
 							<el-option
 								v-for="(item,index) in applyList"
@@ -33,7 +33,7 @@
 							></el-option>
 						</el-select>
 					</el-form-item>
-					<el-form-item label="选择标志" :label-width="labelWidth" style="margin-right: -80px;">
+					<el-form-item label="选择标志" :label-width="labelWidth" style="margin-right: -80px;" prop="labelList">
 						<el-select v-model="newProd.labelList" multiple placeholder="请选择...">
 							<el-option
 								v-for="(item,index) in labelList"
@@ -109,16 +109,16 @@
 					<el-form-item label="描述" :label-width="labelWidth" prop="description">
 						<el-input v-model="newProd.description"></el-input>
 					</el-form-item>
-					<el-form-item label="X" :label-width="labelWidth">
+					<el-form-item label="X" :label-width="labelWidth" prop="longitude">
 						<el-input v-model="newProd.longitude" type="text"></el-input>
 					</el-form-item>
-					<el-form-item label="Y" :label-width="labelWidth">
+					<el-form-item label="Y" :label-width="labelWidth"  prop="latitude">
 						<el-input v-model="newProd.latitude" type="text"></el-input>
 					</el-form-item>
-					<el-form-item label="权重" :label-width="labelWidth">
+					<el-form-item label="权重" :label-width="labelWidth" prop="weight">
 						<el-input v-model="newProd.weight"></el-input>
 					</el-form-item>
-					<el-form-item label="状态" :label-width="labelWidth">
+					<el-form-item label="状态" :label-width="labelWidth" prop="state">
 						<el-select v-model="newProd.state" placeholder="请选择...">
 							<el-option label="正常" value="NORMAL"></el-option>
 							<el-option label="删除" value="DELETE"></el-option>
@@ -164,6 +164,12 @@ export default {
 			applyList: [],
 			isEdit: false,
 			formRules: {
+				applyList: [
+					{ required: true, message: '请选择应用', trigger: 'blur' }
+				],
+				labelList: [
+					{ required: true, message: '请选择标志', trigger: 'blur' }
+				],
 				companyName: [
 					{ required: true, message: '请输入名称', trigger: 'blur' }
 				],
@@ -210,6 +216,18 @@ export default {
 						message: '请输入描述信息',
 						trigger: 'blur'
 					}
+				],
+				longitude: [
+					{ required: true, message: '请输入经度值', trigger: 'blur' }
+				],
+				latitude: [
+					{ required: true, message: '请输入纬度值', trigger: 'blur' }
+				],
+				weight: [
+					{ required: true, message: '请输入权重值', trigger: 'blur' }
+				],
+				state: [
+					{ required: true, message: '请输选择状态', trigger: 'blur' }
 				]
 			},
 			newProd: {
@@ -476,7 +494,7 @@ export default {
 		handleSelectionChange(row) {
 			this.chooseList = row
 		},
-		getSearchList(){
+		getSearchList() {
 			this.listQuery.page = 1
 			this.getList()
 		},
@@ -537,34 +555,39 @@ export default {
 		},
 		save() {
 			let _this = this
+			this.$refs.roleFrom.validate(valid => {
+				if (valid) {
+					let sessionProd = { ..._this.newProd }
+					sessionProd.companyType = 'HOTEL'
 
-			let sessionProd = {..._this.newProd}
-			sessionProd.companyType = 'HOTEL'
-			
-			_this.newProd.labelList instanceof Array
-				? (sessionProd.flags = _this.newProd.labelList.join(','))
-				: ''
-			_this.newProd.images instanceof Array
-				? (sessionProd.images = _this.newProd.images.join(','))
-				: ''
+					_this.newProd.labelList instanceof Array
+						? (sessionProd.flags = _this.newProd.labelList.join(
+								','
+						  ))
+						: ''
+					_this.newProd.images instanceof Array
+						? (sessionProd.images = _this.newProd.images.join(','))
+						: ''
 
-			if (_this.editStatus) {
-				updateCompany(sessionProd).then(data => {
-					if (data.code == '200') {
-						_this.alertMessage('修改成功')
-						_this.dialogStatus = false
-						_this.getList()
+					if (_this.editStatus) {
+						updateCompany(sessionProd).then(data => {
+							if (data.code == '200') {
+								_this.alertMessage('修改成功')
+								_this.dialogStatus = false
+								_this.getList()
+							}
+						})
+					} else {
+						addNewCompany(sessionProd).then(data => {
+							if (data.code == '200') {
+								_this.alertMessage('保存成功')
+								_this.dialogStatus = false
+								_this.getList()
+							}
+						})
 					}
-				})
-			} else {
-				addNewCompany(sessionProd).then(data => {
-					if (data.code == '200') {
-						_this.alertMessage('保存成功')
-						_this.dialogStatus = false
-						_this.getList()
-					}
-				})
-			}
+				}
+			})
 		},
 		edit(row) {
 			this.editStatus = true
