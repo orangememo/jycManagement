@@ -26,9 +26,7 @@
 			</el-form-item>
 		</el-form>
 		<search-form :formConfig="formConfig" :value="form" labelWidth="80px"></search-form>
-		<el-popover placement="top-end" trigger="click" v-model="moreStatus">
-			
-		</el-popover>
+		<el-popover placement="top-end" trigger="click" v-model="moreStatus"></el-popover>
 		<jyc-table
 			:loading="loading"
 			:table-data="tableData"
@@ -70,14 +68,11 @@
 							></el-option>
 						</el-select>
 					</el-form-item>
-					<el-form-item label="餐桌编号" :label-width="labelWidth"  prop="number">
+					<el-form-item label="餐桌编号" :label-width="labelWidth" prop="number">
 						<el-input v-model="newProd.number"></el-input>
 					</el-form-item>
 					<el-form-item label="餐桌名称" :label-width="labelWidth" prop="name">
 						<el-input v-model="newProd.name"></el-input>
-					</el-form-item>
-					<el-form-item label="权重" :label-width="labelWidth">
-						<el-input v-model="newProd.weight"></el-input>
 					</el-form-item>
 					<el-form-item label="说明" :label-width="labelWidth" prop="tableExplain">
 						<el-input v-model="newProd.tableExplain"></el-input>
@@ -85,16 +80,16 @@
 					<el-form-item label="图片" :label-width="labelWidth" prop="images">
 						<div style="display:flex">
 							<div v-if="newProd.images" style="display:flex;flex-direction: column;margin-right:30px">
-							<el-image
-								style="width: 150px; height: 150px"
-								:src="hostUrl+newProd.images"
-								 :preview-src-list="[hostUrl+newProd.images]"
-								fit="cover"
-							></el-image>
-							<button class="del-img-btn" @click="newProd.images=''">删除</button>
-						</div>
+								<el-image
+									style="width: 150px; height: 150px"
+									:src="hostUrl+newProd.images"
+									:preview-src-list="[hostUrl+newProd.images]"
+									fit="cover"
+								></el-image>
+								<button class="del-img-btn" @click="newProd.images=''">删除</button>
+							</div>
 							<div class="img-div-t">
-								<upload :showFileList="false"  v-on:uploadimg="uImg" />
+								<upload :showFileList="false" v-on:uploadimg="uImg" />
 							</div>
 						</div>
 					</el-form-item>
@@ -104,7 +99,10 @@
 							<el-option label="包厢" value="BALCONY"></el-option>
 						</el-select>
 					</el-form-item>
-					<el-form-item label="状态" :label-width="labelWidth">
+					<el-form-item label="权重" :label-width="labelWidth" prop="weight">
+						<el-input v-model="newProd.weight"></el-input>
+					</el-form-item>
+					<el-form-item label="状态" :label-width="labelWidth" prop="state">
 						<el-select v-model="newProd.state" placeholder="请选择...">
 							<el-option label="正常" value="NORMAL"></el-option>
 							<el-option label="删除" value="DELETE"></el-option>
@@ -137,20 +135,59 @@ export default {
 	components: { Pagination, jycTable, SearchForm, Upload },
 	data() {
 		return {
-			form: {
-			}, //查询条件
-			formRules:{
-				companyId: [{ required: true, message: '请选择酒店', trigger: 'blur' }],
-				hotelTableId: [{ required: true, message: '请选择座椅标签', trigger: 'blur' }],
-				number: [{ required: true, message: '请输入餐桌编号', trigger: 'blur' }],
-				name: [{ required: true, message: '请输入餐桌名称', trigger: 'blur' }],
-				tableExplain: [{ required: true, message: '请输入餐桌名称', trigger: 'blur' }],
-				images: [{ required: true, message: '请上传图片', trigger: 'blur' }],
-				type: [{ required: true, message: '请选择桌位状态', trigger: 'blur' }]
+			form: {}, //查询条件
+			formRules: {
+				companyId: [
+					{ required: true, message: '请选择酒店', trigger: 'blur' }
+				],
+				hotelTableId: [
+					{
+						required: true,
+						message: '请选择座椅标签',
+						trigger: 'blur'
+					}
+				],
+				number: [
+					{
+						required: true,
+						message: '请输入餐桌编号',
+						trigger: 'blur'
+					}
+				],
+				name: [
+					{
+						required: true,
+						message: '请输入餐桌名称',
+						trigger: 'blur'
+					}
+				],
+				tableExplain: [
+					{
+						required: true,
+						message: '请输入餐桌名称',
+						trigger: 'blur'
+					}
+				],
+				images: [
+					{ required: true, message: '请上传图片', trigger: 'blur' }
+				],
+				type: [
+					{
+						required: true,
+						message: '请选择桌位状态',
+						trigger: 'blur'
+					}
+				],
+				weight: [
+					{ required: true, message: '请输入权重值', trigger: 'blur' }
+				],
+				state: [
+					{ required: true, message: '请选择状态', trigger: 'blur' }
+				]
 			},
 			hotelList: [],
 			tableLabelList: [],
-			cmpList:[],
+			cmpList: [],
 			labelWidth: '80px',
 			dialogStatus: false,
 			dialogTitle: '',
@@ -378,7 +415,7 @@ export default {
 		handleSelectionChange(row) {
 			this.chooseList = row
 		},
-		getSearchList(){
+		getSearchList() {
 			this.listQuery.page = 1
 			this.getList()
 		},
@@ -425,18 +462,17 @@ export default {
 		searchApplyPageInfo(params) {
 			let _this = this
 			_this.loading = true
-			gettableList(params)
-				.then(data => {
-					if (data.code == '200') {
-						_this.total = data.result.total
-						if (data.result.records.length > 0) {
-							_this.tableData = data.result.records
-						} else {
-							_this.tableData = [];
-						}
+			gettableList(params).then(data => {
+				if (data.code == '200') {
+					_this.total = data.result.total
+					if (data.result.records.length > 0) {
+						_this.tableData = data.result.records
+					} else {
+						_this.tableData = []
 					}
-					_this.loading = false
-				})
+				}
+				_this.loading = false
+			})
 		},
 		addNew() {
 			this.editStatus = false
@@ -446,24 +482,28 @@ export default {
 		},
 		save() {
 			let _this = this
-			_this.newProd.cmpId = _this.newProd.companyId
-			if (_this.editStatus) {
-				updatetable(_this.newProd).then(data => {
-					if (data.code == '200') {
-						_this.alertMessage('修改成功')
-						_this.dialogStatus = false
-						_this.getList()
+			this.$refs.roleFrom.validate(valid => {
+				if (valid) {
+					_this.newProd.cmpId = _this.newProd.companyId
+					if (_this.editStatus) {
+						updatetable(_this.newProd).then(data => {
+							if (data.code == '200') {
+								_this.alertMessage('修改成功')
+								_this.dialogStatus = false
+								_this.getList()
+							}
+						})
+					} else {
+						addNewtable(_this.newProd).then(data => {
+							if (data.code == '200') {
+								_this.alertMessage('保存成功')
+								_this.dialogStatus = false
+								_this.getList()
+							}
+						})
 					}
-				})
-			} else {
-				addNewtable(_this.newProd).then(data => {
-					if (data.code == '200') {
-						_this.alertMessage('保存成功')
-						_this.dialogStatus = false
-						_this.getList()
-					}
-				})
-			}
+				}
+			})
 		},
 		edit(row) {
 			this.dialogTitle = '修改'
@@ -487,7 +527,7 @@ export default {
 					if (data.code == '200') {
 						_this.alertMessage('删除成功')
 						_this.getList()
-					} 
+					}
 				})
 			})
 		},
@@ -549,9 +589,9 @@ export default {
 				cmpId: null
 			}
 		},
-		resetSearch(){
+		resetSearch() {
 			this.form = {}
-			this.listQuery.page = 1;
+			this.listQuery.page = 1
 			this.getList()
 		}
 	}

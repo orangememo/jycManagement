@@ -28,7 +28,7 @@
 					<el-form-item label="应用名称" :label-width="labelWidth" prop="applicationName">
 						<el-input v-model="newProd.applicationName"></el-input>
 					</el-form-item>
-					<el-form-item label="应用端" :label-width="labelWidth"  prop="applicationSource">
+					<el-form-item label="应用端" :label-width="labelWidth" prop="applicationSource">
 						<el-select v-model="newProd.applicationSource" placeholder="请选择...">
 							<el-option label="电脑端" value="PC"></el-option>
 							<el-option label="移动端" value="MOBILE"></el-option>
@@ -40,10 +40,10 @@
 							<el-option label="客户端" value="APP"></el-option>
 						</el-select>
 					</el-form-item>
-					<el-form-item label="权重" :label-width="labelWidth">
+					<el-form-item label="权重" :label-width="labelWidth" prop="weight">
 						<el-input v-model="newProd.weight"></el-input>
 					</el-form-item>
-					<el-form-item label="状态" :label-width="labelWidth">
+					<el-form-item label="状态" :label-width="labelWidth" prop="state">
 						<el-select v-model="newProd.state" placeholder="请选择...">
 							<el-option label="正常" value="NORMAL"></el-option>
 							<el-option label="删除" value="DELETE"></el-option>
@@ -76,10 +76,36 @@ export default {
 		return {
 			form: {}, //查询条件
 			formRules: {
-				applicationKey: [{ required: true, message: '请输入应用Key', trigger: 'blur' }],
-				applicationName: [{ required: true, message: '请输入应用名称', trigger: 'blur' }],
-				applicationSource: [{ required: true, message: '请选择应用端', trigger: 'blur' }],
-				applicationType: [{ required: true, message: '请选择应用类型', trigger: 'blur' }],
+				applicationKey: [
+					{
+						required: true,
+						message: '请输入应用Key',
+						trigger: 'blur'
+					}
+				],
+				applicationName: [
+					{
+						required: true,
+						message: '请输入应用名称',
+						trigger: 'blur'
+					}
+				],
+				applicationSource: [
+					{ required: true, message: '请选择应用端', trigger: 'blur' }
+				],
+				applicationType: [
+					{
+						required: true,
+						message: '请选择应用类型',
+						trigger: 'blur'
+					}
+				],
+				weight: [
+					{ required: true, message: '请输入权重值', trigger: 'blur' }
+				],
+				state: [
+					{ required: true, message: '请选择状态', trigger: 'blur' }
+				]
 			},
 			labelWidth: '80px',
 			dialogStatus: false,
@@ -331,7 +357,7 @@ export default {
 		handleSelectionChange(row) {
 			this.chooseList = row
 		},
-		getSearchList(){
+		getSearchList() {
 			this.listQuery.page = 1
 			this.getList()
 		},
@@ -367,29 +393,33 @@ export default {
 		},
 		save() {
 			let _this = this
-			if (_this.editStatus) {
-				updateApply(_this.newProd).then(data => {
-					if (data.code == '200') {
-						_this.$message({
-							message: '修改成功',
-							type: 'success'
+			this.$refs.roleFrom.validate(valid => {
+				if (valid) {
+					if (_this.editStatus) {
+						updateApply(_this.newProd).then(data => {
+							if (data.code == '200') {
+								_this.$message({
+									message: '修改成功',
+									type: 'success'
+								})
+								_this.dialogStatus = false
+								_this.getList()
+							}
 						})
-						_this.dialogStatus = false
-						_this.getList()
-					}
-				})
-			} else {
-				addNewApply(_this.newProd).then(data => {
-					if (data.code == '200') {
-						_this.$message({
-							message: '保存成功',
-							type: 'success'
+					} else {
+						addNewApply(_this.newProd).then(data => {
+							if (data.code == '200') {
+								_this.$message({
+									message: '保存成功',
+									type: 'success'
+								})
+								_this.dialogStatus = false
+								_this.getList()
+							}
 						})
-						_this.dialogStatus = false
-						_this.getList()
 					}
-				})
-			}
+				}
+			})
 		},
 		edit(row) {
 			this.editStatus = true
@@ -478,9 +508,9 @@ export default {
 				weight: 0
 			}
 		},
-		resetSearch(){
+		resetSearch() {
 			this.form = {}
-			this.listQuery.page = 1;
+			this.listQuery.page = 1
 			this.getList()
 		}
 	}
