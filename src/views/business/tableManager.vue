@@ -164,7 +164,7 @@ export default {
 				tableExplain: [
 					{
 						required: true,
-						message: '请输入餐桌名称',
+						message: '请输入说明信息',
 						trigger: 'blur'
 					}
 				],
