@@ -8,7 +8,7 @@ export function getRuleInfoTree(params) {
 	return request({
 		url: '/rule/ruleInfo/tree/accountId',
 		method: 'get',
-		params
+		params,
 	})
 }
 
@@ -20,7 +20,7 @@ export function deleteRuleInfo(params) {
 	return request({
 		url: '/rule/rule',
 		method: 'DELETE',
-		params
+		params,
 	})
 }
 /**
@@ -31,7 +31,7 @@ export function addRuleInfo(data) {
 	return request({
 		url: '/rule/rule',
 		method: 'POST',
-		data
+		data,
 	})
 }
 /**
@@ -42,7 +42,7 @@ export function putRuleInfo(data) {
 	return request({
 		url: '/rule/ruleInfo/ruleId',
 		method: 'PUT',
-		data
+		data,
 	})
 }
 /**
@@ -52,7 +52,7 @@ export function getRuleInfo(params) {
 	return request({
 		url: '/rule/ruleInfo/ruleId',
 		method: 'GET',
-		params
+		params,
 	})
 }
 
@@ -63,9 +63,20 @@ export function getRoleInfoTree(params) {
 	return request({
 		url: '/role/role/tree/list/accountId',
 		method: 'get',
-		params
+		params,
 	})
 }
+/**
+ * 获取账户默认角色和默认不可选角色list
+ */
+export function getParentRoleIdList(params) {
+	return request({
+		url: '/role/parentRoleIdList/tree/accountId',
+		method: 'get',
+		params,
+	})
+}
+
 /**
  * 获取角色树，不包括默认角色
  */
@@ -73,7 +84,7 @@ export function roleInfoTreeAccountId(params) {
 	return request({
 		url: '/role/roleInfo/tree/accountId',
 		method: 'get',
-		params
+		params,
 	})
 }
 
@@ -84,7 +95,7 @@ export function addRoleInfo(data) {
 	return request({
 		url: '/role/role',
 		method: 'post',
-		data
+		data,
 	})
 }
 /**
@@ -94,7 +105,7 @@ export function deleteRoleInfo(params) {
 	return request({
 		url: '/role/role',
 		method: 'delete',
-		params
+		params,
 	})
 }
 /**
@@ -104,7 +115,7 @@ export function getRoleInfo(params) {
 	return request({
 		url: '/role/roleInfo/roleId',
 		method: 'get',
-		params
+		params,
 	})
 }
 
@@ -115,7 +126,7 @@ export function putRoleInfo(data) {
 	return request({
 		url: '/role/roleInfo/roleId',
 		method: 'put',
-		data
+		data,
 	})
 }
 
@@ -134,7 +145,7 @@ export function getManagerUserInfoPageList(params) {
 	return request({
 		url: '/manager/userInfo/page/list',
 		method: 'get',
-		params
+		params,
 	})
 }
 /**
@@ -145,7 +156,7 @@ export function postManagerUserInfo(data) {
 	return request({
 		url: '/manager/userInfo',
 		method: 'post',
-		data
+		data,
 	})
 }
 /**
@@ -156,7 +167,7 @@ export function putManagerUserInfo(data) {
 	return request({
 		url: '/manager/jyc/v1/improve/user/info',
 		method: 'put',
-		data
+		data,
 	})
 }
 
@@ -168,7 +179,7 @@ export function deleteManagerUserInfo(params) {
 	return request({
 		url: '/manager/jyc/v1/user/del',
 		method: 'DELETE',
-		params
+		params,
 	})
 }
 /**
@@ -179,7 +190,7 @@ export function getManagerUserInfo(params) {
 	return request({
 		url: '/manager/userInfo/userInfoId',
 		method: 'get',
-		params
+		params,
 	})
 }
 /**
@@ -190,6 +201,6 @@ export function getManagerLogInfo(params) {
 	return request({
 		url: '/manager/logInfo/page/list',
 		method: 'get',
-		params
+		params,
 	})
 }

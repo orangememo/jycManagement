@@ -183,53 +183,51 @@ export default {
         //   type: 'text'
         // },
         {
-          label: '应用名称',
+          label: '商品名称',
           param: 'applicationName',
           align: 'center',
           type: 'text'
         },
         {
-          label: '新版本号',
+          label: '图片',
           param: 'applicationVersion',
           align: 'center',
-
-          type: 'text'
+          type: 'img'
         },
-        // {
-        //   label: '包大小',
-        //   param: 'id',
-        //   align: 'center',
-
-        //   type: 'text'
-        // },
         {
-          label: '升级内容',
+          label: '详情图',
+          param: 'applicationImage',
+          align: 'center',
+
+          type: 'img'
+        },
+        {
+          label: '原价',
           param: 'content',
           align: 'center',
 
           type: 'text'
         },
         {
-          label: '图片',
-          param: 'applicationImage',
-          type: 'img',
+          label: '当前价格',
+          param: 'id',
+          type: 'text',
           align: 'center'
         },
         {
-          label: '下载地址',
+          label: '销量',
           param: 'applicationUrl',
           align: 'center',
-
           type: 'text'
         },
         {
-          label: '最低支持版本',
+          label: '显示状态',
           param: 'applicationMin',
           align: 'center',
           type: 'text'
         },
         {
-          label: '创建时间',
+          label: '标语',
           param: 'createTime',
           align: 'center',
           // sortable: true,
@@ -237,26 +235,31 @@ export default {
           width: '200'
         },
         {
-          label: '更新时间',
+          label: '颜色码',
           param: 'modifyTime',
           align: 'center',
           width: '200',
           // sortable: true,
           type: 'text'
         },
-        // {
-        //   label: '权重',
-        //   param: 'id',
-        //   align: 'center',
+        {
+          label: '分页图',
+          param: 'id',
+          align: 'center',
+          type: 'img'
+        },
+        {
+          label: '详情页图',
+          param: 'id',
+          align: 'center',
+          type: 'img'
+        },
 
-        //   type: 'text'
-        // },
         {
           label: '状态',
           param: 'state',
           align: 'center',
           type: 'text',
-
           render: row => {
             if (row.state === 'NORMAL') {
               return '正常'
@@ -264,6 +267,18 @@ export default {
               return '隐藏'
             }
           }
+        },
+        {
+          label: '创建时间',
+          param: 'id',
+          align: 'center',
+          type: 'text'
+        },
+        {
+          label: '更新时间',
+          param: 'id',
+          align: 'center',
+          type: 'text'
         }
       ],
       tableOption: [

@@ -19,6 +19,7 @@
       :key="item[nodeKey]"
       :label="item[props.label || 'label']"
       :value="item[nodeKey]"
+      :disabled="isOptionDisable(item[nodeKey])"
     ></el-option>
   </el-select>
 </template>
@@ -26,14 +27,14 @@
 <script>
 import Vue from 'vue'
 
-function getNodes(node, temp) {
-  temp.push(node)
-  if (Array.isArray(node.children)) {
-    node.children.forEach(item => {
-      getNodes(item, temp)
-    })
-  }
-}
+// function getNodes(node, temp) {
+//   temp.push(node)
+//   if (Array.isArray(node.children)) {
+//     node.children.forEach(item => {
+//       getNodes(item, temp)
+//     })
+//   }
+// }
 
 export default {
   name: 'ElTreeSelect',
@@ -103,6 +104,10 @@ export default {
     accordion: {
       type: Boolean,
       default: false
+    },
+    optionDisables: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
@@ -112,7 +117,24 @@ export default {
       listData: []
     }
   },
+
   methods: {
+    getNodes(node, temp) {
+      if (this.optionDisables.includes(node[this.nodeKey])) {
+        node.disabled = true
+      } else {
+        node.disabled = false
+      }
+      temp.push(node)
+      if (Array.isArray(node.children)) {
+        node.children.forEach(item => {
+          this.getNodes(item, temp)
+        })
+      }
+    },
+    isOptionDisable(id) {
+      return this.optionDisables.includes(id)
+    },
     onPopperVisibleChange(isVisible) {
       if (isVisible) {
         this.$nextTick(() => {
@@ -195,7 +217,7 @@ export default {
       this.listData = []
       if (Array.isArray(this.data)) {
         this.data.forEach(item => {
-          getNodes(item, this.listData)
+          this.getNodes(item, this.listData)
         })
       }
     }

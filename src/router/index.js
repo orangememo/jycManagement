@@ -72,37 +72,37 @@ export const constantRoutes = [
 			},
 		],
 	},
-	{
-		path: '/product',
-		component: Layout,
-		redirect: '/product/productList',
-		meta: {
-			title: '商品管理',
-			icon: 'nested',
-		},
-		children: [
-			{
-				path: 'productList',
-				name: 'productList',
-				component: () => import('@/views/product/productList'),
-				meta: { title: '商品管理', icon: '' },
-			},
-			{
-				path: 'productCategory',
-				name: 'productCategory',
-				component: () => import('@/views/product/productCategory'),
+	// {
+	// 	path: '/product',
+	// 	component: Layout,
+	// 	redirect: '/product/productList',
+	// 	meta: {
+	// 		title: '商品管理',
+	// 		icon: 'nested',
+	// 	},
+	// 	children: [
+	// 		{
+	// 			path: 'productList',
+	// 			name: 'productList',
+	// 			component: () => import('@/views/product/productList'),
+	// 			meta: { title: '商品管理', icon: '' },
+	// 		},
+	// 		{
+	// 			path: 'productCategory',
+	// 			name: 'productCategory',
+	// 			component: () => import('@/views/product/productCategory'),
 
-				meta: { title: '商品类目管理', icon: '' },
-			},
-			{
-				path: 'productBrand',
-				name: 'productBrand',
-				component: () => import('@/views/product/productBrand'),
+	// 			meta: { title: '商品类目管理', icon: '' },
+	// 		},
+	// 		{
+	// 			path: 'productBrand',
+	// 			name: 'productBrand',
+	// 			component: () => import('@/views/product/productBrand'),
 
-				meta: { title: '商品品牌管理', icon: '' },
-			},
-		],
-	},
+	// 			meta: { title: '商品品牌管理', icon: '' },
+	// 		},
+	// 	],
+	// },
 	// {
 	// 	path: '/my',
 	// 	component: Layout,

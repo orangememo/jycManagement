@@ -15,6 +15,7 @@
                 size="small"
                 :multiple="true"
                 :collapseTags="false"
+                :optionDisables="optionDisables"
               />
             </el-form-item>
           </el-col>
@@ -67,7 +68,8 @@ import {
   roleInfoTreeAccountId,
   postManagerUserInfo,
   putManagerUserInfo,
-  getManagerUserInfo
+  getManagerUserInfo,
+  getParentRoleIdList
 } from '@/api/sys'
 import treeSelect from '@/components/treeSelect'
 
@@ -131,21 +133,28 @@ export default {
         fatherOptions: [],
         roleOptions: [],
         proleIdOptions: []
-      }
+      },
+      optionDisables: []
     }
   },
-  mounted() {
+  created() {
     roleInfoTreeAccountId().then(res => {
       this.options.proleIdOptions = res.result.list
     })
-
+    let parentRoleIdList = []
+    getParentRoleIdList().then(res => {
+      let { result } = res
+      parentRoleIdList = result.selectList
+      this.form.roleIdList = result.selectList
+      this.optionDisables = result.unAbleList
+    })
     if (this.edit == 1) {
       let userInfoId = this.editId
-      console.log(userInfoId, 'userInfoId')
       getManagerUserInfo({ userInfoId }).then(res => {
-        this.form = res.result
-        console.log(res, 'res')
         let { result } = res
+        let list = [...new Set([...result.roleIdList, ...parentRoleIdList])]
+        result.roleIdList = list
+        this.form = result
       })
     }
   },
