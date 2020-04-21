@@ -20,9 +20,14 @@
 		/>
 
 		<el-dialog :title="dialogTitle" :visible.sync="dialogStatus" width="800px">
-			<div>
+			<div v-if="dialogStatus">
 				<el-form :model="newProd" :rules="formRules" ref="roleFrom">
-					<el-form-item label="标志" :label-width="labelWidth" style="margin-right: -80px;">
+					<el-form-item
+						label="标志"
+						:label-width="labelWidth"
+						style="margin-right: -80px;"
+						prop="labelList"
+					>
 						<el-select v-model="newProd.labelList" multiple placeholder="请选择...">
 							<el-option
 								v-for="(item,index) in labelList"
@@ -74,7 +79,7 @@
 							</div>
 						</div>
 					</el-form-item>
-					<el-form-item label="图片组" :label-width="labelWidth"  prop="images">
+					<el-form-item label="图片组" :label-width="labelWidth" prop="images">
 						<div v-if="newProd.images" style="display:inline">
 							<div v-for="(item,index) in newProd.images" :key="index" class="img-div">
 								<div class="img-div-t">
@@ -98,16 +103,16 @@
 					<el-form-item label="描述" :label-width="labelWidth" prop="description">
 						<el-input v-model="newProd.description"></el-input>
 					</el-form-item>
-					<el-form-item label="X" :label-width="labelWidth">
+					<el-form-item label="X" :label-width="labelWidth" prop="longitude">
 						<el-input v-model="newProd.longitude" type="number"></el-input>
 					</el-form-item>
-					<el-form-item label="Y" :label-width="labelWidth">
+					<el-form-item label="Y" :label-width="labelWidth" prop="latitude">
 						<el-input v-model="newProd.latitude" type="number"></el-input>
 					</el-form-item>
-					<el-form-item label="权重" :label-width="labelWidth">
+					<el-form-item label="权重" :label-width="labelWidth" prop="weight">
 						<el-input v-model="newProd.weight"></el-input>
 					</el-form-item>
-					<el-form-item label="状态" :label-width="labelWidth">
+					<el-form-item label="状态" :label-width="labelWidth" prop="state">
 						<el-select v-model="newProd.state" placeholder="请选择...">
 							<el-option label="正常" value="NORMAL"></el-option>
 							<el-option label="删除" value="DELETE"></el-option>
@@ -143,15 +148,68 @@ export default {
 		return {
 			form: {}, //查询条件
 			formRules: {
-				companyName: [{ required: true, message: '请输入名称', trigger: 'blur' }],
-				linkMan: [{ required: true, message: '请输入联系人', trigger: 'blur' }],
-				mobile: [{ required: true, message: '请输入电话', trigger: 'blur' }],
-				companyAddr: [{ required: true, message: '请输入地址', trigger: 'blur' }],
-				abbreviateImg: [{ required: true, message: '请上传酒店缩略图', trigger: 'blur' }],
-				backgroundImg: [{ required: true, message: '请上传酒店背景图', trigger: 'blur' }],
-				images: [{ required: true, message: '请上传酒店图片组', trigger: 'blur' }],
-				businessHours: [{ required: true, message: '请输入营业时间', trigger: 'blur' }],
-				description: [{ required: true, message: '请输入描述信息', trigger: 'blur' }],
+				labelList: [
+					{ required: true, message: '请选择标志', trigger: 'blur' }
+				],
+				companyName: [
+					{ required: true, message: '请输入名称', trigger: 'blur' }
+				],
+				linkMan: [
+					{ required: true, message: '请输入联系人', trigger: 'blur' }
+				],
+				mobile: [
+					{ required: true, message: '请输入电话', trigger: 'blur' }
+				],
+				companyAddr: [
+					{ required: true, message: '请输入地址', trigger: 'blur' }
+				],
+				abbreviateImg: [
+					{
+						required: true,
+						message: '请上传酒店缩略图',
+						trigger: 'blur'
+					}
+				],
+				backgroundImg: [
+					{
+						required: true,
+						message: '请上传酒店背景图',
+						trigger: 'blur'
+					}
+				],
+				images: [
+					{
+						required: true,
+						message: '请上传酒店图片组',
+						trigger: 'blur'
+					}
+				],
+				businessHours: [
+					{
+						required: true,
+						message: '请输入营业时间',
+						trigger: 'blur'
+					}
+				],
+				description: [
+					{
+						required: true,
+						message: '请输入描述信息',
+						trigger: 'blur'
+					}
+				],
+				longitude: [
+					{ required: true, message: '请输入经度值', trigger: 'blur' }
+				],
+				latitude: [
+					{ required: true, message: '请输入纬度值', trigger: 'blur' }
+				],
+				weight: [
+					{ required: true, message: '请输入权重值', trigger: 'blur' }
+				],
+				state: [
+					{ required: true, message: '请输选择状态', trigger: 'blur' }
+				]
 			},
 			labelWidth: '80px',
 			dialogStatus: false,
@@ -292,6 +350,8 @@ export default {
 								bg += 'background: #18bc9c;'
 							} else if (item.labelCode == 'RECOMMEND') {
 								bg += 'background: #e74c3c;'
+							} else {
+								bg += 'background: #333333;'
 							}
 							span += `<div style="${bg}">${item.labelName}</div>`
 						})
@@ -422,7 +482,7 @@ export default {
 		handleSelectionChange(row) {
 			this.chooseList = row
 		},
-		getSearchList(){
+		getSearchList() {
 			this.listQuery.page = 1
 			this.getList()
 		},
@@ -471,33 +531,39 @@ export default {
 		},
 		save() {
 			let _this = this
-			let sessionProd = {..._this.newProd}
-			sessionProd.companyType = 'HOTEL'
+			this.$refs.roleFrom.validate(valid => {
+				if (valid) {
+					let sessionProd = { ..._this.newProd }
+					sessionProd.companyType = 'HOTEL'
 
-			_this.newProd.labelList instanceof Array
-				? (sessionProd.flags = _this.newProd.labelList.join(','))
-				: ''
-			_this.newProd.images instanceof Array
-				? (sessionProd.images = _this.newProd.images.join(','))
-				: ''
-			
-			if (_this.editStatus) {
-				updateCompany(sessionProd).then(data => {
-					if (data.code == '200') {
-						_this.alertMessage('修改成功')
-						_this.dialogStatus = false
-						_this.getList()
+					_this.newProd.labelList instanceof Array
+						? (sessionProd.flags = _this.newProd.labelList.join(
+								','
+						  ))
+						: ''
+					_this.newProd.images instanceof Array
+						? (sessionProd.images = _this.newProd.images.join(','))
+						: ''
+
+					if (_this.editStatus) {
+						updateCompany(sessionProd).then(data => {
+							if (data.code == '200') {
+								_this.alertMessage('修改成功')
+								_this.dialogStatus = false
+								_this.getList()
+							}
+						})
+					} else {
+						addNewCompany(sessionProd).then(data => {
+							if (data.code == '200') {
+								_this.alertMessage('保存成功')
+								_this.dialogStatus = false
+								_this.getList()
+							}
+						})
 					}
-				})
-			} else {
-				addNewCompany(sessionProd).then(data => {
-					if (data.code == '200') {
-						_this.alertMessage('保存成功')
-						_this.dialogStatus = false
-						_this.getList()
-					}
-				})
-			}
+				}
+			})
 		},
 		edit(row) {
 			this.editStatus = true
@@ -593,7 +659,7 @@ export default {
 				this.newProd = { ...row }
 				this.newProd.labelList = newLabel
 			}
-			console.log(this.newProd.images);
+			console.log(this.newProd.images)
 		},
 		reset() {
 			let oldId = this.newProd.companyId
@@ -628,9 +694,9 @@ export default {
 				weight: 0
 			}
 		},
-		resetSearch(){
+		resetSearch() {
 			this.form = {}
-			this.listQuery.page = 1;
+			this.listQuery.page = 1
 			this.getList()
 		}
 	}
@@ -643,7 +709,7 @@ export default {
 	float: left;
 	margin: 0 30px 30px 0;
 }
-.img-div-t{
+.img-div-t {
 	display: flex;
 	flex-direction: column;
 }

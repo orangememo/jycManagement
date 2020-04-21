@@ -46,7 +46,7 @@
 		/>
 
 		<el-dialog :title="dialogTitle" :visible.sync="dialogStatus" width="800px">
-			<div>
+			<div v-if="dialogStatus">
 				<el-form :model="newProd" :rules="formRules" ref="roleFrom">
 					<el-form-item label="选择酒店" :label-width="labelWidth" prop="companyId">
 						<el-select v-model="newProd.companyId" placeholder="请选择...">
@@ -164,7 +164,7 @@ export default {
 				tableExplain: [
 					{
 						required: true,
-						message: '请输入餐桌名称',
+						message: '请输入说明信息',
 						trigger: 'blur'
 					}
 				],
