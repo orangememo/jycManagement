@@ -34,23 +34,23 @@ export const constantRoutes = [
 	{
 		path: '/',
 		component: () => import('@/views/login/index'),
-		hidden: true
+		hidden: true,
 	},
 	{
 		path: '/login',
 		component: () => import('@/views/login/index'),
-		hidden: true
+		hidden: true,
 	},
 	{
 		path: '/404',
 		component: () => import('@/views/404'),
-		hidden: true
+		hidden: true,
 	},
 	{
 		path: '/selectCompanyApp',
 		name: 'selectCompanyApp',
 		component: () => import('@/views/login/selectCompanyApp'),
-		hidden: true
+		hidden: true,
 	},
 	{
 		path: '/dashboard',
@@ -61,31 +61,48 @@ export const constantRoutes = [
 				path: 'index',
 				name: 'Dashboard',
 				component: () => import('@/views/dashboard/index'),
-				meta: { title: 'Dashboard', icon: 'dashboard' }
+				meta: { title: 'Dashboard', icon: 'dashboard' },
 			},
 			{
 				path: 'userInfo',
 				name: 'userInfo',
 				hidden: true,
 				component: () => import('@/views/sys/userInfo/index'),
-				meta: { title: '个人资料', icon: 'user' }
-			}
-		]
+				meta: { title: '个人资料', icon: 'user' },
+			},
+		],
 	},
 	{
-		path: '/test',
+		path: '/product',
 		component: Layout,
-		redirect: '/test/index',
+		redirect: '/product/productList',
+		meta: {
+			title: '商品管理',
+			icon: 'nested',
+		},
 		children: [
 			{
-				path: 'index',
-				name: 'test',
-				component: () => import('@/components/test'),
-				hidden: true,
-				meta: { title: 'test', icon: 'user' }
-			}
-		]
-	}
+				path: 'productList',
+				name: 'productList',
+				component: () => import('@/views/product/productList'),
+				meta: { title: '商品管理', icon: '' },
+			},
+			{
+				path: 'productCategory',
+				name: 'productCategory',
+				component: () => import('@/views/product/productCategory'),
+
+				meta: { title: '商品类目管理', icon: '' },
+			},
+			{
+				path: 'productBrand',
+				name: 'productBrand',
+				component: () => import('@/views/product/productBrand'),
+
+				meta: { title: '商品品牌管理', icon: '' },
+			},
+		],
+	},
 	// {
 	// 	path: '/my',
 	// 	component: Layout,
@@ -290,7 +307,7 @@ const createRouter = () =>
 	new Router({
 		// mode: 'history', // require service support
 		scrollBehavior: () => ({ y: 0 }),
-		routes: constantRoutes
+		routes: constantRoutes,
 	})
 
 const router = createRouter()
