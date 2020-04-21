@@ -138,15 +138,15 @@ export default {
     }
   },
   created() {
-    roleInfoTreeAccountId().then(res => {
-      this.options.proleIdOptions = res.result.list
-    })
     let parentRoleIdList = []
     getParentRoleIdList().then(res => {
       let { result } = res
       parentRoleIdList = result.selectList
       this.form.roleIdList = result.selectList
       this.optionDisables = result.unAbleList
+      roleInfoTreeAccountId().then(res => {
+        this.options.proleIdOptions = res.result.list
+      })
     })
     if (this.edit == 1) {
       let userInfoId = this.editId
