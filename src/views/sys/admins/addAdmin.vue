@@ -21,7 +21,11 @@
           </el-col>
           <el-col :span="24">
             <el-form-item label="账号" prop="accountNum">
-              <el-input v-model.number="form.accountNum" placeholder="请输入账号,目前只支持手机号"></el-input>
+              <el-input
+                v-model.number="form.accountNum"
+                :disabled="edit===1?true:false"
+                placeholder="请输入账号,目前只支持手机号"
+              ></el-input>
             </el-form-item>
           </el-col>
 
@@ -147,16 +151,25 @@ export default {
       roleInfoTreeAccountId().then(res => {
         this.options.proleIdOptions = res.result.list
       })
+      if (this.edit == 1) {
+        let userInfoId = this.editId
+        getManagerUserInfo({ userInfoId }).then(res => {
+          let { result } = res
+
+          let list = [...new Set([...result.roleIdList, ...parentRoleIdList])]
+          result.roleIdList = list
+          this.form = result
+          console.log(
+            this.form,
+            'this.form',
+            result.roleIdList,
+            'result.roleIdList',
+            parentRoleIdList,
+            'parentRoleIdList'
+          )
+        })
+      }
     })
-    if (this.edit == 1) {
-      let userInfoId = this.editId
-      getManagerUserInfo({ userInfoId }).then(res => {
-        let { result } = res
-        let list = [...new Set([...result.roleIdList, ...parentRoleIdList])]
-        result.roleIdList = list
-        this.form = result
-      })
-    }
   },
 
   methods: {
