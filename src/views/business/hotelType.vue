@@ -23,7 +23,23 @@
 		<el-dialog :title="dialogTitle" :visible.sync="dialogStatus" width="800px">
 			<div v-if="dialogStatus">
 				<el-form :model="newProd" :rules="formRules" ref="roleFrom">
-					<el-form-item label="选择应用" :label-width="labelWidth" style="margin-right: -80px;" prop="applyList">
+					<el-form-item
+						label="选择类型"
+						:label-width="labelWidth"
+						style="margin-right: -80px;"
+						prop="companyType"
+					>
+						<el-select v-model="newProd.companyType" placeholder="请选择...">
+							<el-option label="酒店" value="HOTEL"></el-option>
+							<el-option label="供应商" value="SUPPLIER"></el-option>
+						</el-select>
+					</el-form-item>
+					<el-form-item
+						label="选择应用"
+						:label-width="labelWidth"
+						style="margin-right: -80px;"
+						prop="applyList"
+					>
 						<el-select v-model="newProd.applyList" multiple placeholder="请选择...">
 							<el-option
 								v-for="(item,index) in applyList"
@@ -33,7 +49,12 @@
 							></el-option>
 						</el-select>
 					</el-form-item>
-					<el-form-item label="选择标志" :label-width="labelWidth" style="margin-right: -80px;" prop="labelList">
+					<el-form-item
+						label="选择标志"
+						:label-width="labelWidth"
+						style="margin-right: -80px;"
+						prop="labelList"
+					>
 						<el-select v-model="newProd.labelList" multiple placeholder="请选择...">
 							<el-option
 								v-for="(item,index) in labelList"
@@ -112,7 +133,7 @@
 					<el-form-item label="X" :label-width="labelWidth" prop="longitude">
 						<el-input v-model="newProd.longitude" type="text"></el-input>
 					</el-form-item>
-					<el-form-item label="Y" :label-width="labelWidth"  prop="latitude">
+					<el-form-item label="Y" :label-width="labelWidth" prop="latitude">
 						<el-input v-model="newProd.latitude" type="text"></el-input>
 					</el-form-item>
 					<el-form-item label="权重" :label-width="labelWidth" prop="weight">
@@ -164,6 +185,9 @@ export default {
 			applyList: [],
 			isEdit: false,
 			formRules: {
+				companyType: [
+					{ required: true, message: '请选择类型', trigger: 'blur' }
+				],
 				applyList: [
 					{ required: true, message: '请选择应用', trigger: 'blur' }
 				],
@@ -560,7 +584,6 @@ export default {
 			this.$refs.roleFrom.validate(valid => {
 				if (valid) {
 					let sessionProd = { ..._this.newProd }
-					sessionProd.companyType = 'HOTEL'
 
 					_this.newProd.labelList instanceof Array
 						? (sessionProd.flags = _this.newProd.labelList.join(
