@@ -74,11 +74,11 @@
         <div slot="title" style="padding:20px 30px ;border-bottom:1px solid #DCDFE6">
           <span>{{editTitle[edit]}}</span>
         </div>
-        <addProduct
+        <addBrand
           :propHandleClick="handleClick"
           v-if="dialogVisible"
           :edit="edit"
-          :editRoleId="editRoleId"
+          :editId="editId"
         />
         <span slot="footer" class="dialog-footer"></span>
       </el-dialog>
@@ -87,23 +87,23 @@
 </template>
 
 <script>
-import { getVersionPageInfo } from '@/api/member'
+import { getBrandPage, deleteBrandInfo } from '@/api/products'
 
 import Pagination from '@/components/Pagination'
-import addProduct from './addProduct'
+import addBrand from './addBrand'
 import jycTable from '@/components/table/jycTable'
 import SearchForm from '@/components/seachForm/seachForm'
 export default {
   components: {
     Pagination,
-    addProduct,
+    addBrand,
     jycTable,
     SearchForm
   },
   data() {
     return {
       edit: 0,
-      editRoleId: null,
+      editId: null,
       editTitle: {
         0: '新增',
         1: '编辑'
@@ -117,7 +117,7 @@ export default {
         formItemList: [
           {
             type: 'input',
-            prop: 'applicationName',
+            prop: 'name',
             label: '名称',
             placeholder: '请输入名称'
           },
@@ -137,16 +137,8 @@ export default {
                 value: 'NORMAL'
               },
               {
-                label: '隐藏',
+                label: '删除',
                 value: 'DELETE'
-              },
-              {
-                label: '冻结',
-                value: 'FROZEN'
-              },
-              {
-                label: '已使用',
-                value: 'USED'
               }
             ]
           }
@@ -165,9 +157,9 @@ export default {
             handleClick: this.addNew
           },
           {
-            icon: 'el-icon-document-add',
+            icon: 'el-icon-delete',
             type: 'primary',
-            name: '添加',
+            name: '删除',
             handleClick: this.deleteItem
           },
           {
@@ -180,7 +172,7 @@ export default {
       },
       form: {
         state: '',
-        applicationName: ''
+        name: ''
       },
       tableTitle: [
         {
@@ -189,16 +181,9 @@ export default {
           align: 'center',
           type: 'text'
         },
-        // {
-        //   label: '旧版本号',
-        //   param: 'id',
-        //   align: 'center',
-
-        //   type: 'text'
-        // },
         {
           label: '品牌说明',
-          param: 'explain',
+          param: 'remark',
           align: 'center',
           type: 'text'
         },
@@ -223,22 +208,20 @@ export default {
           render: row => {
             if (row.state === 'NORMAL') {
               return '正常'
-            } else if (row.state === 'FROZEN') {
-              return '冻结'
-            } else if (row.state === 'USED') {
-              return '已使用'
+            } else {
+              return '删除'
             }
           }
         },
         {
           label: '创建时间',
-          param: 'create_time',
+          param: 'createTime',
           align: 'center',
           type: 'text'
         },
         {
           label: '修改时间',
-          param: 'modify_time',
+          param: 'modifyTime',
           align: 'center',
           type: 'text'
         }
@@ -246,19 +229,25 @@ export default {
       tableOption: [
         {
           label: '操作',
-          width: '100',
+          width: '200',
           options: [
             {
               label: '编辑',
               type: 'primary',
               methods: '编辑'
+            },
+            {
+              label: '删除',
+              type: 'danger',
+              methods: '删除'
             }
           ]
         }
       ],
       tableData: [],
       listLoading: false,
-      dialogVisible: false
+      dialogVisible: false,
+      selectData: []
     }
   },
   mounted() {
@@ -268,7 +257,7 @@ export default {
     reset() {
       this.form = {
         state: '',
-        applicationName: ''
+        name: ''
       }
       this.search()
     },
@@ -279,16 +268,18 @@ export default {
     addNew() {
       this.handleClick('新增')
     },
-    deleteItem() {},
+    deleteItem() {
+      this.handleClick('批量删除')
+    },
     getList: async function() {
       this.listLoading = true
-      let obj = {
+      let obj = JSON.parse(JSON.stringify(this.form))
+      obj = {
+        ...obj,
         currentPage: this.page.page,
-        pageSize: this.page.size,
-        state: this.form.state,
-        applicationName: this.form.applicationName
+        pageSize: this.page.size
       }
-      let res = await getVersionPageInfo(obj)
+      let res = await getBrandPage(obj)
       if (res.code == 200) {
         let { result } = res
         this.page.total = result.total
@@ -304,7 +295,7 @@ export default {
           break
         case '编辑':
           this.edit = 1
-          this.editRoleId = val.applicationVersionId
+          this.editId = val.brandId
           this.dialogVisible = true
           break
         case '确认':
@@ -316,6 +307,33 @@ export default {
           this.dialogVisible = false
           break
 
+        case '批量删除':
+          let selectData = this.selectData
+          if (selectData.length === 0) {
+            this.$message.error('请勾选需要删除的品牌')
+          } else {
+            this.$confirm('确认批量删除选中的？', '提示', {
+              cancelButtonText: '取消',
+              confirmButtonText: '确定',
+              type: 'warning'
+            })
+              .then(() => {
+                let brandIdList = selectData.map(i => i.brandId)
+                brandIdList = brandIdList.toString()
+                deleteBrandInfo({ brandIdList }).then(res => {
+                  if (res.code == 200) {
+                    this.$message({
+                      type: 'success',
+                      message: '删除成功'
+                    })
+                    this.getList()
+                  }
+                })
+              })
+              .catch(() => {})
+          }
+
+          break
         case '删除':
           this.$confirm('确认删除？', '提示', {
             cancelButtonText: '取消',
@@ -323,9 +341,9 @@ export default {
             type: 'warning'
           })
             .then(() => {
-              let roleId = val.roleId
-              console.log(val.roleId)
-              deleteRoleInfo({ roleId }).then(res => {
+              let brandIdList = val.brandId
+              console.log(brandIdList, 'brandIdList')
+              deleteBrandInfo({ brandIdList }).then(res => {
                 if (res.code == 200) {
                   this.$message({
                     type: 'success',
@@ -355,7 +373,7 @@ export default {
       this.handleClick(a.methods, a.row)
     },
     handleSelectionChange(val) {
-      console.log(val, 'val')
+      this.selectData = val
     }
   }
 }

@@ -155,7 +155,6 @@ export default {
         let userInfoId = this.editId
         getManagerUserInfo({ userInfoId }).then(res => {
           let { result } = res
-
           let list = [...new Set([...result.roleIdList, ...parentRoleIdList])]
           result.roleIdList = list
           this.form = result

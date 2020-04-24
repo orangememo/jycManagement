@@ -38,6 +38,23 @@ module.exports = {
 		},
 		proxy: {
 			// 服务器ip
+			'/dev_new/company/': {
+				target: 'http://192.168.0.106:8085/',
+				// target: 'http://129.211.141.150:39012/web-manage',
+				changeOrigin: true,
+				pathRewrite: {
+					'^/development_api/dev_new/': '',
+				},
+			},
+			'/dev_new/': {
+				target: 'http://192.168.0.106:8088/',
+				// target: 'http://129.211.141.150:39012/web-manage',
+				changeOrigin: true,
+				pathRewrite: {
+					'^/development_api/dev_new': '',
+				},
+			},
+
 			'/development_api/': {
 				target: 'http://192.168.0.106:8085',
 				// target: 'http://129.211.141.150:39012/web-manage',

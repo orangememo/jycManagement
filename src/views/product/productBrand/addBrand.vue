@@ -1,5 +1,5 @@
 <template>
-  <div class="dialogBody" id="addMember">
+  <div class="dialogBody" id="addBrand">
     <div class="body">
       <el-form ref="form" :model="form" :rules="formRules" label-width="140px" size="small">
         <el-row>
@@ -8,37 +8,21 @@
               <el-input v-model.number="form.applicationId" placeholder="请输入应用id"></el-input>
             </el-form-item>
           </el-col>-->
+
           <el-col :span="24">
-            <el-form-item label="应用" prop="applicationId">
-              <el-select
-                v-model="form.applicationId"
-                placeholder="请选择应用"
-                filterable
-                style="width:100%"
-              >
-                <el-option
-                  v-for="(item,index) in options.appIdOptions"
-                  :key="index"
-                  :label="item.applicationName"
-                  :value="item.applicationId"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="新版本号" prop="applicationVersion">
-              <el-input v-model="form.applicationVersion" placeholder="请输入新版本号"></el-input>
+            <el-form-item label="品牌名称" prop="name">
+              <el-input v-model="form.name" placeholder="请输入品牌名称" maxlength="50"></el-input>
             </el-form-item>
           </el-col>
 
           <el-col :span="24">
-            <el-form-item label="升级内容" prop="content">
-              <el-input v-model="form.content" placeholder="请输入升级内容"></el-input>
+            <el-form-item label="说明" prop="remark">
+              <el-input v-model="form.remark" placeholder="请输入说明,最大200个字符" maxlength="200"></el-input>
             </el-form-item>
           </el-col>
 
           <el-col :span="24">
-            <el-form-item label="图片" prop="applicationImage">
+            <el-form-item label="logo" prop="logoUrl">
               <div>格式要求：支持jpg/png/jpeg/bmp格式照片，大小不超过5m</div>
               <el-upload
                 class="avatar-uploader"
@@ -48,25 +32,15 @@
                 :before-upload="beforeAvatarUpload"
                 accept="image/bmp, image/jpeg, image/jpg, image/png"
               >
-                <img
-                  v-if="form.applicationImage"
-                  :src="`${hostUrl}/${form.applicationImage}`"
-                  class="avatar"
-                />
+                <img v-if="form.logoUrl" :src="`${hostUrl}/${form.logoUrl}`" class="avatar" />
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
             </el-form-item>
           </el-col>
 
           <el-col :span="24">
-            <el-form-item label="下载地址" prop="applicationUrl">
-              <el-input v-model="form.applicationUrl" placeholder="请输入下载地址"></el-input>
-            </el-form-item>
-          </el-col>
-
-          <el-col :span="24">
-            <el-form-item label="最低支持版本" prop="applicationMin">
-              <el-input v-model="form.applicationMin" placeholder="请输入最低支持版本"></el-input>
+            <el-form-item label="排序" prop="weight">
+              <el-input-number v-model="form.weight" controls-position="right" placeholder="请输入排序"></el-input-number>
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -92,13 +66,8 @@
 <script>
 import { validateMobile } from '@/utils/validate'
 import treeSelect from '@/components/treeSelect'
-import {
-  addVersionInfo,
-  getVersionInfo,
-  putVersionInfo,
-  upLoadImg,
-  getApplication
-} from '@/api/member'
+import { upLoadImg } from '@/api/member'
+import { addBrandInfo, getBrandInfo, putBrandInfo } from '@/api/products'
 
 export default {
   components: {
@@ -111,7 +80,7 @@ export default {
     edit: {
       default: 0
     },
-    editRoleId: {
+    editId: {
       default: null
     }
   },
@@ -120,24 +89,18 @@ export default {
       upLoadImg,
       sumbitLoading: false,
       form: {
-        applicationId: '',
-        applicationVersion: '',
-        content: '',
+        name: '',
+        remark: '',
         state: 'NORMAL',
-        applicationUrl: '',
-        applicationImage: '',
-        applicationMin: ''
+        logoUrl: '',
+        weight: ''
       },
       formRules: {
-        applicationId: [
-          { required: true, message: '请填写应用id', trigger: 'blur' }
-        ],
-        applicationVersion: [
-          { required: true, message: '请填写版本号', trigger: 'blur' }
-        ],
-        applicationUrl: [
-          { required: true, message: '请填写Code', trigger: 'blur' }
-        ]
+        name: [{ required: true, message: '请填写名称', trigger: 'blur' }],
+        weight: [{ required: true, message: '请填写权重', trigger: 'blur' }]
+        // applicationUrl: [
+        //   { required: true, message: '请上传logo', trigger: 'blur' }
+        // ]
       },
       options: {
         appIdOptions: []
@@ -146,14 +109,11 @@ export default {
   },
   mounted() {
     if (this.edit == 1) {
-      let applicationVersionId = this.editRoleId
-      getVersionInfo({ applicationVersionId }).then(res => {
+      let brandId = this.editId
+      getBrandInfo({ brandId }).then(res => {
         this.form = res.result
       })
     }
-    getApplication().then(res => {
-      this.options.appIdOptions = res.result
-    })
   },
 
   methods: {
@@ -164,10 +124,9 @@ export default {
           this.$refs.form.validate(valid => {
             if (valid) {
               let obj = JSON.parse(JSON.stringify(this.form))
-              obj.byOperateApplicationId = obj.applicationId
               if (this.edit == 1) {
-                obj.applicationVersionId = this.editRoleId
-                putVersionInfo(obj).then(res => {
+                obj.brandId = this.editId
+                putBrandInfo(obj).then(res => {
                   if (res.code == 200) {
                     this.$message({
                       type: 'success',
@@ -177,7 +136,7 @@ export default {
                   }
                 })
               } else {
-                addVersionInfo(obj).then(res => {
+                addBrandInfo(obj).then(res => {
                   if (res.code == 200) {
                     this.$message({
                       type: 'success',
@@ -207,7 +166,7 @@ export default {
       if (url.indexOf('.com') > -1) {
         url = url.split('.com')[1]
       }
-      this.form.applicationImage = url
+      this.form.logoUrl = url
     },
     beforeAvatarUpload(file) {
       let arr = ['image/bmp', 'image/jpeg', 'image/jpg', 'image/png']
@@ -244,7 +203,7 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/styles/mainWrap.scss';
-#addMember {
+#addBrand {
   .body {
   }
   .avatar-uploader {
