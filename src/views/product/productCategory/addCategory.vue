@@ -10,7 +10,7 @@
           </el-col>-->
 
           <el-col :span="24">
-            <el-form-item label="品牌名称" prop="name">
+            <el-form-item label="类目名称" prop="name">
               <el-input v-model="form.name" placeholder="请输入品牌名称" maxlength="50"></el-input>
             </el-form-item>
           </el-col>
@@ -148,7 +148,6 @@ export default {
       })
     }
   },
-
   methods: {
     handleClick(type) {
       switch (type) {

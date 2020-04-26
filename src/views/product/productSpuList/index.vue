@@ -271,14 +271,16 @@ export default {
 
         {
           label: '创建时间',
-          param: 'id',
+          param: 'createTime',
           align: 'center',
+          width: '200',
           type: 'text'
         },
         {
           label: '更新时间',
-          param: 'id',
+          param: 'modifyTime',
           align: 'center',
+          width: '200',
           type: 'text'
         },
         {
