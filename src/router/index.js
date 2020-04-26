@@ -73,7 +73,7 @@ export const constantRoutes = [
 		],
 	},
 	// {
-	// 	path: '/product',
+	// 	path: '/test',
 	// 	component: Layout,
 	// 	redirect: '/product/productList',
 	// 	meta: {
@@ -82,27 +82,57 @@ export const constantRoutes = [
 	// 	},
 	// 	children: [
 	// 		{
-	// 			path: 'productList',
-	// 			name: 'productList',
-	// 			component: () => import('@/views/product/productList'),
-	// 			meta: { title: '商品管理', icon: '' },
-	// 		},
-	// 		{
-	// 			path: 'productCategory',
-	// 			name: 'productCategory',
-	// 			component: () => import('@/views/product/productCategory'),
-
-	// 			meta: { title: '商品类目管理', icon: '' },
-	// 		},
-	// 		{
-	// 			path: 'productBrand',
-	// 			name: 'productBrand',
-	// 			component: () => import('@/views/product/productBrand'),
-
-	// 			meta: { title: '商品品牌管理', icon: '' },
+	// 			path: 'test',
+	// 			name: 'test',
+	// 			component: () => import('@/components/test'),
+	// 			meta: { title: 'test', icon: '' },
 	// 		},
 	// 	],
 	// },
+	{
+		path: '/product',
+		component: Layout,
+		redirect: '/product/productList',
+		meta: {
+			title: '商品管理',
+			icon: 'nested',
+		},
+		children: [
+			{
+				path: 'productSkuList',
+				name: 'productSkuList',
+				component: () => import('@/views/product/productSkuList'),
+				meta: { title: 'SKU管理', icon: '' },
+			},
+			{
+				path: 'productSpuList',
+				name: 'productSpuList',
+				component: () => import('@/views/product/productSpuList'),
+				meta: { title: 'SPU管理', icon: '' },
+			},
+			{
+				path: 'productCategory',
+				name: 'productCategory',
+				component: () => import('@/views/product/productCategory'),
+
+				meta: { title: '商品类目管理', icon: '' },
+			},
+			{
+				path: 'productBrand',
+				name: 'productBrand',
+				component: () => import('@/views/product/productBrand'),
+
+				meta: { title: '商品品牌管理', icon: '' },
+			},
+			{
+				path: 'productStock',
+				name: 'productStock',
+				component: () => import('@/views/product/productStock'),
+
+				meta: { title: '商品库存管理', icon: '' },
+			},
+		],
+	},
 	// {
 	// 	path: '/my',
 	// 	component: Layout,

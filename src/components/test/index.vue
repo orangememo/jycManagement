@@ -1,16 +1,18 @@
 <template>
   <div>
     测试
-    <upLoad />
+    <test1 />
   </div>
 </template>
 
 <script>
 import upLoad from '@/components/upLoad/index'
+import test1 from './test1'
 
 export default {
   components: {
-    upLoad
+    upLoad,
+    test1
   }
 }
 </script>

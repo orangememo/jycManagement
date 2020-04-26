@@ -1,5 +1,5 @@
 <template>
-  <div id="productCategory" class="mainWrap">
+  <div id="productList" class="mainWrap">
     <search-form :formConfig="formConfig" :value="form" labelWidth="80px"></search-form>
     <!-- <div class="ly-flex ly-justify-sb mt40 titleAndButton">
       <div style="padding-left:15px">{{$route.meta.title}}列表</div>
@@ -74,12 +74,7 @@
         <div slot="title" style="padding:20px 30px ;border-bottom:1px solid #DCDFE6">
           <span>{{editTitle[edit]}}</span>
         </div>
-        <addCategory
-          :propHandleClick="handleClick"
-          v-if="dialogVisible"
-          :edit="edit"
-          :editId="editId"
-        />
+        <addSKU :propHandleClick="handleClick" v-if="dialogVisible" :edit="edit" :editId="editId" />
         <span slot="footer" class="dialog-footer"></span>
       </el-dialog>
     </div>
@@ -87,20 +82,16 @@
 </template>
 
 <script>
-import {
-  getCatalogPage,
-  deleteCatalogInfo,
-  putCatalogTop
-} from '@/api/products'
+import { getSkuInfoPage, skuToSpu, deleteSkuInfo } from '@/api/products'
 
 import Pagination from '@/components/Pagination'
-import addCategory from './addCategory'
+import addSKU from './addSKU'
 import jycTable from '@/components/table/jycTable'
 import SearchForm from '@/components/seachForm/seachForm'
 export default {
   components: {
     Pagination,
-    addCategory,
+    addSKU,
     jycTable,
     SearchForm
   },
@@ -121,9 +112,22 @@ export default {
         formItemList: [
           {
             type: 'input',
-            prop: 'name',
+            prop: 'skuName',
             label: '名称',
             placeholder: '请输入名称'
+          },
+
+          {
+            type: 'input',
+            prop: 'brandName',
+            label: '商品品牌',
+            placeholder: '请输入品牌'
+          },
+          {
+            type: 'input',
+            prop: 'catalogName',
+            label: '商品类目',
+            placeholder: '请输入类目'
           },
           {
             type: 'select',
@@ -141,7 +145,7 @@ export default {
                 value: 'NORMAL'
               },
               {
-                label: '删除',
+                label: '隐藏',
                 value: 'DELETE'
               }
             ]
@@ -154,6 +158,7 @@ export default {
             name: '查询',
             handleClick: this.search
           },
+
           {
             icon: 'el-icon-document-add',
             type: 'primary',
@@ -167,6 +172,13 @@ export default {
             handleClick: this.deleteItem
           },
           {
+            icon: 'el-icon-s-promotion',
+            type: 'primary',
+            name: '生成SPU',
+            handleClick: this.addSPU
+          },
+
+          {
             icon: 'el-icon-refresh-left',
             type: 'primary',
             name: '重置',
@@ -176,38 +188,65 @@ export default {
       },
       form: {
         state: '',
-        name: ''
+        skuName: '',
+        catalogName: '',
+        brandName: ''
       },
       tableTitle: [
         {
-          label: '名称',
-          param: 'name',
+          label: '商品名称',
+          param: 'skuName',
           align: 'center',
           type: 'text'
         },
         {
-          label: '父级Id',
-          param: 'parentId',
+          label: 'spu名称',
+          param: 'spuName',
           align: 'center',
           type: 'text'
         },
         {
-          label: '类目深度',
-          param: 'depth',
+          label: '类目',
+          param: 'catalogName',
           align: 'center',
           type: 'text'
         },
         {
-          label: '权重',
-          param: 'weight',
+          label: '供应商',
+          param: 'supplierName',
           align: 'center',
           type: 'text'
         },
         {
-          label: '图片',
-          param: 'imageUrl',
+          label: '品牌',
+          param: 'brandName',
+          align: 'center',
+          type: 'text'
+        },
+        {
+          label: '缩略图',
+          param: 'abbreviateImg',
           align: 'center',
           type: 'img'
+        },
+
+        {
+          label: '市场价',
+          param: 'marketPrice',
+          align: 'center',
+          type: 'text'
+        },
+        {
+          label: '出售标准价',
+          param: 'price',
+          type: 'text',
+          align: 'center'
+        },
+        {
+          label: '销量',
+          param: 'salesVolume',
+          align: 'center',
+          type: 'text'
         },
 
         {
@@ -227,31 +266,27 @@ export default {
           label: '创建时间',
           param: 'createTime',
           align: 'center',
+          width: '200',
           type: 'text'
         },
         {
-          label: '修改时间',
+          label: '更新时间',
           param: 'modifyTime',
           align: 'center',
+          width: '200',
           type: 'text'
         }
       ],
       tableOption: [
         {
-          label: '置顶',
-          width: '100',
+          label: '操作',
+          width: '270',
           options: [
             {
-              label: '置顶',
+              label: '生成SPU',
               type: 'primary',
-              methods: '置顶'
-            }
-          ]
-        },
-        {
-          label: '操作',
-          width: '200',
-          options: [
+              methods: '生成'
+            },
             {
               label: '编辑',
               type: 'primary',
@@ -278,20 +313,26 @@ export default {
     reset() {
       this.form = {
         state: '',
-        name: ''
+        skuName: '',
+        catalogName: '',
+        brandName: ''
       }
       this.search()
+    },
+    addNew() {
+      this.handleClick('新增')
+    },
+    addSPU() {
+      this.handleClick('批量生成')
+    },
+    deleteItem() {
+      this.handleClick('批量删除')
     },
     search() {
       this.page.page = 1
       this.getList()
     },
-    addNew() {
-      this.handleClick('新增')
-    },
-    deleteItem() {
-      this.handleClick('批量删除')
-    },
+
     getList: async function() {
       this.listLoading = true
       let obj = JSON.parse(JSON.stringify(this.form))
@@ -300,7 +341,8 @@ export default {
         currentPage: this.page.page,
         pageSize: this.page.size
       }
-      let res = await getCatalogPage(obj)
+
+      let res = await getSkuInfoPage(obj)
       if (res.code == 200) {
         let { result } = res
         this.page.total = result.total
@@ -309,26 +351,15 @@ export default {
       this.listLoading = false
     },
     handleClick(type, val) {
+      let selectData = this.selectData
       switch (type) {
-        case '置顶':
-          let catalogId = val.catalogId
-          putCatalogTop({ catalogId }).then(res => {
-            if (res.code == 200) {
-              this.$message({
-                type: 'success',
-                message: '置顶成功'
-              })
-              this.getList()
-            }
-          })
-          break
         case '新增':
           this.edit = 0
           this.dialogVisible = true
           break
         case '编辑':
           this.edit = 1
-          this.editId = val.catalogId
+          this.editId = val.skuId
           this.dialogVisible = true
           break
         case '确认':
@@ -339,44 +370,17 @@ export default {
           this.getList()
           this.dialogVisible = false
           break
-
-        case '批量删除':
-          let selectData = this.selectData
-          if (selectData.length === 0) {
-            this.$message.error('请勾选需要删除的品牌')
-          } else {
-            this.$confirm('确认批量删除选中的？', '提示', {
-              cancelButtonText: '取消',
-              confirmButtonText: '确定',
-              type: 'warning'
-            })
-              .then(() => {
-                let catalogIdList = selectData.map(i => i.catalogId)
-                catalogIdList = catalogIdList.toString()
-                deleteCatalogInfo({ catalogIdList }).then(res => {
-                  if (res.code == 200) {
-                    this.$message({
-                      type: 'success',
-                      message: '删除成功'
-                    })
-                    this.getList()
-                  }
-                })
-              })
-              .catch(() => {})
-          }
-
-          break
         case '删除':
+          let skuIdList = [val.skuId]
+          let upperShelf = 'YES'
           this.$confirm('确认删除？', '提示', {
             cancelButtonText: '取消',
             confirmButtonText: '确定',
             type: 'warning'
           })
             .then(() => {
-              let catalogIdList = val.catalogId
-              console.log(catalogIdList, 'catalogIdList')
-              deleteCatalogInfo({ catalogIdList }).then(res => {
+              let skuIdList = [val.skuId]
+              deleteSkuInfo({ skuIdList }).then(res => {
                 if (res.code == 200) {
                   this.$message({
                     type: 'success',
@@ -387,6 +391,77 @@ export default {
               })
             })
             .catch(() => {})
+
+          break
+        case '批量删除':
+          {
+            if (selectData.length === 0) {
+              this.$message.error('请勾选需要上架的品牌')
+            } else {
+              this.$confirm('确认删除？', '提示', {
+                cancelButtonText: '取消',
+                confirmButtonText: '确定',
+                type: 'warning'
+              })
+                .then(() => {
+                  let skuIdList = selectData.map(i => i.skuId)
+                  let upperShelf = 'NO'
+                  deleteSkuInfo({ skuIdList }).then(res => {
+                    if (res.code == 200) {
+                      this.$message({
+                        type: 'success',
+                        message: '删除成功'
+                      })
+                      this.getList()
+                    }
+                  })
+                })
+                .catch(() => {})
+            }
+          }
+
+          break
+        case '批量生成':
+          {
+            if (selectData.length === 0) {
+              this.$message.error('请勾选需要上架的品牌')
+            } else {
+              this.$confirm('确认批量生成SPU？', '提示', {
+                cancelButtonText: '取消',
+                confirmButtonText: '确定',
+                type: 'warning'
+              })
+                .then(() => {
+                  let skuIdList = selectData.map(i => i.skuId)
+                  skuToSpu({ skuIdList }).then(res => {
+                    if (res.code == 200) {
+                      this.$message({
+                        type: 'success',
+                        message: '生成成功'
+                      })
+                      this.getList()
+                    }
+                  })
+                })
+                .catch(() => {})
+            }
+          }
+          break
+
+        case '生成':
+          {
+            let skuIdList = [val.skuId]
+            skuToSpu({ skuIdList }).then(res => {
+              if (res.code == 200) {
+                this.$message({
+                  type: 'success',
+                  message: '生成成功'
+                })
+                this.getList()
+              }
+            })
+          }
+
           break
       }
     },
@@ -414,7 +489,7 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/styles/mainWrap.scss';
-#productCategory {
+#productList {
   .topSearch {
     justify-content: space-between;
     .searchButton {

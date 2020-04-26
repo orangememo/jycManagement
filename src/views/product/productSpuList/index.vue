@@ -74,12 +74,7 @@
         <div slot="title" style="padding:20px 30px ;border-bottom:1px solid #DCDFE6">
           <span>{{editTitle[edit]}}</span>
         </div>
-        <addProduct
-          :propHandleClick="handleClick"
-          v-if="dialogVisible"
-          :edit="edit"
-          :editRoleId="editRoleId"
-        />
+        <addSPU :propHandleClick="handleClick" v-if="dialogVisible" :edit="edit" :editId="editId" />
         <span slot="footer" class="dialog-footer"></span>
       </el-dialog>
     </div>
@@ -87,23 +82,23 @@
 </template>
 
 <script>
-import { getVersionPageInfo } from '@/api/member'
+import { getSpuListPage, postUpperShelf, deleteSpuInfo } from '@/api/products'
 
 import Pagination from '@/components/Pagination'
-import addProduct from './addProduct'
+import addSPU from './addSPU'
 import jycTable from '@/components/table/jycTable'
 import SearchForm from '@/components/seachForm/seachForm'
 export default {
   components: {
     Pagination,
-    addProduct,
+    addSPU,
     jycTable,
     SearchForm
   },
   data() {
     return {
       edit: 0,
-      editRoleId: null,
+      editId: null,
       editTitle: {
         0: '新增',
         1: '编辑'
@@ -117,9 +112,27 @@ export default {
         formItemList: [
           {
             type: 'input',
-            prop: 'applicationName',
+            prop: 'spuName',
             label: '名称',
             placeholder: '请输入名称'
+          },
+          {
+            type: 'input',
+            prop: 'spuCode',
+            label: '商品编号',
+            placeholder: '请输入名称'
+          },
+          {
+            type: 'input',
+            prop: 'brandName',
+            label: '商品品牌',
+            placeholder: '请输入品牌'
+          },
+          {
+            type: 'input',
+            prop: 'catalogName',
+            label: '商品类目',
+            placeholder: '请输入类目'
           },
           {
             type: 'select',
@@ -141,6 +154,27 @@ export default {
                 value: 'DELETE'
               }
             ]
+          },
+          {
+            type: 'select',
+            prop: 'upperShelf',
+            clearable: '关闭',
+            label: '是否上架',
+            placeholder: '选择',
+            optList: [
+              {
+                label: '全部',
+                value: ''
+              },
+              {
+                label: '上架',
+                value: 'YES'
+              },
+              {
+                label: '下架',
+                value: 'NO'
+              }
+            ]
           }
         ],
         operate: [
@@ -151,10 +185,22 @@ export default {
             handleClick: this.search
           },
           {
-            icon: 'el-icon-document-add',
+            icon: 'el-icon-upload2',
             type: 'primary',
-            name: '添加',
+            name: '上架',
             handleClick: this.addNew
+          },
+          {
+            icon: 'el-icon-download',
+            type: 'primary',
+            name: '下架',
+            handleClick: this.downNew
+          },
+          {
+            icon: 'el-icon-delete',
+            type: 'primary',
+            name: '删除',
+            handleClick: this.deleteItem
           },
           {
             icon: 'el-icon-refresh-left',
@@ -166,137 +212,140 @@ export default {
       },
       form: {
         state: '',
-        applicationName: ''
+        spuCode: '',
+        spuName: '',
+        brandName: '',
+        catalogName: ''
       },
       tableTitle: [
         {
-          label: '应用ID',
-          param: 'applicationId',
+          label: '商品名称',
+          param: 'spuName',
+          align: 'center',
+          type: 'text'
+        },
+        {
+          label: '品牌名称',
+          param: 'brandName',
+          align: 'center',
+          type: 'text'
+        },
+
+        {
+          label: '类目',
+          param: 'catalogName',
+          align: 'center',
+          type: 'text'
+        },
+        {
+          label: '标题',
+          param: 'title',
           align: 'center',
           type: 'text'
         },
         // {
-        //   label: '旧版本号',
-        //   param: 'id',
+        //   label: '简介',
+        //   param: 'brief',
         //   align: 'center',
-
         //   type: 'text'
         // },
         {
-          label: '商品名称',
-          param: 'applicationName',
+          label: '描述',
+          param: 'spuDescribe',
           align: 'center',
           type: 'text'
         },
         {
-          label: '图片',
-          param: 'applicationVersion',
-          align: 'center',
-          type: 'img'
-        },
-        {
-          label: '详情图',
-          param: 'applicationImage',
-          align: 'center',
-
-          type: 'img'
-        },
-        {
-          label: '原价',
-          param: 'content',
-          align: 'center',
-
-          type: 'text'
-        },
-        {
-          label: '当前价格',
-          param: 'id',
+          label: '价格',
+          param: 'spuPrice',
           type: 'text',
           align: 'center'
         },
+
         {
-          label: '销量',
-          param: 'applicationUrl',
-          align: 'center',
-          type: 'text'
-        },
-        {
-          label: '显示状态',
-          param: 'applicationMin',
-          align: 'center',
-          type: 'text'
-        },
-        {
-          label: '标语',
-          param: 'createTime',
-          align: 'center',
-          // sortable: true,
-          type: 'text',
-          width: '200'
-        },
-        {
-          label: '颜色码',
-          param: 'modifyTime',
-          align: 'center',
-          width: '200',
-          // sortable: true,
-          type: 'text'
-        },
-        {
-          label: '分页图',
-          param: 'id',
-          align: 'center',
-          type: 'img'
-        },
-        {
-          label: '详情页图',
-          param: 'id',
+          label: '大图',
+          param: 'bitImage',
           align: 'center',
           type: 'img'
         },
 
         {
-          label: '状态',
+          label: '创建时间',
+          param: 'createTime',
+          align: 'center',
+          width: '200',
+          type: 'text'
+        },
+        {
+          label: '更新时间',
+          param: 'modifyTime',
+          align: 'center',
+          width: '200',
+          type: 'text'
+        },
+        {
+          label: '删除状态',
           param: 'state',
           align: 'center',
           type: 'text',
           render: row => {
             if (row.state === 'NORMAL') {
-              return '正常'
+              return "<span style='color:#409EFF'>正常</span>"
             } else {
-              return '隐藏'
+              return "<span style='color:#909399'>已删除</span>"
             }
           }
         },
         {
-          label: '创建时间',
-          param: 'id',
+          label: '上架状态',
+          param: 'upperShelf',
           align: 'center',
-          type: 'text'
+          type: 'text',
+          render: row => {
+            if (row.upperShelf === 'YES') {
+              return "<span style='color:#409EFF'>已上架</span>"
+            } else {
+              return "<span style='color:#909399'>已下架</span>"
+            }
+          }
         },
         {
-          label: '更新时间',
-          param: 'id',
+          label: '上下架',
+          param: 'upperShelf',
           align: 'center',
-          type: 'text'
+          type: 'button',
+          items: {
+            YES: '下架',
+            NO: '上架'
+          },
+          button: {
+            YES: 'danger',
+            NO: 'primary'
+          }
         }
       ],
       tableOption: [
         {
           label: '操作',
-          width: '100',
+          width: '200',
           options: [
             {
               label: '编辑',
               type: 'primary',
               methods: '编辑'
+            },
+            {
+              label: '删除',
+              type: 'danger',
+              methods: '删除'
             }
           ]
         }
       ],
       tableData: [],
       listLoading: false,
-      dialogVisible: false
+      dialogVisible: false,
+      selectData: []
     }
   },
   mounted() {
@@ -306,7 +355,10 @@ export default {
     reset() {
       this.form = {
         state: '',
-        applicationName: ''
+        spuCode: '',
+        spuName: '',
+        brandName: '',
+        catalogName: ''
       }
       this.search()
     },
@@ -315,17 +367,23 @@ export default {
       this.getList()
     },
     addNew() {
-      this.handleClick('新增')
+      this.handleClick('批量上架')
+    },
+    downNew() {
+      this.handleClick('批量下架')
+    },
+    deleteItem() {
+      this.handleClick('批量删除')
     },
     getList: async function() {
       this.listLoading = true
-      let obj = {
+      let obj = JSON.parse(JSON.stringify(this.form))
+      obj = {
+        ...obj,
         currentPage: this.page.page,
-        pageSize: this.page.size,
-        state: this.form.state,
-        applicationName: this.form.applicationName
+        pageSize: this.page.size
       }
-      let res = await getVersionPageInfo(obj)
+      let res = await getSpuListPage(obj)
       if (res.code == 200) {
         let { result } = res
         this.page.total = result.total
@@ -334,6 +392,7 @@ export default {
       this.listLoading = false
     },
     handleClick(type, val) {
+      let selectData = this.selectData
       switch (type) {
         case '新增':
           this.edit = 0
@@ -341,7 +400,7 @@ export default {
           break
         case '编辑':
           this.edit = 1
-          this.editRoleId = val.applicationVersionId
+          this.editId = val.spuId
           this.dialogVisible = true
           break
         case '确认':
@@ -352,7 +411,118 @@ export default {
           this.getList()
           this.dialogVisible = false
           break
+        case '上架':
+          {
+            let spuIdList = [val.spuId]
+            let upperShelf = 'YES'
+            postUpperShelf({ spuIdList, upperShelf }).then(res => {
+              if (res.code == 200) {
+                this.$message({
+                  type: 'success',
+                  message: '上架成功'
+                })
+                this.getList()
+              }
+            })
+          }
 
+          break
+        case '批量上架':
+          {
+            if (selectData.length === 0) {
+              this.$message.error('请勾选需要上架的项')
+            } else {
+              let spuIdList = selectData.map(i => i.spuId)
+              let upperShelf = 'YES'
+              postUpperShelf({ spuIdList, upperShelf }).then(res => {
+                if (res.code == 200) {
+                  this.$message({
+                    type: 'success',
+                    message: '上架成功'
+                  })
+                  this.getList()
+                }
+              })
+            }
+          }
+
+          break
+        case '批量下架':
+          {
+            if (selectData.length === 0) {
+              this.$message.error('请勾选需要下架的项')
+            } else {
+              this.$confirm('确认批量下架选中的？', '提示', {
+                cancelButtonText: '取消',
+                confirmButtonText: '确定',
+                type: 'warning'
+              })
+                .then(() => {
+                  let spuIdList = selectData.map(i => i.spuId)
+                  let upperShelf = 'NO'
+                  postUpperShelf({ spuIdList, upperShelf }).then(res => {
+                    if (res.code == 200) {
+                      this.$message({
+                        type: 'success',
+                        message: '下架成功'
+                      })
+                      this.getList()
+                    }
+                  })
+                })
+                .catch(() => {})
+            }
+          }
+          break
+
+        case '下架':
+          this.$confirm('确认下架？', '提示', {
+            cancelButtonText: '取消',
+            confirmButtonText: '确定',
+            type: 'warning'
+          })
+            .then(() => {
+              let spuIdList = [val.spuId]
+              let upperShelf = 'NO'
+              postUpperShelf({ spuIdList, upperShelf }).then(res => {
+                if (res.code == 200) {
+                  this.$message({
+                    type: 'success',
+                    message: '下架成功'
+                  })
+                  this.getList()
+                }
+              })
+            })
+            .catch(() => {})
+          break
+        case '批量删除':
+          {
+            if (selectData.length === 0) {
+              this.$message.error('请勾选需要删除的项')
+            } else {
+              this.$confirm('确认批量批量删除选中的？', '提示', {
+                cancelButtonText: '取消',
+                confirmButtonText: '确定',
+                type: 'warning'
+              })
+                .then(() => {
+                  let spuIdList = selectData.map(i => i.spuId)
+                  spuIdList = spuIdList.toString()
+                  deleteSpuInfo({ spuIdList }).then(res => {
+                    if (res.code == 200) {
+                      this.$message({
+                        type: 'success',
+                        message: '删除成功'
+                      })
+                      this.getList()
+                    }
+                  })
+                })
+                .catch(() => {})
+            }
+          }
+          break
         case '删除':
           this.$confirm('确认删除？', '提示', {
             cancelButtonText: '取消',
@@ -360,9 +530,8 @@ export default {
             type: 'warning'
           })
             .then(() => {
-              let roleId = val.roleId
-              console.log(val.roleId)
-              deleteRoleInfo({ roleId }).then(res => {
+              let spuIdList = val.spuId
+              deleteSpuInfo({ spuIdList }).then(res => {
                 if (res.code == 200) {
                   this.$message({
                     type: 'success',
@@ -389,9 +558,12 @@ export default {
     },
 
     handleButton(a) {
+      console.log(a, '22')
       this.handleClick(a.methods, a.row)
     },
-    handleSelectionChange() {}
+    handleSelectionChange(val) {
+      this.selectData = val
+    }
   }
 }
 </script>

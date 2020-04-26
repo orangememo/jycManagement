@@ -1,5 +1,5 @@
 <template>
-  <div class="dialogBody" id="addMember">
+  <div class="dialogBody" id="addBrand">
     <div class="body">
       <el-form ref="form" :model="form" :rules="formRules" label-width="140px" size="small">
         <el-row>
@@ -8,37 +8,36 @@
               <el-input v-model.number="form.applicationId" placeholder="请输入应用id"></el-input>
             </el-form-item>
           </el-col>-->
+
           <el-col :span="24">
-            <el-form-item label="应用" prop="applicationId">
+            <el-form-item label="类目名称" prop="name">
+              <el-input v-model="form.name" placeholder="请输入品牌名称" maxlength="50"></el-input>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="24">
+            <el-form-item label="父级类目" prop="parentId">
               <el-select
-                v-model="form.applicationId"
-                placeholder="请选择应用"
+                v-model="form.parentId"
+                placeholder="请选择父级类目"
                 filterable
                 style="width:100%"
               >
                 <el-option
-                  v-for="(item,index) in options.appIdOptions"
-                  :key="index"
-                  :label="item.applicationName"
-                  :value="item.applicationId"
-                ></el-option>
+                  v-for="item in options.catalogOptions"
+                  :key="item.catalogId"
+                  :label="item.name"
+                  :value="item.catalogId"
+                >
+                  <span style="float: left">{{ item.name }}</span>
+                  <span style="float: right; color: #8492a6; font-size: 13px">{{ item.depth }}级类目</span>
+                </el-option>
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="24">
-            <el-form-item label="新版本号" prop="applicationVersion">
-              <el-input v-model="form.applicationVersion" placeholder="请输入新版本号"></el-input>
-            </el-form-item>
-          </el-col>
 
           <el-col :span="24">
-            <el-form-item label="升级内容" prop="content">
-              <el-input v-model="form.content" placeholder="请输入升级内容"></el-input>
-            </el-form-item>
-          </el-col>
-
-          <el-col :span="24">
-            <el-form-item label="图片" prop="applicationImage">
+            <el-form-item label="图片" prop="imageUrl">
               <div>格式要求：支持jpg/png/jpeg/bmp格式照片，大小不超过5m</div>
               <el-upload
                 class="avatar-uploader"
@@ -48,25 +47,15 @@
                 :before-upload="beforeAvatarUpload"
                 accept="image/bmp, image/jpeg, image/jpg, image/png"
               >
-                <img
-                  v-if="form.applicationImage"
-                  :src="`${hostUrl}/${form.applicationImage}`"
-                  class="avatar"
-                />
+                <img v-if="form.imageUrl" :src="`${hostUrl}/${form.imageUrl}`" class="avatar" />
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
             </el-form-item>
           </el-col>
 
           <el-col :span="24">
-            <el-form-item label="下载地址" prop="applicationUrl">
-              <el-input v-model="form.applicationUrl" placeholder="请输入下载地址"></el-input>
-            </el-form-item>
-          </el-col>
-
-          <el-col :span="24">
-            <el-form-item label="最低支持版本" prop="applicationMin">
-              <el-input v-model="form.applicationMin" placeholder="请输入最低支持版本"></el-input>
+            <el-form-item label="权重" prop="weight">
+              <el-input-number v-model="form.weight" controls-position="right" placeholder="请输入排序"></el-input-number>
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -92,13 +81,13 @@
 <script>
 import { validateMobile } from '@/utils/validate'
 import treeSelect from '@/components/treeSelect'
+import { upLoadImg } from '@/api/member'
 import {
-  addVersionInfo,
-  getVersionInfo,
-  putVersionInfo,
-  upLoadImg,
-  getApplication
-} from '@/api/member'
+  addCatalogInfo,
+  getCatalogInfo,
+  putCatalogInfo,
+  getCatalogList
+} from '@/api/products'
 
 export default {
   components: {
@@ -111,7 +100,7 @@ export default {
     edit: {
       default: 0
     },
-    editRoleId: {
+    editId: {
       default: null
     }
   },
@@ -120,42 +109,45 @@ export default {
       upLoadImg,
       sumbitLoading: false,
       form: {
-        applicationId: '',
-        applicationVersion: '',
-        content: '',
+        name: '',
+        parentId: null,
         state: 'NORMAL',
-        applicationUrl: '',
-        applicationImage: '',
-        applicationMin: ''
+        imageUrl: '',
+        weight: ''
       },
       formRules: {
-        applicationId: [
-          { required: true, message: '请填写应用id', trigger: 'blur' }
+        name: [{ required: true, message: '请填写名称', trigger: 'blur' }],
+        parentId: [
+          { required: true, message: '请选择父级类目', trigger: 'blur' }
         ],
-        applicationVersion: [
-          { required: true, message: '请填写版本号', trigger: 'blur' }
-        ],
-        applicationUrl: [
-          { required: true, message: '请填写Code', trigger: 'blur' }
-        ]
+        weight: [{ required: true, message: '请填写权重', trigger: 'blur' }]
+        // applicationUrl: [
+        //   { required: true, message: '请上传logo', trigger: 'blur' }
+        // ]
       },
       options: {
-        appIdOptions: []
+        catalogOptions: []
       }
     }
   },
   mounted() {
+    getCatalogList({ state: 'NORMAL' }).then(res => {
+      let { result } = res
+      let options = {
+        name: '顶级类目',
+        catalogId: 0,
+        depth: 0
+      }
+      result.unshift(options)
+      this.options.catalogOptions = result
+    })
     if (this.edit == 1) {
-      let applicationVersionId = this.editRoleId
-      getVersionInfo({ applicationVersionId }).then(res => {
+      let catalogId = this.editId
+      getCatalogInfo({ catalogId }).then(res => {
         this.form = res.result
       })
     }
-    getApplication().then(res => {
-      this.options.appIdOptions = res.result
-    })
   },
-
   methods: {
     handleClick(type) {
       switch (type) {
@@ -164,10 +156,9 @@ export default {
           this.$refs.form.validate(valid => {
             if (valid) {
               let obj = JSON.parse(JSON.stringify(this.form))
-              obj.byOperateApplicationId = obj.applicationId
               if (this.edit == 1) {
-                obj.applicationVersionId = this.editRoleId
-                putVersionInfo(obj).then(res => {
+                obj.catalogId = this.editId
+                putCatalogInfo(obj).then(res => {
                   if (res.code == 200) {
                     this.$message({
                       type: 'success',
@@ -177,7 +168,7 @@ export default {
                   }
                 })
               } else {
-                addVersionInfo(obj).then(res => {
+                addCatalogInfo(obj).then(res => {
                   if (res.code == 200) {
                     this.$message({
                       type: 'success',
@@ -207,7 +198,7 @@ export default {
       if (url.indexOf('.com') > -1) {
         url = url.split('.com')[1]
       }
-      this.form.applicationImage = url
+      this.form.imageUrl = url
     },
     beforeAvatarUpload(file) {
       let arr = ['image/bmp', 'image/jpeg', 'image/jpg', 'image/png']
@@ -244,7 +235,7 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/styles/mainWrap.scss';
-#addMember {
+#addBrand {
   .body {
   }
   .avatar-uploader {
