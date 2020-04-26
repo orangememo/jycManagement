@@ -207,9 +207,9 @@ export default {
           type: 'text',
           render: row => {
             if (row.state === 'NORMAL') {
-              return '正常'
+              return "<span style='color:#409EFF'>正常</span>"
             } else {
-              return '删除'
+              return "<span style='color:#909399'>已删除</span>"
             }
           }
         },
