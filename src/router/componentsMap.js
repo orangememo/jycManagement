@@ -16,7 +16,7 @@ export const componentsMap = {
 	applyManager: () => import('@/views/apply/manager'),
 	productSkuList: () => import('@/views/product/productSkuList'),
 	productSpuList: () => import('@/views/product/productSpuList'),
-	productCategory: () => import('@/views/product/productSpuList'),
+	productCategory: () => import('@/views/product/productCategory'),
 	productBrand: () => import('@/views/product/productBrand'),
 	productStock: () => import('@/views/product/productStock'),
 }
