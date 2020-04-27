@@ -19,43 +19,6 @@
           @handleButton="handleButton"
           @handleSelectionChange="handleSelectionChange"
         ></jyc-table>
-        <!-- <el-table
-          :data="tableData"
-          fit
-          border
-          stripe
-          row-key="roleId"
-          v-loading="listLoading"
-          :expand-row-keys="expands"
-          :header-row-style="{'background-color':'#152535'}"
-          @selection-change="handleSelectionChange"
-        >
-          <el-table-column type="selection" width="55" align="center"></el-table-column>
-          <template v-for="(item , index) in tableTitle ">
-            <el-table-column
-              :key="index"
-              :prop="item.prop"
-              :label="item.name"
-              :width="item.width"
-              :align="item.align"
-            >
-              <template slot-scope="scope">
-                <span v-if="item.prop=='isHide'">{{scope.row[scope.column.property]==0?'显示':'隐藏'}}</span>
-                <span v-else-if="item.prop=='icon'">
-                  
-                  <svg-icon :icon-class="scope.row[scope.column.property]" />
-                </span>
-                <span v-else>{{scope.row[scope.column.property]}}</span>
-              </template>
-            </el-table-column>
-          </template>
-          <el-table-column label="操作" fixed="right" width="180" align="center">
-            <template slot-scope="scope">
-              <el-button size="small" type="primary" @click="handleClick('编辑',scope.row)">编辑</el-button>
-              <el-button size="small" type="danger" @click="handleClick('删除',scope.row)">删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>-->
       </div>
       <div class="mt10">
         <el-pagination
@@ -82,7 +45,7 @@
 </template>
 
 <script>
-import { getManagerOrderList } from '@/api/member'
+import { getManagerCouponList } from '@/api/member'
 
 import Pagination from '@/components/Pagination'
 import jycTable from '@/components/table/jycTable'
@@ -200,26 +163,35 @@ export default {
           type: 'text'
         },
         {
-          label: '商品名称',
-          param: 'skuName',
+          label: '商户原始订单号',
+          param: 'merchantOrderNo',
           align: 'center',
           type: 'text'
         },
-
         {
           label: '商品数量',
           param: 'num',
           align: 'center',
           type: 'text'
         },
-
+        {
+          label: '商品描述',
+          param: 'describes',
+          align: 'center',
+          type: 'text'
+        },
         {
           label: '订单状态',
           param: 'orderStatusName',
           type: 'text',
           align: 'center'
         },
-
+        {
+          label: '商品名称',
+          param: 'skuName',
+          align: 'center',
+          type: 'text'
+        },
         {
           label: '原价',
           param: 'originalPrice',
@@ -230,14 +202,6 @@ export default {
           label: '真实价格',
           param: 'price',
           align: 'center',
-          type: 'text'
-        },
-        {
-          label: '支付时间',
-          param: 'payTime',
-          align: 'center',
-          width: '200',
-          // sortable: true,
           type: 'text'
         },
         {
@@ -263,8 +227,23 @@ export default {
           // sortable: true,
           type: 'text',
           width: '200'
+        },
+        {
+          label: '更新时间',
+          param: 'modifyTime',
+          align: 'center',
+          width: '200',
+          // sortable: true,
+          type: 'text'
+        },
+        {
+          label: '删除时间',
+          param: 'deleteTime',
+          align: 'center',
+          width: '200',
+          // sortable: true,
+          type: 'text'
         }
-
         // {
         //   label: '权重',
         //   param: 'id',
@@ -306,7 +285,7 @@ export default {
         currentPage: this.page.page,
         pageSize: this.page.size
       }
-      let res = await getManagerOrderList(obj)
+      let res = await getManagerCouponList(obj)
       if (res.code == 200) {
         let { result } = res
         this.page.total = result.total

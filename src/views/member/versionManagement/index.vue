@@ -304,11 +304,11 @@ export default {
     },
     getList: async function() {
       this.listLoading = true
-      let obj = {
+      let obj = JSON.parse(JSON.stringify(this.form))
+      obj = {
+        ...obj,
         currentPage: this.page.page,
-        pageSize: this.page.size,
-        state: this.form.state,
-        applicationName: this.form.applicationName
+        pageSize: this.page.size
       }
       let res = await getVersionPageInfo(obj)
       if (res.code == 200) {

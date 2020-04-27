@@ -24,17 +24,18 @@
       <div v-if="dialogStatus">
         <el-form :model="newProd" :rules="formRules" ref="roleFrom">
           <el-form-item
-            label="选择类型"
+            label="是否供应商"
+            prop="isSupplier"
             :label-width="labelWidth"
             style="margin-right: -80px;"
-            prop="companyType"
           >
-            <el-select v-model="newProd.companyType" placeholder="请选择...">
-              <el-option label="酒店" value="HOTEL"></el-option>
-              <el-option label="供应商" value="SUPPLIER"></el-option>
-            </el-select>
+            <el-radio-group v-model="newProd.isSupplier">
+              <el-radio label="YES">是</el-radio>
+              <el-radio label="NO">否</el-radio>
+            </el-radio-group>
           </el-form-item>
-          <el-form-item
+
+          <!-- <el-form-item
             label="选择应用"
             :label-width="labelWidth"
             style="margin-right: -80px;"
@@ -48,7 +49,7 @@
                 :value="item.applicationId"
               ></el-option>
             </el-select>
-          </el-form-item>
+          </el-form-item>-->
           <el-form-item
             label="选择标志"
             :label-width="labelWidth"
@@ -176,7 +177,7 @@ export default {
   data() {
     return {
       form: {}, //查询条件
-      labelWidth: '80px',
+      labelWidth: '100px',
       dialogStatus: false,
       dialogTitle: '',
       loading: false,
@@ -186,7 +187,7 @@ export default {
       applyList: [],
       isEdit: false,
       formRules: {
-        companyType: [
+        isSupplier: [
           { required: true, message: '请选择类型', trigger: 'blur' }
         ],
         applyList: [{ required: true, message: '请选择应用', trigger: 'blur' }],
@@ -198,13 +199,8 @@ export default {
         mobile: [
           {
             required: true,
-            message: '请输入电话号码，号码会自动注册为登录账户',
+            message: '请输入电话号码',
             trigger: 'blur'
-          },
-          {
-            validator: validateMobile,
-            trigger: 'blur',
-            message: '请输入电话号码，号码会自动注册为登录账户'
           }
         ],
         companyAddr: [
@@ -263,7 +259,7 @@ export default {
         companyId: null,
         cmpId: null,
         companyName: '',
-        companyType: '',
+        isSupplier: 'YES',
         createAccountId: '',
         createTime: '',
         description: '',
@@ -279,8 +275,8 @@ export default {
         vrimage: '',
         weight: 0,
         images: [],
-        labelList: [],
-        applyList: []
+        labelList: []
+        // applyList: []
       },
       pageSize: 10,
       listQuery: {
@@ -728,14 +724,14 @@ export default {
         backgroundImg: '',
         images: [],
         labelList: [],
-        applyList: [],
+        // applyList: [],
         businessHours: '',
         companyAddr: '',
         companyCode: '',
         cmpId: null,
         companyId: null,
         companyName: '',
-        companyType: '',
+        isSupplier: 'YES',
         createAccountId: '',
         createTime: '',
         description: '',

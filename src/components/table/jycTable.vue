@@ -47,6 +47,7 @@
     <el-table-column
       v-for="(el,i) in tableOption"
       :key="el.id+'_'+i"
+      :fixed="el.fixed"
       :width="el.width"
       :label="el.label"
       align="center"

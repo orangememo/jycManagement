@@ -58,12 +58,12 @@ module.exports = {
 					'^/commodity': '',
 				},
 			},
-			'/web-manage/': {
-				target: 'http://192.168.0.109:8085',
+			'/web_manage/': {
+				target: 'http://192.168.0.109:8085/',
 				// target: 'http://129.211.141.150:39012/web-manage',
 				changeOrigin: true,
 				pathRewrite: {
-					'^/web-manage': '',
+					'^/web_manage': '',
 				},
 			},
 		},

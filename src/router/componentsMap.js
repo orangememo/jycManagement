@@ -7,6 +7,7 @@ export const componentsMap = {
 	versionManagement: () => import('@/views/member/versionManagement'),
 	memberGroup: () => import('@/views/member/memberGroup/index'),
 	memberOrder: () => import('@/views/member/memberOrder/index'),
+	memberCoupon: () => import('@/views/member/memberCoupon/index'),
 	inviteCode: () => import('@/views/member/inviteCode'),
 	consumptionEnvelope: () => import('@/views/member/consumptionEnvelope'),
 	businessHotelType: () => import('@/views/business/hotelType'),

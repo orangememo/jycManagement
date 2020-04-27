@@ -23,6 +23,18 @@
       <div v-if="dialogStatus">
         <el-form :model="newProd" :rules="formRules" ref="roleFrom">
           <el-form-item
+              label="是否供应商"
+              prop="isSupplier"
+              :label-width="labelWidth"
+              style="margin-right: -80px;"
+            >
+              <el-radio-group v-model="newProd.isSupplier">
+                <el-radio label="YES">是</el-radio>
+                <el-radio label="NO">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-form-item>
+          <el-form-item
             label="标志"
             :label-width="labelWidth"
             style="margin-right: -80px;"
@@ -157,13 +169,8 @@ export default {
         mobile: [
           {
             required: true,
-            message: '请输入电话号码，号码会自动注册为登录账户',
+            message: '请输入电话号码',
             trigger: 'blur'
-          },
-          {
-            validator: validateMobile,
-            trigger: 'blur',
-            message: '请输入电话号码，号码会自动注册为登录账户'
           }
         ],
         companyAddr: [
@@ -211,9 +218,10 @@ export default {
           { required: true, message: '请输入纬度值', trigger: 'blur' }
         ],
         weight: [{ required: true, message: '请输入权重值', trigger: 'blur' }],
-        state: [{ required: true, message: '请输选择状态', trigger: 'blur' }]
+        state: [{ required: true, message: '请选择状态', trigger: 'blur' }],
+        isSupplier:[{ required: true, message: '请选择', trigger: 'blur' }]
       },
-      labelWidth: '80px',
+      labelWidth: '100px',
       dialogStatus: false,
       dialogTitle: '',
       loading: false,
@@ -245,7 +253,8 @@ export default {
         vrimage: '',
         weight: 0,
         images: [],
-        labelList: []
+        labelList: [],
+        isSupplier:'YES'
       },
       pageSize: 10,
       listQuery: {
@@ -691,7 +700,8 @@ export default {
         pyCode: '',
         state: '',
         vrimage: '',
-        weight: 0
+        weight: 0,
+        isSupplier:'YES'
       }
     },
     resetSearch() {

@@ -19,43 +19,6 @@
           @handleButton="handleButton"
           @handleSelectionChange="handleSelectionChange"
         ></jyc-table>
-        <!-- <el-table
-          :data="tableData"
-          fit
-          border
-          stripe
-          row-key="roleId"
-          v-loading="listLoading"
-          :expand-row-keys="expands"
-          :header-row-style="{'background-color':'#152535'}"
-          @selection-change="handleSelectionChange"
-        >
-          <el-table-column type="selection" width="55" align="center"></el-table-column>
-          <template v-for="(item , index) in tableTitle ">
-            <el-table-column
-              :key="index"
-              :prop="item.prop"
-              :label="item.name"
-              :width="item.width"
-              :align="item.align"
-            >
-              <template slot-scope="scope">
-                <span v-if="item.prop=='isHide'">{{scope.row[scope.column.property]==0?'显示':'隐藏'}}</span>
-                <span v-else-if="item.prop=='icon'">
-                  
-                  <svg-icon :icon-class="scope.row[scope.column.property]" />
-                </span>
-                <span v-else>{{scope.row[scope.column.property]}}</span>
-              </template>
-            </el-table-column>
-          </template>
-          <el-table-column label="操作" fixed="right" width="180" align="center">
-            <template slot-scope="scope">
-              <el-button size="small" type="primary" @click="handleClick('编辑',scope.row)">编辑</el-button>
-              <el-button size="small" type="danger" @click="handleClick('删除',scope.row)">删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>-->
       </div>
       <div class="mt10">
         <el-pagination

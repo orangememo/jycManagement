@@ -64,3 +64,13 @@ export function getManagerOrderList(params) {
 		params,
 	})
 }
+/**
+ * 优惠券管理
+ */
+export function getManagerCouponList(params) {
+	return request({
+		url: process.env.VUE_APP_WEB_ORDER + '/jyc/user/order/v1/manager/coupon',
+		method: 'get',
+		params,
+	})
+}
