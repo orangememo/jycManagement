@@ -243,7 +243,7 @@ export function getSkuInfo(params) {
 
 export function getSupplierInfoList(params) {
 	return request({
-		url: process.env.VUE_APP_DEV_API + '/company/supplierInfo',
+		url: '/company/supplierInfo',
 		method: 'get',
 		params,
 	})

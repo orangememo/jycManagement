@@ -113,7 +113,7 @@ export default {
           {
             type: 'input',
             prop: 'skuName',
-            label: '名称',
+            label: 'sku名称',
             placeholder: '请输入名称'
           },
 
@@ -145,7 +145,7 @@ export default {
                 value: 'NORMAL'
               },
               {
-                label: '隐藏',
+                label: 's删除',
                 value: 'DELETE'
               }
             ]
@@ -194,7 +194,7 @@ export default {
       },
       tableTitle: [
         {
-          label: '商品名称',
+          label: 'sku名称',
           param: 'skuName',
           align: 'center',
           type: 'text'

@@ -113,14 +113,14 @@ export default {
           {
             type: 'input',
             prop: 'spuName',
-            label: '名称',
+            label: 'spu名称',
             placeholder: '请输入名称'
           },
           {
             type: 'input',
             prop: 'spuCode',
-            label: '商品编号',
-            placeholder: '请输入名称'
+            label: 'spu编号',
+            placeholder: '请输入编号'
           },
           {
             type: 'input',
@@ -150,7 +150,7 @@ export default {
                 value: 'NORMAL'
               },
               {
-                label: '隐藏',
+                label: '删除',
                 value: 'DELETE'
               }
             ]
@@ -219,8 +219,14 @@ export default {
       },
       tableTitle: [
         {
-          label: '商品名称',
+          label: 'spu名称',
           param: 'spuName',
+          align: 'center',
+          type: 'text'
+        },
+        {
+          label: 'spu编号',
+          param: 'spuCode',
           align: 'center',
           type: 'text'
         },
