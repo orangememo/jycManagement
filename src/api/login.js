@@ -6,9 +6,9 @@ import request from '@/utils/request'
 
 export function loginJyc(data) {
 	return request({
-		url: '/manager/jyc/v1/login',
+		url: process.env.VUE_APP_WEB_MANAGE + '/manager/jyc/v1/login',
 		method: 'post',
-		data
+		data,
 	})
 }
 /**
@@ -16,9 +16,9 @@ export function loginJyc(data) {
  */
 export function loginInfo(params) {
 	return request({
-		url: '/rule/ruleInfo/tree/accountId',
+		url: process.env.VUE_APP_WEB_MANAGE + '/rule/ruleInfo/tree/accountId',
 		method: 'GET',
-		params
+		params,
 	})
 }
 /**
@@ -26,9 +26,9 @@ export function loginInfo(params) {
  */
 export function putUserInfoPassword(data) {
 	return request({
-		url: '/manager/jyc/v1/user/password',
+		url: process.env.VUE_APP_WEB_MANAGE + '/manager/jyc/v1/user/password',
 		method: 'put',
-		data
+		data,
 	})
 }
 /**
@@ -36,8 +36,8 @@ export function putUserInfoPassword(data) {
  */
 export function putRetrievePassword(data) {
 	return request({
-		url: '/manager/jyc/v1/retrieve/password',
+		url: process.env.VUE_APP_WEB_MANAGE + '/manager/jyc/v1/retrieve/password',
 		method: 'put',
-		data
+		data,
 	})
 }

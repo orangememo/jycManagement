@@ -6,7 +6,7 @@ import request from '@/utils/request'
 
 export function getVersionPageInfo(params) {
 	return request({
-		url: '/version/page/info',
+		url: process.env.VUE_APP_WEB_MANAGE + '/version/page/info',
 		method: 'get',
 		params,
 	})
@@ -18,7 +18,7 @@ export function getVersionPageInfo(params) {
 
 export function addVersionInfo(data) {
 	return request({
-		url: '/version/info',
+		url: process.env.VUE_APP_WEB_MANAGE + '/version/info',
 		method: 'post',
 		data,
 	})
@@ -29,7 +29,7 @@ export function addVersionInfo(data) {
 
 export function putVersionInfo(data) {
 	return request({
-		url: '/version/info',
+		url: process.env.VUE_APP_WEB_MANAGE + '/version/info',
 		method: 'PUT',
 		data,
 	})
@@ -40,7 +40,7 @@ export function putVersionInfo(data) {
 
 export function getVersionInfo(params) {
 	return request({
-		url: '/version/versionInfo/id',
+		url: process.env.VUE_APP_WEB_MANAGE + '/version/versionInfo/id',
 		method: 'get',
 		params,
 	})
@@ -49,7 +49,17 @@ export function getVersionInfo(params) {
 export const upLoadImg = `http://49.234.12.49/lp/lp/lpVuser/edits`
 export function getApplication(params) {
 	return request({
-		url: '/application/list',
+		url: process.env.VUE_APP_WEB_MANAGE + '/application/list',
+		method: 'get',
+		params,
+	})
+}
+/**
+ * 订单管理
+ */
+export function getManagerOrderList(params) {
+	return request({
+		url: process.env.VUE_APP_WEB_ORDER + '/jyc/user/order/v1/manager/order/admin',
 		method: 'get',
 		params,
 	})

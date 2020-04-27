@@ -31,36 +31,39 @@ module.exports = {
 	productionSourceMap: false,
 	devServer: {
 		port: port,
-		open: true,
+		open: false,
 		overlay: {
 			warnings: false,
 			errors: true,
 		},
 		proxy: {
 			// 服务器ip
-			'/dev_new/company/': {
-				target: 'http://192.168.0.109:8085/',
+			'/web_order': {
+				target: 'http://192.168.0.105:8080/',
 				// target: 'http://129.211.141.150:39012/web-manage',
 				changeOrigin: true,
-				pathRewrite: {
-					'^/development_api/dev_new/': '',
-				},
+				pathRewrite: { '^/web_order': '' },
 			},
-			'/dev_new/': {
+			// '/commodity/': {
+			// 	target: 'http://192.168.0.109:8085/',
+			// 	// target: 'http://129.211.141.150:39012/web-manage',
+			// 	changeOrigin: true,
+			// 	pathRewrite: {},
+			// },
+			'/commodity': {
 				target: 'http://192.168.0.109:8088/',
 				// target: 'http://129.211.141.150:39012/web-manage',
 				changeOrigin: true,
 				pathRewrite: {
-					'^/development_api/dev_new': '',
+					'^/commodity': '',
 				},
 			},
-
-			'/development_api/': {
+			'/web-manage/': {
 				target: 'http://192.168.0.109:8085',
 				// target: 'http://129.211.141.150:39012/web-manage',
 				changeOrigin: true,
 				pathRewrite: {
-					'^/development_api': '',
+					'^/web-manage': '',
 				},
 			},
 		},

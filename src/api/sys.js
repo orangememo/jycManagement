@@ -6,7 +6,7 @@ import request from '@/utils/request'
 
 export function getRuleInfoTree(params) {
 	return request({
-		url: '/rule/ruleInfo/tree/accountId',
+		url: process.env.VUE_APP_WEB_MANAGE + '/rule/ruleInfo/tree/accountId',
 		method: 'get',
 		params,
 	})
@@ -18,7 +18,7 @@ export function getRuleInfoTree(params) {
 
 export function deleteRuleInfo(params) {
 	return request({
-		url: '/rule/rule',
+		url: process.env.VUE_APP_WEB_MANAGE + '/rule/rule',
 		method: 'DELETE',
 		params,
 	})
@@ -29,7 +29,7 @@ export function deleteRuleInfo(params) {
 
 export function addRuleInfo(data) {
 	return request({
-		url: '/rule/rule',
+		url: process.env.VUE_APP_WEB_MANAGE + '/rule/rule',
 		method: 'POST',
 		data,
 	})
@@ -40,7 +40,7 @@ export function addRuleInfo(data) {
 
 export function putRuleInfo(data) {
 	return request({
-		url: '/rule/ruleInfo/ruleId',
+		url: process.env.VUE_APP_WEB_MANAGE + '/rule/ruleInfo/ruleId',
 		method: 'PUT',
 		data,
 	})
@@ -50,7 +50,7 @@ export function putRuleInfo(data) {
  */
 export function getRuleInfo(params) {
 	return request({
-		url: '/rule/ruleInfo/ruleId',
+		url: process.env.VUE_APP_WEB_MANAGE + '/rule/ruleInfo/ruleId',
 		method: 'GET',
 		params,
 	})
@@ -61,7 +61,7 @@ export function getRuleInfo(params) {
  */
 export function getRoleInfoTree(params) {
 	return request({
-		url: '/role/role/tree/list/accountId',
+		url: process.env.VUE_APP_WEB_MANAGE + '/role/role/tree/list/accountId',
 		method: 'get',
 		params,
 	})
@@ -71,7 +71,7 @@ export function getRoleInfoTree(params) {
  */
 export function getParentRoleIdList(params) {
 	return request({
-		url: '/role/parentRoleIdList/tree/accountId',
+		url: process.env.VUE_APP_WEB_MANAGE + '/role/parentRoleIdList/tree/accountId',
 		method: 'get',
 		params,
 	})
@@ -82,7 +82,7 @@ export function getParentRoleIdList(params) {
  */
 export function roleInfoTreeAccountId(params) {
 	return request({
-		url: '/role/roleInfo/tree/accountId',
+		url: process.env.VUE_APP_WEB_MANAGE + '/role/roleInfo/tree/accountId',
 		method: 'get',
 		params,
 	})
@@ -93,7 +93,7 @@ export function roleInfoTreeAccountId(params) {
  */
 export function addRoleInfo(data) {
 	return request({
-		url: '/role/role',
+		url: process.env.VUE_APP_WEB_MANAGE + '/role/role',
 		method: 'post',
 		data,
 	})
@@ -103,7 +103,7 @@ export function addRoleInfo(data) {
  */
 export function deleteRoleInfo(params) {
 	return request({
-		url: '/role/role',
+		url: process.env.VUE_APP_WEB_MANAGE + '/role/role',
 		method: 'delete',
 		params,
 	})
@@ -113,7 +113,7 @@ export function deleteRoleInfo(params) {
  */
 export function getRoleInfo(params) {
 	return request({
-		url: '/role/roleInfo/roleId',
+		url: process.env.VUE_APP_WEB_MANAGE + '/role/roleInfo/roleId',
 		method: 'get',
 		params,
 	})
@@ -124,7 +124,7 @@ export function getRoleInfo(params) {
  */
 export function putRoleInfo(data) {
 	return request({
-		url: '/role/roleInfo/roleId',
+		url: process.env.VUE_APP_WEB_MANAGE + '/role/roleInfo/roleId',
 		method: 'put',
 		data,
 	})
@@ -143,7 +143,7 @@ export function putRoleInfo(data) {
 
 export function getManagerUserInfoPageList(params) {
 	return request({
-		url: '/manager/userInfo/page/list',
+		url: process.env.VUE_APP_WEB_MANAGE + '/manager/userInfo/page/list',
 		method: 'get',
 		params,
 	})
@@ -154,7 +154,7 @@ export function getManagerUserInfoPageList(params) {
 
 export function postManagerUserInfo(data) {
 	return request({
-		url: '/manager/userInfo',
+		url: process.env.VUE_APP_WEB_MANAGE + '/manager/userInfo',
 		method: 'post',
 		data,
 	})
@@ -165,7 +165,7 @@ export function postManagerUserInfo(data) {
 
 export function putManagerUserInfo(data) {
 	return request({
-		url: '/manager/jyc/v1/improve/user/info',
+		url: process.env.VUE_APP_WEB_MANAGE + '/manager/jyc/v1/improve/user/info',
 		method: 'put',
 		data,
 	})
@@ -177,7 +177,7 @@ export function putManagerUserInfo(data) {
 
 export function deleteManagerUserInfo(params) {
 	return request({
-		url: '/manager/jyc/v1/user/del',
+		url: process.env.VUE_APP_WEB_MANAGE + '/manager/jyc/v1/user/del',
 		method: 'DELETE',
 		params,
 	})
@@ -188,7 +188,7 @@ export function deleteManagerUserInfo(params) {
 
 export function getManagerUserInfo(params) {
 	return request({
-		url: '/manager/userInfo/userInfoId',
+		url: process.env.VUE_APP_WEB_MANAGE + '/manager/userInfo/userInfoId',
 		method: 'get',
 		params,
 	})
@@ -199,7 +199,7 @@ export function getManagerUserInfo(params) {
 
 export function getManagerLogInfo(params) {
 	return request({
-		url: '/manager/logInfo/page/list',
+		url: process.env.VUE_APP_WEB_MANAGE + '/manager/logInfo/page/list',
 		method: 'get',
 		params,
 	})

@@ -6,6 +6,7 @@ export const componentsMap = {
 	memberManagement: () => import('@/views/member/memberManagement'),
 	versionManagement: () => import('@/views/member/versionManagement'),
 	memberGroup: () => import('@/views/member/memberGroup/index'),
+	memberOrder: () => import('@/views/member/memberOrder/index'),
 	inviteCode: () => import('@/views/member/inviteCode'),
 	consumptionEnvelope: () => import('@/views/member/consumptionEnvelope'),
 	businessHotelType: () => import('@/views/business/hotelType'),
