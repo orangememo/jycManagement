@@ -121,7 +121,7 @@ export default {
           { required: true, message: '请选择组别', trigger: 'change' }
         ],
         email: [
-          { required: true, message: '请输入Email', trigger: 'blur' },
+          { required: false, message: '请输入Email', trigger: 'blur' },
           {
             validator: validEmail,
             message: '请输入正确的Email',

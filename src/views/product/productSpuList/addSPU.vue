@@ -168,9 +168,9 @@ export default {
         } else {
           result.bitImage = []
         }
-        if (result.imagesList) {
-          result.image = result.imagesList
-          this.toImgs2 = result.imagesList.map(i => {
+        if (result.imageList) {
+          result.image = result.imageList
+          this.toImgs2 = result.imageList.map(i => {
             return {
               url: `${this.hostUrl}${i}`
             }

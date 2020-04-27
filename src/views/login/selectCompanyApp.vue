@@ -4,12 +4,20 @@
     <div class="selectApp">
       <div class="leftCompany posiItem">
         <template v-for="(item,inde) in value1">
-          <div class="appItemCss" @click="hendleClick('公司',item)">{{item.companyName}}</div>
+          <div
+            class="appItemCss"
+            :class="{'colorCss':item.companyId===companyId}"
+            @click="hendleClick('公司',item)"
+          >{{item.companyName}}</div>
         </template>
       </div>
       <div class="rightApp posiItem">
         <template v-for="(item,inde) in value2">
-          <div class="appItemCss" @click="hendleClick('应用',item)">{{item.applicationName}}</div>
+          <div
+            class="appItemCss"
+            :class="{'colorCss':item.applicationId===applicationId}"
+            @click="hendleClick('应用',item)"
+          >{{item.applicationName}}</div>
         </template>
       </div>
     </div>
@@ -37,8 +45,7 @@ export default {
   },
   mounted() {
     this.value1 = this.companyList
-
-    // console.log(pass, '222pass')
+    this.hendleClick('公司', this.companyList[0])
   },
   computed: {
     ...mapState('login', ['companyList', 'applicationList', 'accountId'])
@@ -53,6 +60,7 @@ export default {
         let value2 = this.applicationList.filter(
           el => el.companyId == companyId
         )
+
         this.value2 = value2
       } else {
         let { applicationId } = val
@@ -82,8 +90,8 @@ export default {
     text-overflow: ellipsis;
     height: 40px;
     border-radius: 3px;
-    background: #409eff;
-    color: white;
+    background: #ecf5ff;
+    border-color: #b3d8ff;
     margin-bottom: 10px;
     text-align: center;
     line-height: 40px;
@@ -92,6 +100,16 @@ export default {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    &:hover {
+      background: #409eff;
+      border-color: #409eff;
+      color: #fff;
+    }
+  }
+  .colorCss {
+    border: 1px solid #409eff;
+    background: #409eff;
+    color: white;
   }
   .posiItem {
     overflow: auto;

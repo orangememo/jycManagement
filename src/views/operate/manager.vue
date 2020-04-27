@@ -44,7 +44,7 @@
             <el-input v-model="newProd.linkMan"></el-input>
           </el-form-item>
           <el-form-item label="电话" :label-width="labelWidth" prop="mobile">
-            <el-input v-model="newProd.mobile"></el-input>
+            <el-input v-model="newProd.mobile" style="width:250px"></el-input>
           </el-form-item>
           <el-form-item label="地址" :label-width="labelWidth" prop="companyAddr">
             <el-input v-model="newProd.companyAddr"></el-input>
@@ -142,6 +142,7 @@ import {
   updateCompany
 } from '@/api/operate/manager'
 import { getLabelList } from '@/api/label'
+import { validEmail, validateMobile } from '@/utils/validate'
 export default {
   components: { Pagination, jycTable, SearchForm, Upload },
   data() {
@@ -153,7 +154,18 @@ export default {
           { required: true, message: '请输入名称', trigger: 'blur' }
         ],
         linkMan: [{ required: true, message: '请输入联系人', trigger: 'blur' }],
-        mobile: [{ required: true, message: '请输入电话', trigger: 'blur' }],
+        mobile: [
+          {
+            required: true,
+            message: '请输入电话号码，号码会自动注册为登录账户',
+            trigger: 'blur'
+          },
+          {
+            validator: validateMobile,
+            trigger: 'blur',
+            message: '请输入电话号码，号码会自动注册为登录账户'
+          }
+        ],
         companyAddr: [
           { required: true, message: '请输入地址', trigger: 'blur' }
         ],
