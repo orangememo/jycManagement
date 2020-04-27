@@ -145,7 +145,7 @@ export default {
                 value: 'NORMAL'
               },
               {
-                label: 's删除',
+                label: '删除',
                 value: 'DELETE'
               }
             ]
