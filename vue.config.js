@@ -39,7 +39,7 @@ module.exports = {
 		proxy: {
 			// 服务器ip
 			'/web_order': {
-				target: 'http://192.168.0.105:8080/',
+				target: 'http://192.168.0.108:8080/',
 				// target: 'http://129.211.141.150:39012/web-manage',
 				changeOrigin: true,
 				pathRewrite: { '^/web_order': '' },
@@ -51,7 +51,9 @@ module.exports = {
 			// 	pathRewrite: {},
 			// },
 			'/commodity': {
-				target: 'http://192.168.0.109:8088/',
+				// target: 'http://192.168.0.109:8088/',
+				target: 'http://192.168.0.108:8088/',
+				// target: 'http://192.168.0.108:9090/',
 				// target: 'http://129.211.141.150:39012/web-manage',
 				changeOrigin: true,
 				pathRewrite: {
@@ -59,6 +61,7 @@ module.exports = {
 				},
 			},
 			'/web_manage/': {
+				// target: 'http://192.168.0.109:8085/',
 				target: 'http://192.168.0.109:8085/',
 				// target: 'http://129.211.141.150:39012/web-manage',
 				changeOrigin: true,

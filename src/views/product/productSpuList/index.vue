@@ -82,7 +82,11 @@
 </template>
 
 <script>
-import { getSpuListPage, postUpperShelf, deleteSpuInfo } from '@/api/products'
+import {
+  getSpuListPage,
+  postUpperShelfSpu,
+  deleteSpuInfo
+} from '@/api/products'
 
 import Pagination from '@/components/Pagination'
 import addSPU from './addSPU'
@@ -188,7 +192,7 @@ export default {
             icon: 'el-icon-upload2',
             type: 'primary',
             name: '上架',
-            handleClick: this.addNew
+            handleClick: this.addPut
           },
           {
             icon: 'el-icon-download',
@@ -372,7 +376,7 @@ export default {
       this.page.page = 1
       this.getList()
     },
-    addNew() {
+    addPut() {
       this.handleClick('批量上架')
     },
     downNew() {
@@ -421,7 +425,7 @@ export default {
           {
             let spuIdList = [val.spuId]
             let upperShelf = 'YES'
-            postUpperShelf({ spuIdList, upperShelf }).then(res => {
+            postUpperShelfSpu({ spuIdList, upperShelf }).then(res => {
               if (res.code == 200) {
                 this.$message({
                   type: 'success',
@@ -440,7 +444,7 @@ export default {
             } else {
               let spuIdList = selectData.map(i => i.spuId)
               let upperShelf = 'YES'
-              postUpperShelf({ spuIdList, upperShelf }).then(res => {
+              postUpperShelfSpu({ spuIdList, upperShelf }).then(res => {
                 if (res.code == 200) {
                   this.$message({
                     type: 'success',
@@ -466,7 +470,7 @@ export default {
                 .then(() => {
                   let spuIdList = selectData.map(i => i.spuId)
                   let upperShelf = 'NO'
-                  postUpperShelf({ spuIdList, upperShelf }).then(res => {
+                  postUpperShelfSpu({ spuIdList, upperShelf }).then(res => {
                     if (res.code == 200) {
                       this.$message({
                         type: 'success',
@@ -490,7 +494,7 @@ export default {
             .then(() => {
               let spuIdList = [val.spuId]
               let upperShelf = 'NO'
-              postUpperShelf({ spuIdList, upperShelf }).then(res => {
+              postUpperShelfSpu({ spuIdList, upperShelf }).then(res => {
                 if (res.code == 200) {
                   this.$message({
                     type: 'success',

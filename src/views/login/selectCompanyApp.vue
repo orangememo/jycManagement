@@ -53,9 +53,10 @@ export default {
   methods: {
     hendleClick(type, val) {
       if (type == '公司') {
-        let { companyId } = val
+        let { companyId, companyType } = val
         this.companyId = companyId
         this.$store.commit('login/SET_COMPANY_ID', companyId)
+        this.$store.commit('login/SET_COMPANY_TYPE', companyType)
         this.value2 = []
         let value2 = this.applicationList.filter(
           el => el.companyId == companyId

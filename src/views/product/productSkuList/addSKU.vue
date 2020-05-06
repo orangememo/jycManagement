@@ -5,12 +5,17 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="sku名称" prop="skuName">
-              <el-input v-model="form.skuName" placeholder="请输入" maxlength="50"></el-input>
+              <el-input v-model="form.skuName" placeholder="请输入" maxlength="50" :disabled="edit==1"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24">
             <el-form-item label="品牌" prop="brandId">
-              <el-select v-model="form.brandId" placeholder="请选择" style="width:100%">
+              <el-select
+                v-model="form.brandId"
+                placeholder="请选择"
+                style="width:100%"
+                :disabled="edit==1"
+              >
                 <el-option
                   v-for="item in options.brandOptions"
                   :key="item.brandId"
@@ -22,7 +27,13 @@
           </el-col>
           <el-col :span="24">
             <el-form-item label="类目" prop="catalogId">
-              <el-select v-model="form.catalogId" placeholder="请选择" filterable style="width:100%">
+              <el-select
+                v-model="form.catalogId"
+                placeholder="请选择"
+                filterable
+                style="width:100%"
+                :disabled="edit==1"
+              >
                 <el-option
                   v-for="item in options.catalogOptions"
                   :key="item.catalogId"
@@ -35,9 +46,15 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="24">
+          <!-- <el-col :span="24">
             <el-form-item label="供应商" prop="supplierId">
-              <el-select v-model="form.supplierId" placeholder="请选择" filterable style="width:100%">
+              <el-select
+                v-model="form.supplierId"
+                placeholder="请选择"
+                filterable
+                style="width:100%"
+                :disabled="edit==1"
+              >
                 <el-option
                   v-for="item in options.supplierOptions"
                   :key="item.companyId"
@@ -46,7 +63,7 @@
                 ></el-option>
               </el-select>
             </el-form-item>
-          </el-col>
+          </el-col>-->
           <el-col :span="24">
             <el-form-item label="商品描述" prop="describe">
               <el-input
@@ -87,6 +104,14 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
+            <el-form-item label="是否上架" prop="upperShelf">
+              <el-radio-group v-model="form.upperShelf">
+                <el-radio label="YES">上架</el-radio>
+                <el-radio label="NO">下架</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
             <el-form-item label="状态" prop="state">
               <el-radio-group v-model="form.state">
                 <el-radio label="NORMAL">正常</el-radio>
@@ -115,8 +140,7 @@ import {
   getSkuInfo,
   putSkuInfo,
   getCatalogList,
-  getBrandList,
-  getSupplierInfoList
+  getBrandList
 } from '@/api/products'
 
 export default {
@@ -147,7 +171,8 @@ export default {
         price: '',
         describe: '',
         images: [],
-        marketPrice: ''
+        marketPrice: '',
+        upperShelf: 'NO'
       },
       formRules: {
         skuName: [{ required: true, message: '请填写名称', trigger: 'blur' }],
@@ -165,15 +190,16 @@ export default {
         ],
         images: [{ required: true, message: '请上传图片', trigger: 'change' }],
         price: [{ required: true, message: '请填写价格', trigger: 'blur' }],
-        state: [{ required: true, message: '请上传图片', trigger: 'change' }]
+        state: [{ required: true, message: '请选择', trigger: 'change' }],
+        upperShelf: [{ required: true, message: '请选择', trigger: 'change' }]
         // applicationUrl: [
         //   { required: true, message: '请上传logo', trigger: 'blur' }
         // ]
       },
       options: {
         catalogOptions: [],
-        brandOptions: [],
-        supplierOptions: []
+        brandOptions: []
+        // supplierOptions: []
       },
       toImgs1: [],
       toImgs2: []
@@ -188,9 +214,9 @@ export default {
       let { result } = res
       this.options.brandOptions = result
     })
-    getSupplierInfoList().then(res => {
-      this.options.supplierOptions = res.result
-    })
+    // getSupplierInfoList().then(res => {
+    //   this.options.supplierOptions = res.result
+    // })
     if (this.edit == 1) {
       let skuId = this.editId
       getSkuInfo({ skuId }).then(res => {
@@ -198,6 +224,8 @@ export default {
         this.form = result
         if (result.abbreviateImg) {
           this.toImgs1 = [{ url: `${this.hostUrl}${result.abbreviateImg}` }]
+        } else {
+          this.toImgs1 = []
         }
         result.images = result.imagesList
         this.toImgs2 = result.imagesList.map(i => {
@@ -219,9 +247,9 @@ export default {
               let obj = JSON.parse(JSON.stringify(this.form))
               obj.abbreviateImg = obj.abbreviateImg.toString()
               obj.images = obj.images.toString()
-              obj.supplierName = this.options.supplierOptions.find(
-                e => e.companyId === obj.supplierId
-              ).companyName
+              // obj.supplierName = this.options.supplierOptions.find(
+              //   e => e.companyId === obj.supplierId
+              // ).companyName
 
               if (this.edit == 1) {
                 obj.skuId = this.editId

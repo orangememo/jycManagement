@@ -73,13 +73,13 @@ export default {
         formItemList: [
           {
             type: 'input',
-            prop: 'orderCode',
-            label: '订单编码',
+            prop: 'couponCode',
+            label: '优惠券编码',
             placeholder: '请输入订单编码'
           },
           {
             type: 'select',
-            prop: 'orderStatus',
+            prop: 'couponStatus',
             clearable: '关闭',
             optList: [
               {
@@ -87,45 +87,24 @@ export default {
                 value: ''
               },
               {
-                label: '待付款',
-                value: '0'
+                label: '已赠送',
+                value: '4'
               },
               {
-                label: '已取消',
+                label: '待消费',
                 value: '1'
               },
               {
-                label: '已完成',
+                label: '已消费',
                 value: '2'
               },
               {
-                label: '已退款',
+                label: '已预定',
                 value: '3'
               }
             ],
-            label: '订单状态',
+            label: '优惠券状态',
             placeholder: '选择状态'
-          },
-          {
-            type: 'select',
-            prop: 'payType',
-            clearable: '关闭',
-            optList: [
-              {
-                label: '全部',
-                value: ''
-              },
-              {
-                label: '微信',
-                value: '0'
-              },
-              {
-                label: '支付宝',
-                value: '1'
-              }
-            ],
-            label: '支付方式',
-            placeholder: '选择支付方式'
           }
         ],
         operate: [
@@ -136,12 +115,6 @@ export default {
             handleClick: this.search
           },
           {
-            icon: 'el-icon-document-add',
-            type: 'primary',
-            name: '添加',
-            handleClick: this.addNew
-          },
-          {
             icon: 'el-icon-refresh-left',
             type: 'primary',
             name: '重置',
@@ -150,60 +123,55 @@ export default {
         ]
       },
       form: {
-        orderStatus: '',
-        orderCode: '',
-        payType: ''
+        couponStatus: '',
+        couponCode: ''
       },
       tableTitle: [
+        {
+          label: '优惠券编码',
+          param: 'couponCode',
+          align: 'center',
+          type: 'text'
+        },
         {
           label: '订单编号',
           param: 'orderCode',
           align: 'center',
-          width: '300',
+          width: '220',
           type: 'text'
         },
         {
-          label: '商户原始订单号',
-          param: 'merchantOrderNo',
+          label: '账户ID',
+          param: 'accountId',
           align: 'center',
           type: 'text'
         },
         {
-          label: '商品数量',
-          param: 'num',
+          label: '酒店ID',
+          param: 'companyId',
+          align: 'center',
+          width: '220',
+          type: 'text'
+        },
+        {
+          label: '优惠券状态',
+          param: 'couponStatusName',
           align: 'center',
           type: 'text'
         },
         {
-          label: '商品描述',
-          param: 'describes',
+          label: '优惠券金额',
+          param: 'couponSumMoney',
           align: 'center',
           type: 'text'
         },
         {
-          label: '订单状态',
-          param: 'orderStatusName',
-          type: 'text',
-          align: 'center'
-        },
-        {
-          label: '商品名称',
-          param: 'skuName',
+          label: '优惠券类型',
+          param: 'couponTypeName',
           align: 'center',
           type: 'text'
         },
-        {
-          label: '原价',
-          param: 'originalPrice',
-          align: 'center',
-          type: 'text'
-        },
-        {
-          label: '真实价格',
-          param: 'price',
-          align: 'center',
-          type: 'text'
-        },
+
         {
           label: '状态',
           param: 'state',
@@ -229,8 +197,8 @@ export default {
           width: '200'
         },
         {
-          label: '更新时间',
-          param: 'modifyTime',
+          label: '使用时间',
+          param: 'useTime',
           align: 'center',
           width: '200',
           // sortable: true,
@@ -321,7 +289,6 @@ export default {
           })
             .then(() => {
               let roleId = val.roleId
-              console.log(val.roleId)
               deleteRoleInfo({ roleId }).then(res => {
                 if (res.code == 200) {
                   this.$message({

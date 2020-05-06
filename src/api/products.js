@@ -236,6 +236,17 @@ export function getSkuInfo(params) {
 		params,
 	})
 }
+/**
+ * spu上下架
+ */
+
+export function postUpperShelfSku(data) {
+	return request({
+		url: process.env.VUE_APP_DEV_API + '/sku/upperShelf',
+		method: 'POST',
+		data,
+	})
+}
 
 /**
  * 获取供应商
@@ -264,7 +275,7 @@ export function getSpuListPage(params) {
  * spu上下架
  */
 
-export function postUpperShelf(data) {
+export function postUpperShelfSpu(data) {
 	return request({
 		url: process.env.VUE_APP_DEV_API + '/spu/upperShelf',
 		method: 'POST',
@@ -302,5 +313,62 @@ export function putSpuInfo(data) {
 		url: process.env.VUE_APP_DEV_API + '/spu/info',
 		method: 'put',
 		data,
+	})
+}
+/**
+ * 菜品分页
+ */
+
+export function getExceptionListPage(params) {
+	return request({
+		url: process.env.VUE_APP_DEV_API + '/jycDishTypeDetails/exception/page',
+		method: 'get',
+		params,
+	})
+}
+/**
+ * 菜系分页
+ */
+
+export function getDishTypePage(params) {
+	return request({
+		url: process.env.VUE_APP_DEV_API + '/jycDishType/page',
+		method: 'get',
+		params,
+	})
+}
+
+/**
+ * 添加菜希
+ */
+
+export function addDishType(data) {
+	return request({
+		url: process.env.VUE_APP_DEV_API + '/jycDishType/info',
+		method: 'post',
+		data,
+	})
+}
+/**
+ * 修改菜希
+ */
+
+export function putDishType(data) {
+	return request({
+		url: process.env.VUE_APP_DEV_API + '/jycDishType/info',
+		method: 'put',
+		data,
+	})
+}
+
+/**
+ * 删除菜希
+ */
+
+export function deleteDishType(params) {
+	return request({
+		url: process.env.VUE_APP_DEV_API + '/jycDishType/info',
+		method: 'delete',
+		params,
 	})
 }

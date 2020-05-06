@@ -1,5 +1,5 @@
 <template>
-  <div id="memberOrder" class="mainWrap">
+  <div id="productCuisine" class="mainWrap">
     <search-form :formConfig="formConfig" :value="form" labelWidth="80px"></search-form>
     <!-- <div class="ly-flex ly-justify-sb mt40 titleAndButton">
       <div style="padding-left:15px">{{$route.meta.title}}列表</div>
@@ -19,43 +19,6 @@
           @handleButton="handleButton"
           @handleSelectionChange="handleSelectionChange"
         ></jyc-table>
-        <!-- <el-table
-          :data="tableData"
-          fit
-          border
-          stripe
-          row-key="roleId"
-          v-loading="listLoading"
-          :expand-row-keys="expands"
-          :header-row-style="{'background-color':'#152535'}"
-          @selection-change="handleSelectionChange"
-        >
-          <el-table-column type="selection" width="55" align="center"></el-table-column>
-          <template v-for="(item , index) in tableTitle ">
-            <el-table-column
-              :key="index"
-              :prop="item.prop"
-              :label="item.name"
-              :width="item.width"
-              :align="item.align"
-            >
-              <template slot-scope="scope">
-                <span v-if="item.prop=='isHide'">{{scope.row[scope.column.property]==0?'显示':'隐藏'}}</span>
-                <span v-else-if="item.prop=='icon'">
-                  
-                  <svg-icon :icon-class="scope.row[scope.column.property]" />
-                </span>
-                <span v-else>{{scope.row[scope.column.property]}}</span>
-              </template>
-            </el-table-column>
-          </template>
-          <el-table-column label="操作" fixed="right" width="180" align="center">
-            <template slot-scope="scope">
-              <el-button size="small" type="primary" @click="handleClick('编辑',scope.row)">编辑</el-button>
-              <el-button size="small" type="danger" @click="handleClick('删除',scope.row)">删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>-->
       </div>
       <div class="mt10">
         <el-pagination
@@ -74,7 +37,13 @@
         <div slot="title" style="padding:20px 30px ;border-bottom:1px solid #DCDFE6">
           <span>{{editTitle[edit]}}</span>
         </div>
-
+        <addCuisine
+          :propHandleClick="handleClick"
+          v-if="dialogVisible"
+          :edit="edit"
+          :editData="editData"
+          :editId="editId"
+        />
         <span slot="footer" class="dialog-footer"></span>
       </el-dialog>
     </div>
@@ -82,21 +51,28 @@
 </template>
 
 <script>
-import { getManagerOrderList } from '@/api/member'
+import {
+  getDishTypePage,
+  postUpperShelfSpu,
+  deleteDishType
+} from '@/api/products'
 
 import Pagination from '@/components/Pagination'
+import addCuisine from './addCuisine'
 import jycTable from '@/components/table/jycTable'
 import SearchForm from '@/components/seachForm/seachForm'
+import { mapState } from 'vuex'
 export default {
   components: {
     Pagination,
+    addCuisine,
     jycTable,
     SearchForm
   },
   data() {
     return {
       edit: 0,
-      editRoleId: null,
+      editId: null,
       editTitle: {
         0: '新增',
         1: '编辑'
@@ -110,31 +86,32 @@ export default {
         formItemList: [
           {
             type: 'input',
-            prop: 'phone',
-            label: '手机号',
-            placeholder: '请输入订单编码'
+            prop: 'dishName',
+            label: '菜系名称',
+            placeholder: '请输入名称'
+          },
+
+          {
+            type: 'select',
+            prop: 'state',
+            clearable: '关闭',
+            label: '状态',
+            placeholder: '选择状态',
+            optList: [
+              {
+                label: '全部',
+                value: ''
+              },
+              {
+                label: '正常',
+                value: 'NORMAL'
+              },
+              {
+                label: '删除',
+                value: 'DELETE'
+              }
+            ]
           }
-          // {
-          //   type: 'select',
-          //   prop: 'time',
-          //   clearable: '关闭',
-          //   optList: [
-          //     {
-          //       label: '全部',
-          //       value: ''
-          //     },
-          //     {
-          //       label: '上午',
-          //       value: '0'
-          //     },
-          //     {
-          //       label: '下午',
-          //       value: '1'
-          //     }
-          //   ],
-          //   label: '订单状态',
-          //   placeholder: '选择状态'
-          // }
         ],
         operate: [
           {
@@ -143,6 +120,20 @@ export default {
             name: '查询',
             handleClick: this.search
           },
+
+          {
+            icon: 'el-icon-document-add',
+            type: 'primary',
+            name: '添加',
+            handleClick: this.addNew
+          },
+
+          // {
+          //   icon: 'el-icon-delete',
+          //   type: 'primary',
+          //   name: '删除',
+          //   handleClick: this.deleteItem
+          // },
           {
             icon: 'el-icon-refresh-left',
             type: 'primary',
@@ -152,62 +143,42 @@ export default {
         ]
       },
       form: {
-        orderStatus: '',
-        orderCode: '',
-        payType: ''
+        dishName: '',
+        state: ''
       },
       tableTitle: [
         {
-          label: '订单编号',
-          param: 'orderCode',
-          align: 'center',
-          width: '220',
-          type: 'text'
-        },
-        {
-          label: '商品名称',
-          param: 'skuName',
+          label: '菜系名称',
+          param: 'dishName',
           align: 'center',
           type: 'text'
         },
         {
-          label: '商品数量',
-          param: 'num',
+          label: '店铺名称',
+          param: 'companyName',
           align: 'center',
           type: 'text'
         },
 
         {
-          label: '订单状态',
-          param: 'orderStatusName',
-          type: 'text',
-          align: 'center'
+          label: '图标',
+          param: 'image',
+          align: 'center',
+          type: 'img'
         },
 
         {
-          label: '原价',
-          param: 'originalPrice',
-          align: 'center',
-          type: 'text'
-        },
-        {
-          label: '真实价格',
-          param: 'price',
-          align: 'center',
-          type: 'text'
-        },
-        {
-          label: '支付方式',
-          param: 'payTypeName',
-          align: 'center',
-          type: 'text'
-        },
-        {
-          label: '支付时间',
-          param: 'payTime',
+          label: '创建时间',
+          param: 'createTime',
           align: 'center',
           width: '200',
-          // sortable: true,
+          type: 'text'
+        },
+        {
+          label: '更新时间',
+          param: 'updateTime',
+          align: 'center',
+          width: '200',
           type: 'text'
         },
         {
@@ -215,49 +186,78 @@ export default {
           param: 'state',
           align: 'center',
           type: 'text',
-
           render: row => {
             if (row.state === 'NORMAL') {
-              return '正常'
-            } else if (row.state === 'FROZEN') {
-              return '冻结'
+              return "<span style='color:#409EFF'>正常</span>"
             } else {
-              return '删除'
+              return "<span style='color:#909399'>已删除</span>"
             }
           }
-        },
-        {
-          label: '创建时间',
-          param: 'createTime',
-          align: 'center',
-          // sortable: true,
-          type: 'text',
-          width: '200'
         }
-
         // {
-        //   label: '权重',
-        //   param: 'id',
+        //   label: '上架状态',
+        //   param: 'upperShelf',
         //   align: 'center',
-
-        //   type: 'text'
+        //   type: 'text',
+        //   render: row => {
+        //     if (row.upperShelf === 'YES') {
+        //       return "<span style='color:#409EFF'>已上架</span>"
+        //     } else {
+        //       return "<span style='color:#909399'>已下架</span>"
+        //     }
+        //   }
         // },
+        // {
+        //   label: '上下架',
+        //   param: 'upperShelf',
+        //   align: 'center',
+        //   type: 'button',
+        //   items: {
+        //     YES: '下架',
+        //     NO: '上架'
+        //   },
+        //   button: {
+        //     YES: 'danger',
+        //     NO: 'primary'
+        //   }
+        // }
       ],
-      tableOption: [],
+      tableOption: [
+        {
+          label: '操作',
+          width: '200',
+          options: [
+            {
+              label: '编辑',
+              type: 'primary',
+              methods: '编辑'
+            },
+            {
+              label: '删除',
+              type: 'danger',
+              methods: '删除'
+            }
+          ]
+        }
+      ],
       tableData: [],
       listLoading: false,
-      dialogVisible: false
+      dialogVisible: false,
+      selectData: [],
+      editData: {}
     }
   },
   mounted() {
     this.getList()
   },
+  computed: {
+    ...mapState('login', ['companyType'])
+  },
   methods: {
     reset() {
       this.form = {
-        orderStatus: '',
-        orderCode: '',
-        payType: ''
+        dishName: '',
+        state: ''
       }
       this.search()
     },
@@ -268,15 +268,23 @@ export default {
     addNew() {
       this.handleClick('新增')
     },
+    downNew() {
+      this.handleClick('批量下架')
+    },
+    deleteItem() {
+      this.handleClick('批量删除')
+    },
     getList: async function() {
       this.listLoading = true
       let obj = JSON.parse(JSON.stringify(this.form))
+      let cmpType = this.companyType
       obj = {
         ...obj,
+        cmpType,
         currentPage: this.page.page,
         pageSize: this.page.size
       }
-      let res = await getManagerOrderList(obj)
+      let res = await getDishTypePage(obj)
       if (res.code == 200) {
         let { result } = res
         this.page.total = result.total
@@ -285,6 +293,7 @@ export default {
       this.listLoading = false
     },
     handleClick(type, val) {
+      let selectData = this.selectData
       switch (type) {
         case '新增':
           this.edit = 0
@@ -292,7 +301,8 @@ export default {
           break
         case '编辑':
           this.edit = 1
-          this.editRoleId = val.applicationVersionId
+          this.editId = val.id
+          this.editData = val
           this.dialogVisible = true
           break
         case '确认':
@@ -303,7 +313,33 @@ export default {
           this.getList()
           this.dialogVisible = false
           break
-
+        case '批量删除':
+          {
+            if (selectData.length === 0) {
+              this.$message.error('请勾选需要删除的项')
+            } else {
+              this.$confirm('确认批量批量删除选中的？', '提示', {
+                cancelButtonText: '取消',
+                confirmButtonText: '确定',
+                type: 'warning'
+              })
+                .then(() => {
+                  let idList = selectData.map(i => i.id)
+                  idList = idList.toString()
+                  deleteDishType({ idList }).then(res => {
+                    if (res.code == 200) {
+                      this.$message({
+                        type: 'success',
+                        message: '删除成功'
+                      })
+                      this.getList()
+                    }
+                  })
+                })
+                .catch(() => {})
+            }
+          }
+          break
         case '删除':
           this.$confirm('确认删除？', '提示', {
             cancelButtonText: '取消',
@@ -311,9 +347,8 @@ export default {
             type: 'warning'
           })
             .then(() => {
-              let roleId = val.roleId
-              console.log(val.roleId)
-              deleteRoleInfo({ roleId }).then(res => {
+              let id = val.id
+              deleteDishType({ id }).then(res => {
                 if (res.code == 200) {
                   this.$message({
                     type: 'success',
@@ -340,16 +375,19 @@ export default {
     },
 
     handleButton(a) {
+      console.log(a, '22')
       this.handleClick(a.methods, a.row)
     },
-    handleSelectionChange() {}
+    handleSelectionChange(val) {
+      this.selectData = val
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
 @import '@/styles/mainWrap.scss';
-#memberOrder {
+#productCuisine {
   .topSearch {
     justify-content: space-between;
     .searchButton {

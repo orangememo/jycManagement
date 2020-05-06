@@ -74,3 +74,33 @@ export function getManagerCouponList(params) {
 		params,
 	})
 }
+/**
+ * 预定列表
+ */
+export function getInformationHotelPage(params) {
+	return request({
+		url: process.env.VUE_APP_WEB_ORDER + '/jyc/table/information/hotel/web/page',
+		method: 'get',
+		params,
+	})
+}
+/**
+ * 拒绝预定
+ */
+export function deleteInformationHotel(params) {
+	return request({
+		url: process.env.VUE_APP_WEB_ORDER + '/jyc/table/information/hotel/refuse',
+		method: 'delete',
+		params,
+	})
+}
+/**
+ * 预定信息
+ */
+export function getInformationHotelId(params) {
+	return request({
+		url: process.env.VUE_APP_WEB_ORDER + '/jyc/table/information/hotel/id',
+		method: 'get',
+		params,
+	})
+}

@@ -63,7 +63,9 @@ export default {
       dialogVisible: false
     }
   },
-  mounted() {},
+  mounted() {
+    console.log(this.toImgs, 'toImgs111')
+  },
   methods: {
     handleRemove(file, fileList) {
       this.fileList = fileList
@@ -124,6 +126,7 @@ export default {
   },
   watch: {
     toImgs(newValue, oldValue) {
+      console.log(newValue, 'newValue')
       this.fileList = this.toImgs
       this.changeHide(this.fileList.length)
     }

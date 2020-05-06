@@ -82,7 +82,12 @@
 </template>
 
 <script>
-import { getSkuInfoPage, skuToSpu, deleteSkuInfo } from '@/api/products'
+import {
+  getSkuInfoPage,
+  skuToSpu,
+  deleteSkuInfo,
+  postUpperShelfSku
+} from '@/api/products'
 
 import Pagination from '@/components/Pagination'
 import addSKU from './addSKU'
@@ -164,6 +169,18 @@ export default {
             type: 'primary',
             name: '添加',
             handleClick: this.addNew
+          },
+          {
+            icon: 'el-icon-upload2',
+            type: 'primary',
+            name: '上架',
+            handleClick: this.addPut
+          },
+          {
+            icon: 'el-icon-download',
+            type: 'primary',
+            name: '下架',
+            handleClick: this.downNew
           },
           {
             icon: 'el-icon-delete',
@@ -275,6 +292,33 @@ export default {
           align: 'center',
           width: '200',
           type: 'text'
+        },
+        {
+          label: '上架状态',
+          param: 'upperShelf',
+          align: 'center',
+          type: 'text',
+          render: row => {
+            if (row.upperShelf === 'YES') {
+              return "<span style='color:#409EFF'>已上架</span>"
+            } else {
+              return "<span style='color:#909399'>已下架</span>"
+            }
+          }
+        },
+        {
+          label: '上下架',
+          param: 'upperShelf',
+          align: 'center',
+          type: 'button',
+          items: {
+            YES: '下架',
+            NO: '上架'
+          },
+          button: {
+            YES: 'danger',
+            NO: 'primary'
+          }
         }
       ],
       tableOption: [
@@ -318,6 +362,12 @@ export default {
         brandName: ''
       }
       this.search()
+    },
+    downNew() {
+      this.handleClick('批量下架')
+    },
+    addPut() {
+      this.handleClick('批量上架')
     },
     addNew() {
       this.handleClick('新增')
@@ -370,6 +420,92 @@ export default {
           this.getList()
           this.dialogVisible = false
           break
+        case '上架':
+          {
+            let skuIdList = [val.skuId]
+            let upperShelf = 'YES'
+            postUpperShelfSku({ skuIdList, upperShelf }).then(res => {
+              if (res.code == 200) {
+                this.$message({
+                  type: 'success',
+                  message: '上架成功'
+                })
+                this.getList()
+              }
+            })
+          }
+
+          break
+        case '批量上架':
+          {
+            if (selectData.length === 0) {
+              this.$message.error('请勾选需要上架的项')
+            } else {
+              let skuIdList = selectData.map(i => i.skuId)
+              let upperShelf = 'YES'
+              postUpperShelfSku({ skuIdList, upperShelf }).then(res => {
+                if (res.code == 200) {
+                  this.$message({
+                    type: 'success',
+                    message: '上架成功'
+                  })
+                  this.getList()
+                }
+              })
+            }
+          }
+
+          break
+        case '批量下架':
+          {
+            if (selectData.length === 0) {
+              this.$message.error('请勾选需要下架的项')
+            } else {
+              this.$confirm('确认批量下架选中的？', '提示', {
+                cancelButtonText: '取消',
+                confirmButtonText: '确定',
+                type: 'warning'
+              })
+                .then(() => {
+                  let skuIdList = selectData.map(i => i.skuId)
+                  let upperShelf = 'NO'
+                  postUpperShelfSku({ skuIdList, upperShelf }).then(res => {
+                    if (res.code == 200) {
+                      this.$message({
+                        type: 'success',
+                        message: '下架成功'
+                      })
+                      this.getList()
+                    }
+                  })
+                })
+                .catch(() => {})
+            }
+          }
+          break
+
+        case '下架':
+          this.$confirm('确认下架？', '提示', {
+            cancelButtonText: '取消',
+            confirmButtonText: '确定',
+            type: 'warning'
+          })
+            .then(() => {
+              let skuIdList = [val.skuId]
+              let upperShelf = 'NO'
+              postUpperShelfSku({ skuIdList, upperShelf }).then(res => {
+                if (res.code == 200) {
+                  this.$message({
+                    type: 'success',
+                    message: '下架成功'
+                  })
+                  this.getList()
+                }
+              })
+            })
+            .catch(() => {})
+          break
+
         case '删除':
           let skuIdList = [val.skuId]
           let upperShelf = 'YES'

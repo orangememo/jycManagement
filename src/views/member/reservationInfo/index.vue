@@ -74,7 +74,7 @@
         <div slot="title" style="padding:20px 30px ;border-bottom:1px solid #DCDFE6">
           <span>{{editTitle[edit]}}</span>
         </div>
-
+        <addInfo :edit="edit" :editId="editId" :propHandleClick="handleClick" />
         <span slot="footer" class="dialog-footer"></span>
       </el-dialog>
     </div>
@@ -82,8 +82,8 @@
 </template>
 
 <script>
-import { getManagerOrderList } from '@/api/member'
-
+import { getInformationHotelPage, deleteInformationHotel } from '@/api/member'
+import addInfo from './addInfo'
 import Pagination from '@/components/Pagination'
 import jycTable from '@/components/table/jycTable'
 import SearchForm from '@/components/seachForm/seachForm'
@@ -91,15 +91,17 @@ export default {
   components: {
     Pagination,
     jycTable,
-    SearchForm
+    SearchForm,
+    addInfo
   },
   data() {
     return {
       edit: 0,
-      editRoleId: null,
+      editId: null,
       editTitle: {
         0: '新增',
-        1: '编辑'
+        1: '编辑',
+        2: '查看'
       },
       page: {
         total: 0,
@@ -112,29 +114,20 @@ export default {
             type: 'input',
             prop: 'phone',
             label: '手机号',
-            placeholder: '请输入订单编码'
+            placeholder: '请输入手机号'
+          },
+          {
+            type: 'date',
+            prop: 'startTime',
+            dateFormate: 'yyyy-MM-dd',
+            label: '开始日期'
+          },
+          {
+            prop: 'endTime',
+            type: 'date',
+            dateFormate: 'yyyy-MM-dd',
+            label: '结束日期'
           }
-          // {
-          //   type: 'select',
-          //   prop: 'time',
-          //   clearable: '关闭',
-          //   optList: [
-          //     {
-          //       label: '全部',
-          //       value: ''
-          //     },
-          //     {
-          //       label: '上午',
-          //       value: '0'
-          //     },
-          //     {
-          //       label: '下午',
-          //       value: '1'
-          //     }
-          //   ],
-          //   label: '订单状态',
-          //   placeholder: '选择状态'
-          // }
         ],
         operate: [
           {
@@ -143,6 +136,7 @@ export default {
             name: '查询',
             handleClick: this.search
           },
+
           {
             icon: 'el-icon-refresh-left',
             type: 'primary',
@@ -152,59 +146,53 @@ export default {
         ]
       },
       form: {
-        orderStatus: '',
-        orderCode: '',
-        payType: ''
+        phone: '',
+        endTime: '',
+        startTime: ''
       },
       tableTitle: [
         {
-          label: '订单编号',
-          param: 'orderCode',
+          label: '手机号',
+          param: 'phone',
           align: 'center',
           width: '220',
           type: 'text'
         },
         {
-          label: '商品名称',
-          param: 'skuName',
-          align: 'center',
-          type: 'text'
-        },
-        {
-          label: '商品数量',
+          label: '人数',
           param: 'num',
           align: 'center',
           type: 'text'
         },
-
         {
-          label: '订单状态',
-          param: 'orderStatusName',
+          label: '预定日期',
+          param: 'scheduledTime',
+          align: 'center',
+          width: '220',
+          type: 'text'
+        },
+        {
+          label: '时间',
+          param: 'time',
+          align: 'center',
           type: 'text',
-          align: 'center'
+          render: row => {
+            if (row.time == 0) {
+              return '上午'
+            } else {
+              return '下午'
+            }
+          }
         },
-
         {
-          label: '原价',
-          param: 'originalPrice',
+          label: '预定id',
+          param: 'scheduledTimeId',
           align: 'center',
           type: 'text'
         },
         {
-          label: '真实价格',
-          param: 'price',
-          align: 'center',
-          type: 'text'
-        },
-        {
-          label: '支付方式',
-          param: 'payTypeName',
-          align: 'center',
-          type: 'text'
-        },
-        {
-          label: '支付时间',
-          param: 'payTime',
+          label: '楼层id',
+          param: 'tableNumber',
           align: 'center',
           width: '200',
           // sortable: true,
@@ -215,20 +203,34 @@ export default {
           param: 'state',
           align: 'center',
           type: 'text',
-
           render: row => {
-            if (row.state === 'NORMAL') {
-              return '正常'
-            } else if (row.state === 'FROZEN') {
-              return '冻结'
-            } else {
-              return '删除'
+            switch (row.state) {
+              case '0':
+                return '失效'
+                break
+              case '1':
+                return '待确定'
+                break
+              case '2':
+                return '已预订'
+                break
+              case '3':
+                return '已完结'
+                break
             }
           }
         },
         {
           label: '创建时间',
           param: 'createTime',
+          align: 'center',
+          // sortable: true,
+          type: 'text',
+          width: '200'
+        },
+        {
+          label: '更新时间',
+          param: 'updateTime',
           align: 'center',
           // sortable: true,
           type: 'text',
@@ -243,7 +245,24 @@ export default {
         //   type: 'text'
         // },
       ],
-      tableOption: [],
+      tableOption: [
+        {
+          label: '操作',
+          width: '180',
+          options: [
+            {
+              label: '查看',
+              type: '',
+              methods: '查看'
+            },
+            {
+              label: '拒绝',
+              type: 'danger',
+              methods: '删除'
+            }
+          ]
+        }
+      ],
       tableData: [],
       listLoading: false,
       dialogVisible: false
@@ -255,9 +274,9 @@ export default {
   methods: {
     reset() {
       this.form = {
-        orderStatus: '',
-        orderCode: '',
-        payType: ''
+        phone: '',
+        endTime: '',
+        startTime: ''
       }
       this.search()
     },
@@ -276,7 +295,7 @@ export default {
         currentPage: this.page.page,
         pageSize: this.page.size
       }
-      let res = await getManagerOrderList(obj)
+      let res = await getInformationHotelPage(obj)
       if (res.code == 200) {
         let { result } = res
         this.page.total = result.total
@@ -286,13 +305,18 @@ export default {
     },
     handleClick(type, val) {
       switch (type) {
+        case '查看':
+          this.edit = 2
+          this.editId = val.id
+          this.dialogVisible = true
+          break
         case '新增':
           this.edit = 0
           this.dialogVisible = true
           break
         case '编辑':
           this.edit = 1
-          this.editRoleId = val.applicationVersionId
+          this.editId = val.id
           this.dialogVisible = true
           break
         case '确认':
@@ -300,24 +324,24 @@ export default {
           this.dialogVisible = false
           break
         case '关闭':
-          this.getList()
+          //   this.getList()
           this.dialogVisible = false
           break
 
         case '删除':
-          this.$confirm('确认删除？', '提示', {
+          this.$confirm('确认拒绝？', '提示', {
             cancelButtonText: '取消',
             confirmButtonText: '确定',
             type: 'warning'
           })
             .then(() => {
-              let roleId = val.roleId
+              let id = val.id
               console.log(val.roleId)
-              deleteRoleInfo({ roleId }).then(res => {
+              deleteInformationHotel({ id }).then(res => {
                 if (res.code == 200) {
                   this.$message({
                     type: 'success',
-                    message: '删除成功'
+                    message: '拒绝成功'
                   })
                   this.getList()
                 }

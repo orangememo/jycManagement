@@ -111,7 +111,7 @@ export default {
     edit: {
       default: 0
     },
-    editRoleId: {
+    editId: {
       default: null
     }
   },
@@ -146,7 +146,7 @@ export default {
   },
   mounted() {
     if (this.edit == 1) {
-      let applicationVersionId = this.editRoleId
+      let applicationVersionId = this.editId
       getVersionInfo({ applicationVersionId }).then(res => {
         this.form = res.result
       })
@@ -166,7 +166,7 @@ export default {
               let obj = JSON.parse(JSON.stringify(this.form))
               obj.byOperateApplicationId = obj.applicationId
               if (this.edit == 1) {
-                obj.applicationVersionId = this.editRoleId
+                obj.applicationVersionId = this.editId
                 putVersionInfo(obj).then(res => {
                   if (res.code == 200) {
                     this.$message({

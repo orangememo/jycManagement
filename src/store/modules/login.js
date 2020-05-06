@@ -21,14 +21,15 @@ const getDefaultState = () => {
 		ruleList: [],
 		permissionRoutes: [],
 		list: [],
-		userInfo: {}
+		userInfo: {},
+		companyType: '',
 	}
 }
 
 const state = getDefaultState()
 
 const mutations = {
-	RESET_STATE: state => {
+	RESET_STATE: (state) => {
 		Object.assign(state, getDefaultState())
 	},
 	SET_TOKEN: (state, token) => {
@@ -42,6 +43,9 @@ const mutations = {
 	},
 	SET_COMPANY_ID: (state, val) => {
 		state.companyId = val
+	},
+	SET_COMPANY_TYPE: (state, val) => {
+		state.companyType = val
 	},
 	SET_COMPANY_LIST: (state, val) => {
 		state.companyList = val
@@ -59,7 +63,7 @@ const mutations = {
 		state.ruleList = val
 		state.permissionRoutes = constantRoutes.concat(val)
 	},
-	RESET_ROUTER: state => {
+	RESET_ROUTER: (state) => {
 		state.ruleList = []
 		state.permissionRoutes = constantRoutes
 	},
@@ -68,7 +72,7 @@ const mutations = {
 	},
 	SET_LIST: (state, val) => {
 		state.list = val
-	}
+	},
 }
 
 const actions = {
@@ -77,7 +81,7 @@ const actions = {
 		// const { username, password } = userInfo
 		return new Promise((resolve, reject) => {
 			loginJyc(obj)
-				.then(res => {
+				.then((res) => {
 					const { result } = res
 					const { token, companyList, applicationList, userName, avatar, accountId } = result
 					commit('SET_TOKEN', token)
@@ -90,7 +94,7 @@ const actions = {
 					setToken(result.token)
 					resolve()
 				})
-				.catch(error => {
+				.catch((error) => {
 					reject(error)
 				})
 			// login({ username: username.trim(), password: password })
@@ -110,7 +114,7 @@ const actions = {
 	loginInfo({ commit, state }, obj) {
 		return new Promise((resolve, reject) => {
 			loginInfo(obj)
-				.then(res => {
+				.then((res) => {
 					let { result } = res
 					let ruleList = comparedRouter(result.list)
 					ruleList.push({ path: '*', redirect: '/404', hidden: true })
@@ -118,7 +122,7 @@ const actions = {
 					commit('SET_RULE_LIST', ruleList)
 					resolve(ruleList)
 				})
-				.catch(error => {
+				.catch((error) => {
 					reject(error)
 				})
 		})
@@ -136,7 +140,7 @@ const actions = {
 
 	// remove token
 	resetToken({ commit }) {
-		return new Promise(resolve => {
+		return new Promise((resolve) => {
 			removeToken()
 			resetRouter() // must remove  token  first
 			commit('RESET_ROUTER')
@@ -146,7 +150,7 @@ const actions = {
 	},
 	// remove token
 	resetRouter({ commit }) {
-		return new Promise(resolve => {
+		return new Promise((resolve) => {
 			resetRouter() // must remove  token  first
 			commit('SET_RULE_LIST', [])
 			commit('RESET_ROUTER')
@@ -154,26 +158,26 @@ const actions = {
 		})
 	},
 	getRouter({ commit, state }) {
-		return new Promise(resolve => {
+		return new Promise((resolve) => {
 			let ruleList = comparedRouter(state.list)
 			ruleList.push({ path: '*', redirect: '/404', hidden: true })
 			resolve(ruleList)
 		})
-	}
+	},
 }
 
 export default {
 	namespaced: true,
 	state,
 	mutations,
-	actions
+	actions,
 }
 
 function comparedRouter(asyncRouterMap) {
 	const accessedRouters = []
 
 	if (asyncRouterMap.length != 0) {
-		asyncRouterMap.forEach(item => {
+		asyncRouterMap.forEach((item) => {
 			if (operatRouter(item)) {
 				accessedRouters.push(operatRouter(item))
 			}
@@ -200,14 +204,14 @@ function operatRouter(item) {
 		meta: {
 			icon: item.icon,
 			title: item.ruleName,
-			isHide: item.isHide
+			isHide: item.isHide,
 		},
 		hidden: item.isHide == 0 && item.ruleType == 'MENU' ? false : true,
 		component: component,
-		children: comparedRouter(item.children)
+		children: comparedRouter(item.children),
 	}
 	if (item.pruleId === 0 && item.children.length != 0) {
-		let requestUrl = item.children.find(el => {
+		let requestUrl = item.children.find((el) => {
 			return el.isHide !== 1 && el.ruleType == 'MENU'
 		})
 		router.redirect = `${item.requestUrl}/${requestUrl.requestUrl}`

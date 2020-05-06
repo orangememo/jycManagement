@@ -1,5 +1,5 @@
 <template>
-  <div id="versionManagement" class="mainWrap">
+  <div id="productList" class="mainWrap">
     <search-form :formConfig="formConfig" :value="form" labelWidth="80px"></search-form>
     <!-- <div class="ly-flex ly-justify-sb mt40 titleAndButton">
       <div style="padding-left:15px">{{$route.meta.title}}列表</div>
@@ -70,11 +70,11 @@
       </div>
     </div>
     <div class="dialog">
-      <el-dialog title="提示" :visible.sync="dialogVisible" width="50%">
+      <el-dialog title="提示" :visible.sync="dialogVisible" width="50%" :close-on-click-modal="false">
         <div slot="title" style="padding:20px 30px ;border-bottom:1px solid #DCDFE6">
           <span>{{editTitle[edit]}}</span>
         </div>
-        <addVersion
+        <addDishe
           :propHandleClick="handleClick"
           v-if="dialogVisible"
           :edit="edit"
@@ -87,16 +87,21 @@
 </template>
 
 <script>
-import { getVersionPageInfo } from '@/api/member'
+import {
+  getExceptionListPage,
+  postUpperShelfSpu,
+  deleteSpuInfo
+} from '@/api/products'
 
 import Pagination from '@/components/Pagination'
-import addVersion from './addVersion'
+import addDishe from './addDishe'
 import jycTable from '@/components/table/jycTable'
 import SearchForm from '@/components/seachForm/seachForm'
+import { mapState } from 'vuex'
 export default {
   components: {
     Pagination,
-    addVersion,
+    addDishe,
     jycTable,
     SearchForm
   },
@@ -117,30 +122,59 @@ export default {
         formItemList: [
           {
             type: 'input',
-            prop: 'applicationName',
-            label: '应用名称',
-            placeholder: '请输入应用名称'
+            prop: 'Name',
+            label: '酒店名称',
+            placeholder: '请输入名称'
           },
           {
             type: 'select',
-            prop: 'state',
+            prop: 'Hstate',
             clearable: '关闭',
+            label: '酒店状态',
+            placeholder: '选择状态',
             optList: [
               {
                 label: '全部',
                 value: ''
               },
               {
-                label: '正常',
-                value: 'NORMAL'
+                label: '下架',
+                value: '0'
               },
               {
-                label: '隐藏',
-                value: 'DELETE'
+                label: '上架',
+                value: '1'
               }
-            ],
-            label: '状态',
-            placeholder: '选择状态'
+            ]
+          },
+          {
+            type: 'select',
+            prop: 'Ystate',
+            clearable: '关闭',
+            label: '运营商状态',
+            placeholder: '选择',
+            optList: [
+              {
+                label: '全部',
+                value: ''
+              },
+              {
+                label: '审核中',
+                value: '0'
+              },
+              {
+                label: '上架',
+                value: '1'
+              },
+              {
+                label: '审核未通过',
+                value: '2'
+              },
+              {
+                label: '下架',
+                value: '3'
+              }
+            ]
           }
         ],
         operate: [
@@ -150,11 +184,12 @@ export default {
             name: '查询',
             handleClick: this.search
           },
+
           {
-            icon: 'el-icon-document-add',
+            icon: 'el-icon-delete',
             type: 'primary',
-            name: '添加',
-            handleClick: this.addNew
+            name: '删除',
+            handleClick: this.deleteItem
           },
           {
             icon: 'el-icon-refresh-left',
@@ -165,133 +200,167 @@ export default {
         ]
       },
       form: {
-        state: '',
-        applicationName: ''
+        Name: '',
+        Hstate: '',
+        Ystate: ''
       },
       tableTitle: [
         {
-          label: '应用ID',
-          param: 'applicationId',
+          label: '菜品名称',
+          param: 'dishDetailsName',
+          align: 'center',
+          type: 'text'
+        },
+        {
+          label: '菜系名称',
+          param: 'dishName',
+          align: 'center',
+          type: 'text'
+        },
+        {
+          label: '价格',
+          param: 'money',
+          align: 'center',
+          type: 'text'
+        },
+
+        {
+          label: '详细内容',
+          param: 'detailscontent',
+          align: 'center',
+          type: 'text'
+        },
+        {
+          label: '说明',
+          param: 'explainContent',
           align: 'center',
           type: 'text'
         },
         // {
-        //   label: '旧版本号',
-        //   param: 'id',
+        //   label: '简介',
+        //   param: 'brief',
         //   align: 'center',
-
         //   type: 'text'
         // },
         {
-          label: '应用名称',
-          param: 'applicationName',
+          label: '运营商审核详情',
+          param: 'reviewTheDetails',
           align: 'center',
           type: 'text'
         },
         {
-          label: '新版本号',
-          param: 'applicationVersion',
-          align: 'center',
-
-          type: 'text'
-        },
-        // {
-        //   label: '包大小',
-        //   param: 'id',
-        //   align: 'center',
-
-        //   type: 'text'
-        // },
-        {
-          label: '升级内容',
-          param: 'content',
-          align: 'center',
-
-          type: 'text'
-        },
-        {
-          label: '图片',
-          param: 'applicationImage',
-          type: 'img',
+          label: '酒店修改详情',
+          param: 'modifyTheDetails',
+          type: 'text',
           align: 'center'
         },
-        {
-          label: '下载地址',
-          param: 'applicationUrl',
-          align: 'center',
 
-          type: 'text'
-        },
         {
-          label: '最低支持版本',
-          param: 'applicationMin',
+          label: '本月销售',
+          param: 'monthlySale',
           align: 'center',
           type: 'text'
         },
+
         {
           label: '创建时间',
           param: 'createTime',
           align: 'center',
-          // sortable: true,
-          type: 'text',
-          width: '200'
+          width: '200',
+          type: 'text'
         },
         {
           label: '更新时间',
           param: 'modifyTime',
           align: 'center',
           width: '200',
-          // sortable: true,
           type: 'text'
         },
-        // {
-        //   label: '权重',
-        //   param: 'id',
-        //   align: 'center',
-
-        //   type: 'text'
-        // },
         {
-          label: '状态',
+          label: '酒店状态',
+          param: 'hotelStatus',
+          align: 'center',
+          type: 'text',
+          render: row => {
+            if (row.hotelStatus === '0') {
+              return '下架'
+            } else {
+              return '上架'
+            }
+          }
+        },
+        {
+          label: '运营商状态',
           param: 'state',
           align: 'center',
           type: 'text',
-
           render: row => {
-            if (row.state === 'NORMAL') {
-              return '正常'
-            } else {
-              return '隐藏'
+            switch (row.state) {
+              case '0':
+                return '审核中'
+                break
+              case '1':
+                return '上架'
+                break
+              case '2':
+                return '审核未通过'
+                break
+              case '3':
+                return '下架'
+                break
             }
+          }
+        },
+        {
+          label: '上下架',
+          param: 'upperShelf',
+          align: 'center',
+          type: 'button',
+          items: {
+            YES: '下架',
+            NO: '上架'
+          },
+          button: {
+            YES: 'danger',
+            NO: 'primary'
           }
         }
       ],
       tableOption: [
         {
           label: '操作',
-          width: '100',
+          width: '200',
           options: [
             {
               label: '编辑',
               type: 'primary',
               methods: '编辑'
+            },
+            {
+              label: '删除',
+              type: 'danger',
+              methods: '删除'
             }
           ]
         }
       ],
       tableData: [],
       listLoading: false,
-      dialogVisible: false
+      dialogVisible: false,
+      selectData: []
     }
   },
   mounted() {
     this.getList()
   },
+  computed: {
+    ...mapState('login', ['companyType'])
+  },
   methods: {
     reset() {
       this.form = {
-        state: '',
-        applicationName: ''
+        Hstate: '',
+        Ystate: ''
       }
       this.search()
     },
@@ -300,17 +369,25 @@ export default {
       this.getList()
     },
     addNew() {
-      this.handleClick('新增')
+      this.handleClick('批量上架')
+    },
+    downNew() {
+      this.handleClick('批量下架')
+    },
+    deleteItem() {
+      this.handleClick('批量删除')
     },
     getList: async function() {
       this.listLoading = true
       let obj = JSON.parse(JSON.stringify(this.form))
+      let cmpType = this.companyType
       obj = {
         ...obj,
+        cmpType,
         currentPage: this.page.page,
         pageSize: this.page.size
       }
-      let res = await getVersionPageInfo(obj)
+      let res = await getExceptionListPage(obj)
       if (res.code == 200) {
         let { result } = res
         this.page.total = result.total
@@ -319,6 +396,7 @@ export default {
       this.listLoading = false
     },
     handleClick(type, val) {
+      let selectData = this.selectData
       switch (type) {
         case '新增':
           this.edit = 0
@@ -326,7 +404,7 @@ export default {
           break
         case '编辑':
           this.edit = 1
-          this.editId = val.applicationVersionId
+          this.editId = val.spuId
           this.dialogVisible = true
           break
         case '确认':
@@ -337,7 +415,118 @@ export default {
           this.getList()
           this.dialogVisible = false
           break
+        case '上架':
+          {
+            let spuIdList = [val.spuId]
+            let upperShelf = 'YES'
+            postUpperShelfSpu({ spuIdList, upperShelf }).then(res => {
+              if (res.code == 200) {
+                this.$message({
+                  type: 'success',
+                  message: '上架成功'
+                })
+                this.getList()
+              }
+            })
+          }
 
+          break
+        case '批量上架':
+          {
+            if (selectData.length === 0) {
+              this.$message.error('请勾选需要上架的项')
+            } else {
+              let spuIdList = selectData.map(i => i.spuId)
+              let upperShelf = 'YES'
+              postUpperShelfSpu({ spuIdList, upperShelf }).then(res => {
+                if (res.code == 200) {
+                  this.$message({
+                    type: 'success',
+                    message: '上架成功'
+                  })
+                  this.getList()
+                }
+              })
+            }
+          }
+
+          break
+        case '批量下架':
+          {
+            if (selectData.length === 0) {
+              this.$message.error('请勾选需要下架的项')
+            } else {
+              this.$confirm('确认批量下架选中的？', '提示', {
+                cancelButtonText: '取消',
+                confirmButtonText: '确定',
+                type: 'warning'
+              })
+                .then(() => {
+                  let spuIdList = selectData.map(i => i.spuId)
+                  let upperShelf = 'NO'
+                  postUpperShelfSpu({ spuIdList, upperShelf }).then(res => {
+                    if (res.code == 200) {
+                      this.$message({
+                        type: 'success',
+                        message: '下架成功'
+                      })
+                      this.getList()
+                    }
+                  })
+                })
+                .catch(() => {})
+            }
+          }
+          break
+
+        case '下架':
+          this.$confirm('确认下架？', '提示', {
+            cancelButtonText: '取消',
+            confirmButtonText: '确定',
+            type: 'warning'
+          })
+            .then(() => {
+              let spuIdList = [val.spuId]
+              let upperShelf = 'NO'
+              postUpperShelfSpu({ spuIdList, upperShelf }).then(res => {
+                if (res.code == 200) {
+                  this.$message({
+                    type: 'success',
+                    message: '下架成功'
+                  })
+                  this.getList()
+                }
+              })
+            })
+            .catch(() => {})
+          break
+        case '批量删除':
+          {
+            if (selectData.length === 0) {
+              this.$message.error('请勾选需要删除的项')
+            } else {
+              this.$confirm('确认批量批量删除选中的？', '提示', {
+                cancelButtonText: '取消',
+                confirmButtonText: '确定',
+                type: 'warning'
+              })
+                .then(() => {
+                  let spuIdList = selectData.map(i => i.spuId)
+                  spuIdList = spuIdList.toString()
+                  deleteSpuInfo({ spuIdList }).then(res => {
+                    if (res.code == 200) {
+                      this.$message({
+                        type: 'success',
+                        message: '删除成功'
+                      })
+                      this.getList()
+                    }
+                  })
+                })
+                .catch(() => {})
+            }
+          }
+          break
         case '删除':
           this.$confirm('确认删除？', '提示', {
             cancelButtonText: '取消',
@@ -345,9 +534,8 @@ export default {
             type: 'warning'
           })
             .then(() => {
-              let roleId = val.roleId
-              console.log(val.roleId)
-              deleteRoleInfo({ roleId }).then(res => {
+              let spuIdList = val.spuId
+              deleteSpuInfo({ spuIdList }).then(res => {
                 if (res.code == 200) {
                   this.$message({
                     type: 'success',
@@ -374,16 +562,19 @@ export default {
     },
 
     handleButton(a) {
+      console.log(a, '22')
       this.handleClick(a.methods, a.row)
     },
-    handleSelectionChange() {}
+    handleSelectionChange(val) {
+      this.selectData = val
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
 @import '@/styles/mainWrap.scss';
-#versionManagement {
+#productList {
   .topSearch {
     justify-content: space-between;
     .searchButton {
