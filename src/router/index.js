@@ -46,12 +46,12 @@ export const constantRoutes = [
 		component: () => import('@/views/404'),
 		hidden: true,
 	},
-	{
-		path: '/selectCompanyApp',
-		name: 'selectCompanyApp',
-		component: () => import('@/views/login/selectCompanyApp'),
-		hidden: true,
-	},
+	// {
+	// 	path: '/selectCompanyApp',
+	// 	name: 'selectCompanyApp',
+	// 	component: () => import('@/views/login/selectCompanyApp'),
+	// 	hidden: true,
+	// },
 	{
 		path: '/dashboard',
 		component: Layout,
@@ -77,15 +77,15 @@ export const constantRoutes = [
 	// 	component: Layout,
 	// 	redirect: '/product/productList',
 	// 	meta: {
-	// 		title: '商品管理',
+	// 		title: '招聘面试',
 	// 		icon: 'nested',
 	// 	},
 	// 	children: [
 	// 		{
-	// 			path: 'test',
-	// 			name: 'test',
-	// 			component: () => import('@/components/test'),
-	// 			meta: { title: 'test', icon: '' },
+	// 			path: 'takeJob',
+	// 			name: 'takeJob',
+	// 			component: () => import('@/views/takeJob'),
+	// 			meta: { title: 'takeJob', icon: '' },
 	// 		},
 	// 	],
 	// },

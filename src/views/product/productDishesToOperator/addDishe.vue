@@ -1,11 +1,11 @@
 <template>
-  <div class="dialogBody" id="addSPU">
+  <div class="dialogBody" id="addDishe">
     <div class="body">
       <el-form ref="form" :model="form" :rules="formRules" label-width="140px" size="small">
         <el-row>
           <el-col :span="24">
             <el-form-item label="spu名称" prop="spuName">
-              <el-input v-model="form.spuName" placeholder="请输入" maxlength="50" disabled></el-input>
+              <el-input v-model="form.spuName" placeholder="请输入" maxlength="50"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -18,16 +18,17 @@
               <el-input v-model="form.catalogName" placeholder="请输入" maxlength="50" disabled></el-input>
             </el-form-item>
           </el-col>
-          <!-- <el-col :span="24">
+          <el-col :span="24">
             <el-form-item label="供应商" prop="supplierId">
               <el-input v-model="form.supplierName" placeholder="请输入" maxlength="50" disabled></el-input>
             </el-form-item>
-          </el-col>-->
+          </el-col>
           <el-col :span="24">
             <el-form-item label="标题" prop="title">
               <el-input v-model="form.title" placeholder="请输入" maxlength="50"></el-input>
             </el-form-item>
           </el-col>
+
           <el-col :span="24">
             <el-form-item label="简介" prop="brief">
               <el-input
@@ -107,7 +108,7 @@ import { validateMobile } from '@/utils/validate'
 import upLoad from '@/components/upLoad/index'
 import {
   addSkuInfo,
-  getSpuInfo,
+  getDishTypeDetails,
   putSpuInfo,
   getCatalogList,
   getBrandList,
@@ -136,7 +137,7 @@ export default {
         spuName: '',
         brandName: '',
         catalogName: '',
-        // supplierName: '',
+        supplierName: '',
         title: '',
         brief: '',
         spuDescribe: '',
@@ -144,7 +145,7 @@ export default {
         bitImage: [],
         image: [],
         spuPrice: '',
-        upperShelf: 'NO'
+        upperShelf: 'YES'
       },
       formRules: {},
       options: {
@@ -159,25 +160,25 @@ export default {
   created() {
     if (this.edit == 1) {
       let spuId = this.editId
-      getSpuInfo({ spuId }).then(res => {
-        let { result } = res
-        this.form = result
-        if (result.bitImage) {
-          this.toImgs1 = [{ url: `${this.hostUrl}${result.bitImage}` }]
-        } else {
-          this.toImgs1 = []
-        }
-        if (result.imageList) {
-          result.image = result.imageList
-          this.toImgs2 = result.imageList.map(i => {
-            return {
-              url: `${this.hostUrl}${i}`
-            }
-          })
-        } else {
-          this.toImgs2 = []
-        }
-      })
+      // getDishTypeDetails({ spuId }).then(res => {
+      //   let { result } = res
+      //   this.form = result
+      //   if (result.bitImage) {
+      //     this.toImgs1 = [{ url: `${this.hostUrl}${result.bitImage}` }]
+      //   } else {
+      //     this.toImgs1 = []
+      //   }
+      //   if (result.imageList) {
+      //     result.image = result.imageList
+      //     this.toImgs2 = result.imageList.map(i => {
+      //       return {
+      //         url: `${this.hostUrl}${i}`
+      //       }
+      //     })
+      //   } else {
+      //     this.toImgs2 = []
+      //   }
+      // })
     }
   },
 
@@ -189,9 +190,9 @@ export default {
           this.$refs.form.validate(valid => {
             if (valid) {
               let obj = JSON.parse(JSON.stringify(this.form))
-              obj.bitImage = (obj.bitImage && obj.bitImage.toString()) || ''
 
-              obj.image = (obj.image && obj.image.toString()) || ''
+              obj.bitImage = obj.bitImage.toString()
+              obj.image = obj.image.toString()
               if (this.edit == 1) {
                 obj.spuId = this.editId
                 putSpuInfo(obj).then(res => {
@@ -240,7 +241,7 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/styles/mainWrap.scss';
-#addSPU {
+#addDishe {
   .body {
   }
 }

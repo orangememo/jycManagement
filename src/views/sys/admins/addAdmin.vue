@@ -4,6 +4,25 @@
       <el-form ref="form" :model="form" :rules="formRules" label-width="100px" size="small">
         <el-row>
           <el-col :span="24">
+            <el-form-item label="所属公司" prop="affiliatedCompanyId">
+              <el-select
+                v-model="form.affiliatedCompanyId"
+                placeholder="请选择"
+                filterable
+                @change="changeaffiliatedCompanyId"
+                style="width:100%"
+                :disabled="edit===1?true:false"
+              >
+                <el-option
+                  v-for="item in options.affiliatedCompanyIdOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
             <el-form-item label="所属组别" prop="roleIdList">
               <treeSelect
                 v-model="form.roleIdList"
@@ -32,6 +51,24 @@
           <el-col :span="24">
             <el-form-item label="用户名" prop="userName">
               <el-input v-model="form.userName" placeholder="请输入用户名"></el-input>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="24">
+            <el-form-item label="管理公司" prop="manageableCompanyIdList">
+              <el-select
+                v-model="form.manageableCompanyIdList"
+                placeholder="请选择"
+                multiple
+                style="width:100%"
+              >
+                <el-option
+                  v-for="item in options.manageableCompanyIdListOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -101,7 +138,9 @@ export default {
         email: '',
         nickName: '',
         accountNum: null,
-        state: 'NORMAL'
+        state: 'NORMAL',
+        affiliatedCompanyId: '',
+        manageableCompanyIdList: []
       },
 
       formRules: {
@@ -116,6 +155,9 @@ export default {
         ],
         userName: [
           { required: true, message: '请输入用户名', trigger: 'blur' }
+        ],
+        affiliatedCompanyId: [
+          { required: true, message: '请选择所属公司', trigger: 'change' }
         ],
         roleIdList: [
           { required: true, message: '请选择组别', trigger: 'change' }
@@ -136,7 +178,9 @@ export default {
       options: {
         fatherOptions: [],
         roleOptions: [],
-        proleIdOptions: []
+        proleIdOptions: [],
+        affiliatedCompanyIdOptions: [],
+        manageableCompanyIdListOptions: []
       },
       optionDisables: []
     }
@@ -157,22 +201,25 @@ export default {
           let { result } = res
           let list = [...new Set([...result.roleIdList, ...parentRoleIdList])]
           result.roleIdList = list
+          this.changeaffiliatedCompanyId(result.affiliatedCompanyId)
           this.form = result
-          console.log(
-            this.form,
-            'this.form',
-            result.roleIdList,
-            'result.roleIdList',
-            parentRoleIdList,
-            'parentRoleIdList'
-          )
         })
       }
     })
   },
-
+  mounted() {
+    this.options.affiliatedCompanyIdOptions = this.companyListToSelect
+  },
+  computed: {
+    ...mapGetters(['companyListToSelect'])
+  },
   methods: {
-    getPositionPageList: async function() {},
+    changeaffiliatedCompanyId(value) {
+      this.form.manageableCompanyIdList = []
+      this.options.manageableCompanyIdListOptions = this.companyListToSelect.filter(
+        i => i.parentId === value
+      )
+    },
 
     handleClick(type) {
       switch (type) {

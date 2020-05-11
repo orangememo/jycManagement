@@ -23,6 +23,7 @@ const getDefaultState = () => {
 		list: [],
 		userInfo: {},
 		companyType: '',
+		companyListToSelect: [],
 	}
 }
 
@@ -73,6 +74,9 @@ const mutations = {
 	SET_LIST: (state, val) => {
 		state.list = val
 	},
+	SET_COMPANY_LIST_TO_SELECT: (state, val) => {
+		state.companyListToSelect = val
+	},
 }
 
 const actions = {
@@ -83,7 +87,8 @@ const actions = {
 			loginJyc(obj)
 				.then((res) => {
 					const { result } = res
-					const { token, companyList, applicationList, userName, avatar, accountId } = result
+					const { token, companyList, applicationList, userName, avatar, accountId, companyId, ruleList, applicationId } = result
+
 					commit('SET_TOKEN', token)
 					commit('SET_COMPANY_LIST', companyList)
 					commit('SET_APPLICATION_LIST', applicationList)
@@ -91,8 +96,23 @@ const actions = {
 					commit('SET_AVATAR', avatar)
 					commit('SET_ACCOUNT_ID', accountId)
 					commit('SET_USER_INFO', result)
+					commit('SET_COMPANY_ID', companyId)
+					let companyListToSelect = companyList.map((item) => {
+						let obj = {
+							label: item.companyName,
+							value: item.companyId,
+							parentId: item.pcompanyId,
+						}
+						return obj
+					})
+					commit('SET_COMPANY_LIST_TO_SELECT', companyListToSelect)
+					commit('SET_APPLICATION_ID', applicationId)
+					commit('SET_LIST', ruleList)
 					setToken(result.token)
-					resolve()
+					let ruleLists = comparedRouter(ruleList)
+					ruleLists.push({ path: '*', redirect: '/404', hidden: true })
+					commit('SET_RULE_LIST', ruleLists)
+					resolve(ruleLists)
 				})
 				.catch((error) => {
 					reject(error)

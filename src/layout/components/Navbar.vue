@@ -18,9 +18,9 @@
           <router-link to="/dashboard/userInfo">
             <el-dropdown-item>个人资料</el-dropdown-item>
           </router-link>
-          <router-link to="/selectCompanyApp">
+          <!-- <router-link to="/selectCompanyApp">
             <el-dropdown-item>选择公司</el-dropdown-item>
-          </router-link>
+          </router-link>-->
           <el-dropdown-item divided @click.native="logout">
             <span style="display:block;">退出</span>
           </el-dropdown-item>

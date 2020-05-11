@@ -44,6 +44,14 @@ export function gettableLabelList(params) {
 		params: params,
 	})
 }
+//分页查询所有桌位标签
+export function gettableLabelListForFloolr(params) {
+	return request({
+		url: process.env.VUE_APP_WEB_MANAGE + '/HotelTable/gethotelTable',
+		method: 'get',
+		params,
+	})
+}
 
 //新增桌位详情信息
 export function addNewtableLabel(params) {

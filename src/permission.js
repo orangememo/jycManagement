@@ -15,16 +15,16 @@ router.beforeEach(async (to, from, next) => {
 	document.title = getPageTitle(to.meta.title)
 	const hasToken = getToken()
 	if (hasToken) {
-		if (to.path === '/login' || to.path === '/selectCompanyApp') {
+		if (to.path === '/login') {
 			next()
 			NProgress.done()
 		} else {
 			const hasGetRuleList = store.getters.ruleList && store.getters.ruleList.length
 
 			if (hasGetRuleList == 0) {
-				next(`/selectCompanyApp`)
+				next(`/login`)
 				NProgress.done()
-				Message.error('请选择公司和应用')
+				Message.error('请重新登录')
 			} else {
 				if (flag === 0) {
 					try {
@@ -33,8 +33,9 @@ router.beforeEach(async (to, from, next) => {
 						flag++
 						next({ ...to, replace: true })
 					} catch (error) {
-						next(`/selectCompanyApp`)
-						Message.error('请选择公司和应用')
+						next(`/login`)
+						NProgress.done()
+						Message.error('请重新登录')
 					}
 				} else {
 					if (to.meta.isHide == 1) {

@@ -11,6 +11,7 @@ export const componentsMap = {
 	reservationInfo: () => import('@/views/member/reservationInfo/index'),
 	inviteCode: () => import('@/views/member/inviteCode'),
 	consumptionEnvelope: () => import('@/views/member/consumptionEnvelope'),
+	businessOrder: () => import('@/views/business/businessOrder'),
 	businessHotelType: () => import('@/views/business/hotelType'),
 	businessTableLabelManager: () => import('@/views/business/tableLabelManager'),
 	businessTableManager: () => import('@/views/business/tableManager'),
@@ -22,8 +23,10 @@ export const componentsMap = {
 	productCategory: () => import('@/views/product/productCategory'),
 	productBrand: () => import('@/views/product/productBrand'),
 	productStock: () => import('@/views/product/productStock'),
-	productDishes: () => import('@/views/product/productDishes'),
+	productDishesToHotel: () => import('@/views/product/productDishesToHotel'),
+	productDishesToOperator: () => import('@/views/product/productDishesToOperator'),
 	productCuisine: () => import('@/views/product/productCuisine'),
+	takeJob: () => import('@/views/takeJob'),
 }
 // {
 // 		path: '/product',

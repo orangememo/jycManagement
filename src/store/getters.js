@@ -6,5 +6,6 @@ const getters = {
 	name: (state) => state.login.name,
 	ruleList: (state) => state.login.ruleList,
 	permissionRoutes: (state) => state.login.permissionRoutes,
+	companyListToSelect: (state) => state.login.companyListToSelect,
 }
 export default getters

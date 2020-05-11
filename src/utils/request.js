@@ -15,8 +15,6 @@ const service = axios.create({
 // request interceptor
 service.interceptors.request.use(
 	(config) => {
-		// do something before request is sent
-
 		if (store.getters.token) {
 			// let each request carry token
 			// ['X-Token'] is a custom headers key
@@ -62,11 +60,14 @@ service.interceptors.response.use(
 	 * You can also judge the status by HTTP Status Code
 	 */
 	(response) => {
+		if (response.request.responseType === 'blob') {
+			return response.data
+		}
 		const res = response.data
 
 		// if the custom code is not 20000, it is judged as an error.
 		if (res.code !== 200) {
-			if (res.code === 700) {
+			if (res.code === 700 || res.code === 401) {
 				Message.error(res.message)
 				router.push({ path: '/login' })
 			}

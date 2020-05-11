@@ -1,5 +1,5 @@
 <template>
-  <div id="memberOrder" class="mainWrap">
+  <div id="reservationInfo" class="mainWrap">
     <search-form :formConfig="formConfig" :value="form" labelWidth="80px"></search-form>
     <!-- <div class="ly-flex ly-justify-sb mt40 titleAndButton">
       <div style="padding-left:15px">{{$route.meta.title}}列表</div>
@@ -78,6 +78,26 @@
         <span slot="footer" class="dialog-footer"></span>
       </el-dialog>
     </div>
+    <div class="dialog">
+      <el-dialog
+        title="提示"
+        :visible.sync="dialogVisible1"
+        width="50%"
+        :close-on-click-modal="false"
+      >
+        <div slot="title" style="padding:20px 30px ;border-bottom:1px solid #DCDFE6">
+          <span>{{editTitle[edit]}}</span>
+        </div>
+        <destineTable
+          v-if="dialogVisible1"
+          :edit="edit"
+          :editId="editId"
+          :propHandleClick="handleClick"
+          :editData="editData"
+        />
+        <span slot="footer" class="dialog-footer"></span>
+      </el-dialog>
+    </div>
   </div>
 </template>
 
@@ -87,12 +107,15 @@ import addInfo from './addInfo'
 import Pagination from '@/components/Pagination'
 import jycTable from '@/components/table/jycTable'
 import SearchForm from '@/components/seachForm/seachForm'
+import destineTable from './destineTable'
+import { mapState } from 'vuex'
 export default {
   components: {
     Pagination,
     jycTable,
     SearchForm,
-    addInfo
+    addInfo,
+    destineTable
   },
   data() {
     return {
@@ -127,6 +150,27 @@ export default {
             type: 'date',
             dateFormate: 'yyyy-MM-dd',
             label: '结束日期'
+          },
+          {
+            type: 'select',
+            prop: 'type',
+            clearable: '关闭',
+            label: '状态',
+            placeholder: '选择状态',
+            optList: [
+              {
+                label: '全部',
+                value: ''
+              },
+              {
+                label: '指定',
+                value: '0'
+              },
+              {
+                label: '未指定',
+                value: '1'
+              }
+            ]
           }
         ],
         operate: [
@@ -146,11 +190,19 @@ export default {
         ]
       },
       form: {
+        type: '',
         phone: '',
         endTime: '',
         startTime: ''
       },
       tableTitle: [
+        {
+          label: '用户名',
+          param: 'userName',
+          align: 'center',
+          width: '220',
+          type: 'text'
+        },
         {
           label: '手机号',
           param: 'phone',
@@ -164,12 +216,26 @@ export default {
           align: 'center',
           type: 'text'
         },
+
         {
           label: '预定日期',
           param: 'scheduledTime',
           align: 'center',
           width: '220',
           type: 'text'
+        },
+        {
+          label: '预定状态',
+          param: 'identification',
+          align: 'center',
+          type: 'text',
+          render: row => {
+            if (row.identification == 0) {
+              return '普通'
+            } else {
+              return '酒友财'
+            }
+          }
         },
         {
           label: '时间',
@@ -185,16 +251,15 @@ export default {
           }
         },
         {
-          label: '预定id',
-          param: 'scheduledTimeId',
+          label: '楼层id',
+          param: 'floorId',
           align: 'center',
           type: 'text'
         },
         {
-          label: '楼层id',
+          label: '包厢编号',
           param: 'tableNumber',
           align: 'center',
-          width: '200',
           // sortable: true,
           type: 'text'
         },
@@ -227,14 +292,6 @@ export default {
           // sortable: true,
           type: 'text',
           width: '200'
-        },
-        {
-          label: '更新时间',
-          param: 'updateTime',
-          align: 'center',
-          // sortable: true,
-          type: 'text',
-          width: '200'
         }
 
         // {
@@ -248,12 +305,18 @@ export default {
       tableOption: [
         {
           label: '操作',
-          width: '180',
+          fixed: 'right',
+          width: '220',
           options: [
             {
               label: '查看',
               type: '',
               methods: '查看'
+            },
+            {
+              label: '订座',
+              type: 'primary',
+              methods: '订座'
             },
             {
               label: '拒绝',
@@ -265,11 +328,16 @@ export default {
       ],
       tableData: [],
       listLoading: false,
-      dialogVisible: false
+      dialogVisible: false,
+      dialogVisible1: false,
+      editData: {}
     }
   },
   mounted() {
     this.getList()
+  },
+  computed: {
+    ...mapState('login', ['companyId', 'companyList'])
   },
   methods: {
     reset() {
@@ -319,12 +387,24 @@ export default {
           this.editId = val.id
           this.dialogVisible = true
           break
+        case '订座':
+          this.editData = {
+            time: val.time,
+            scheduledTime: val.scheduledTime,
+            tableId: val.hotelTableDetailsId,
+            floorId: val.floorId
+          }
+          this.editId = val.id
+          this.dialogVisible1 = true
+          break
         case '确认':
           this.getList()
+          this.dialogVisible1 = false
           this.dialogVisible = false
           break
         case '关闭':
-          //   this.getList()
+          this.getList()
+          this.dialogVisible1 = false
           this.dialogVisible = false
           break
 
@@ -336,8 +416,10 @@ export default {
           })
             .then(() => {
               let id = val.id
-              console.log(val.roleId)
-              deleteInformationHotel({ id }).then(res => {
+              let hotelName = this.companyList.find(
+                i => i.companyId == this.companyId
+              ).companyName
+              deleteInformationHotel({ id, hotelName }).then(res => {
                 if (res.code == 200) {
                   this.$message({
                     type: 'success',
@@ -373,7 +455,7 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/styles/mainWrap.scss';
-#memberOrder {
+#reservationInfo {
   .topSearch {
     justify-content: space-between;
     .searchButton {

@@ -108,6 +108,7 @@ export default {
   },
   mounted() {
     this.$store.dispatch('login/resetToken')
+    this.$store.dispatch('login/resetRouter')
   },
   methods: {
     ...mapActions('login', ['login']),
@@ -133,7 +134,8 @@ export default {
           }
           this.login(obj)
             .then(res => {
-              this.$router.push({ path: '/selectCompanyApp' })
+              this.$router.addRoutes(res)
+              this.$router.push({ path: '/dashboard' })
               this.loading = false
             })
             .catch(() => {

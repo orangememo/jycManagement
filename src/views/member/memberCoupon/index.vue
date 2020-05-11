@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import { getManagerCouponList } from '@/api/member'
+import { getManagerCouponList, exportMemberCouponList } from '@/api/member'
 
 import Pagination from '@/components/Pagination'
 import jycTable from '@/components/table/jycTable'
@@ -113,6 +113,12 @@ export default {
             type: 'primary',
             name: '查询',
             handleClick: this.search
+          },
+          {
+            icon: 'el-icon-folder',
+            type: 'primary',
+            name: '导出',
+            handleClick: this.export
           },
           {
             icon: 'el-icon-refresh-left',
@@ -245,6 +251,9 @@ export default {
     addNew() {
       this.handleClick('新增')
     },
+    export() {
+      this.handleClick('导出')
+    },
     getList: async function() {
       this.listLoading = true
       let obj = JSON.parse(JSON.stringify(this.form))
@@ -279,6 +288,20 @@ export default {
         case '关闭':
           this.getList()
           this.dialogVisible = false
+          break
+        case '导出':
+          exportMemberCouponList('blob').then(res => {
+            let data = new Blob([res])
+            let url = window.URL.createObjectURL(data)
+            let link = document.createElement('a')
+            link.style.display = 'none'
+            link.href = url
+            link.setAttribute('download', `优惠券列表.xlsx`)
+            document.body.appendChild(link)
+            link.click()
+          })
+          // this.getList()
+          // this.dialogVisible = false
           break
 
         case '删除':

@@ -82,7 +82,7 @@ export function getParentRoleIdList(params) {
  */
 export function roleInfoTreeAccountId(params) {
 	return request({
-		url: process.env.VUE_APP_WEB_MANAGE + '/role/roleInfo/tree/accountId',
+		url: process.env.VUE_APP_WEB_MANAGE + '/role/role/tree/list/accountId',
 		method: 'get',
 		params,
 	})

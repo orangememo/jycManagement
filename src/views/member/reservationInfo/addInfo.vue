@@ -14,8 +14,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="预定状态" prop="identificationName">
-              <el-input v-model="form.identificationName" :disabled="edit==2"></el-input>
+            <el-form-item label="预定状态" prop="identification">
+              <el-input v-model="identificationInfo[form.identification]" :disabled="edit==2"></el-input>
             </el-form-item>
           </el-col>
 
@@ -35,14 +35,14 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="预定时间" prop="cheduledTime">
-              <el-input v-model="form.cheduledTime" :disabled="edit==2"></el-input>
+            <el-form-item label="预定时间" prop="scheduledTime">
+              <el-input v-model="form.scheduledTime" :disabled="edit==2"></el-input>
             </el-form-item>
           </el-col>
 
           <el-col :span="12">
             <el-form-item label="状态" prop="state">
-              <el-input v-model="form.state" :disabled="edit==2"></el-input>
+              <el-input v-model="stateInfo[form.state]" :disabled="edit==2"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -50,25 +50,30 @@
               <i class="el-icon-cold-drink"></i>
             </el-divider>
           </el-col>
-          <template v-for="item in form.menuOrderInfoList">
-            <el-col :span="24">
-              <el-col :span="8">
-                <el-form-item label="菜名" prop="dishName">
-                  <el-input v-model="item.dishName" :disabled="edit==2"></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="单价" prop="dishTypeDetalisPrice">
-                  <el-input v-model="item.dishTypeDetalisPrice" :disabled="edit==2"></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="数量" prop="num">
-                  <el-input v-model="item.num" :disabled="edit==2"></el-input>
-                </el-form-item>
-              </el-col>
-            </el-col>
-          </template>
+          <el-col :span="24" class="ly-flex">
+            <template v-for="item in form.menuOrderInfoList">
+              <div style="width:100px">
+                <el-image
+                  :src="hostUrl+item.image"
+                  style="width: 100px; height: 100px; "
+                  class="p5"
+                ></el-image>
+                <div class="ly-flex ly-direction-c ly-align-c p5">
+                  <span style="color:#409EFF;font-size:14px;font-weight:bold">{{item.dishName}}</span>
+                  <span>
+                    <span>{{item.num}} *</span>
+                    <span style="color:#909399">￥{{item.dishTypeDetalisPrice}}</span>
+                  </span>
+                  <span>
+                    <span>共计:</span>
+                    <span
+                      style="color:red;font-size:14px;font-weight:bold"
+                    >￥{{item.dishTypeDetalisTotal}}</span>
+                  </span>
+                </div>
+              </div>
+            </template>
+          </el-col>
         </el-row>
       </el-form>
     </div>
@@ -108,6 +113,13 @@ export default {
   },
   data() {
     return {
+      identificationInfo: { 1: '普通', 0: '酒友财' },
+      stateInfo: {
+        0: '失效',
+        1: '带确定',
+        2: '已预订',
+        3: '已完结'
+      },
       upLoadImg,
       sumbitLoading: false,
       form: {

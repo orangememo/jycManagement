@@ -89,8 +89,10 @@
 <script>
 import {
   getExceptionListPage,
-  postUpperShelfSpu,
-  deleteSpuInfo
+  unDownDishTypeDetails,
+  deleteSpuInfo,
+  selloutDishTypeDetails,
+  firstDishTypeDetails
 } from '@/api/products'
 
 import Pagination from '@/components/Pagination'
@@ -122,8 +124,14 @@ export default {
         formItemList: [
           {
             type: 'input',
-            prop: 'Name',
-            label: '酒店名称',
+            prop: 'dishDetailsName',
+            label: '菜品名称',
+            placeholder: '请输入名称'
+          },
+          {
+            type: 'input',
+            prop: 'dishName',
+            label: '菜系名称',
             placeholder: '请输入名称'
           },
           {
@@ -184,13 +192,19 @@ export default {
             name: '查询',
             handleClick: this.search
           },
-
           {
-            icon: 'el-icon-delete',
+            icon: 'el-icon-document-add',
             type: 'primary',
-            name: '删除',
-            handleClick: this.deleteItem
+            name: '添加',
+            handleClick: this.addNew
           },
+
+          // {
+          //   icon: 'el-icon-delete',
+          //   type: 'primary',
+          //   name: '删除',
+          //   handleClick: this.deleteItem
+          // },
           {
             icon: 'el-icon-refresh-left',
             type: 'primary',
@@ -202,7 +216,9 @@ export default {
       form: {
         Name: '',
         Hstate: '',
-        Ystate: ''
+        Ystate: '',
+        dishName: '',
+        dishDetailsName: ''
       },
       tableTitle: [
         {
@@ -263,21 +279,7 @@ export default {
         },
 
         {
-          label: '创建时间',
-          param: 'createTime',
-          align: 'center',
-          width: '200',
-          type: 'text'
-        },
-        {
-          label: '更新时间',
-          param: 'modifyTime',
-          align: 'center',
-          width: '200',
-          type: 'text'
-        },
-        {
-          label: '酒店状态',
+          label: '售空状态',
           param: 'hotelStatus',
           align: 'center',
           type: 'text',
@@ -286,6 +288,19 @@ export default {
               return '下架'
             } else {
               return '上架'
+            }
+          }
+        },
+        {
+          label: '售空状态',
+          param: 'bool',
+          align: 'center',
+          type: 'text',
+          render: row => {
+            if (row.bool === '0') {
+              return '售空'
+            } else {
+              return '有菜'
             }
           }
         },
@@ -313,33 +328,53 @@ export default {
         },
         {
           label: '上下架',
-          param: 'upperShelf',
+          param: 'hotelStatus',
           align: 'center',
           type: 'button',
           items: {
-            YES: '下架',
-            NO: '上架'
+            0: '上架',
+            1: '下架'
           },
           button: {
-            YES: 'danger',
-            NO: 'primary'
+            1: 'danger',
+            0: 'primary'
+          }
+        },
+        {
+          label: '售空',
+          param: 'bool',
+          align: 'center',
+          type: 'button',
+          items: {
+            0: '上货',
+            1: '售空'
+          },
+          button: {
+            0: 'primary',
+            1: 'danger'
           }
         }
       ],
       tableOption: [
         {
+          label: '置顶',
+          width: '90',
+          options: [
+            {
+              label: '置顶',
+              type: 'primary',
+              methods: '置顶'
+            }
+          ]
+        },
+        {
           label: '操作',
-          width: '200',
+          width: '90',
           options: [
             {
               label: '编辑',
               type: 'primary',
               methods: '编辑'
-            },
-            {
-              label: '删除',
-              type: 'danger',
-              methods: '删除'
             }
           ]
         }
@@ -369,7 +404,7 @@ export default {
       this.getList()
     },
     addNew() {
-      this.handleClick('批量上架')
+      this.handleClick('新增')
     },
     downNew() {
       this.handleClick('批量下架')
@@ -404,7 +439,7 @@ export default {
           break
         case '编辑':
           this.edit = 1
-          this.editId = val.spuId
+          this.editId = val.id
           this.dialogVisible = true
           break
         case '确认':
@@ -415,11 +450,63 @@ export default {
           this.getList()
           this.dialogVisible = false
           break
+        case '置顶':
+          {
+            let id = val.id
+            firstDishTypeDetails({ id }).then(res => {
+              if (res.code == 200) {
+                this.$message({
+                  type: 'success',
+                  message: '操作成功'
+                })
+                this.getList()
+              }
+            })
+          }
+
+          break
+        case '上货':
+          {
+            let id = val.id
+            let text = '1'
+            selloutDishTypeDetails({ id, text }).then(res => {
+              if (res.code == 200) {
+                this.$message({
+                  type: 'success',
+                  message: '操作成功'
+                })
+                this.getList()
+              }
+            })
+          }
+
+          break
+        case '售空':
+          this.$confirm('确认下架？', '提示', {
+            cancelButtonText: '取消',
+            confirmButtonText: '确定',
+            type: 'warning'
+          })
+            .then(() => {
+              let id = val.id
+              let text = '0'
+              selloutDishTypeDetails({ id, text }).then(res => {
+                if (res.code == 200) {
+                  this.$message({
+                    type: 'success',
+                    message: '操作成功'
+                  })
+                  this.getList()
+                }
+              })
+            })
+            .catch(() => {})
+          break
         case '上架':
           {
-            let spuIdList = [val.spuId]
-            let upperShelf = 'YES'
-            postUpperShelfSpu({ spuIdList, upperShelf }).then(res => {
+            let dishId = val.id
+            let Hstate = '1'
+            unDownDishTypeDetails({ dishId, Hstate }).then(res => {
               if (res.code == 200) {
                 this.$message({
                   type: 'success',
@@ -431,54 +518,6 @@ export default {
           }
 
           break
-        case '批量上架':
-          {
-            if (selectData.length === 0) {
-              this.$message.error('请勾选需要上架的项')
-            } else {
-              let spuIdList = selectData.map(i => i.spuId)
-              let upperShelf = 'YES'
-              postUpperShelfSpu({ spuIdList, upperShelf }).then(res => {
-                if (res.code == 200) {
-                  this.$message({
-                    type: 'success',
-                    message: '上架成功'
-                  })
-                  this.getList()
-                }
-              })
-            }
-          }
-
-          break
-        case '批量下架':
-          {
-            if (selectData.length === 0) {
-              this.$message.error('请勾选需要下架的项')
-            } else {
-              this.$confirm('确认批量下架选中的？', '提示', {
-                cancelButtonText: '取消',
-                confirmButtonText: '确定',
-                type: 'warning'
-              })
-                .then(() => {
-                  let spuIdList = selectData.map(i => i.spuId)
-                  let upperShelf = 'NO'
-                  postUpperShelfSpu({ spuIdList, upperShelf }).then(res => {
-                    if (res.code == 200) {
-                      this.$message({
-                        type: 'success',
-                        message: '下架成功'
-                      })
-                      this.getList()
-                    }
-                  })
-                })
-                .catch(() => {})
-            }
-          }
-          break
-
         case '下架':
           this.$confirm('确认下架？', '提示', {
             cancelButtonText: '取消',
@@ -486,9 +525,9 @@ export default {
             type: 'warning'
           })
             .then(() => {
-              let spuIdList = [val.spuId]
-              let upperShelf = 'NO'
-              postUpperShelfSpu({ spuIdList, upperShelf }).then(res => {
+              let dishId = val.id
+              let Hstate = '0'
+              unDownDishTypeDetails({ dishId, Hstate }).then(res => {
                 if (res.code == 200) {
                   this.$message({
                     type: 'success',
@@ -511,9 +550,9 @@ export default {
                 type: 'warning'
               })
                 .then(() => {
-                  let spuIdList = selectData.map(i => i.spuId)
-                  spuIdList = spuIdList.toString()
-                  deleteSpuInfo({ spuIdList }).then(res => {
+                  let dishId = selectData.map(i => i.id)
+                  dishId = dishId.toString()
+                  deleteSpuInfo({ dishId }).then(res => {
                     if (res.code == 200) {
                       this.$message({
                         type: 'success',
@@ -534,8 +573,8 @@ export default {
             type: 'warning'
           })
             .then(() => {
-              let spuIdList = val.spuId
-              deleteSpuInfo({ spuIdList }).then(res => {
+              let dishId = val.id
+              deleteSpuInfo({ dishId }).then(res => {
                 if (res.code == 200) {
                   this.$message({
                     type: 'success',

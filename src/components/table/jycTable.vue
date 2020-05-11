@@ -27,7 +27,7 @@
         <span v-if="item.render" v-html="item.render(scope.row)"></span>
         <span v-else-if="item.type==='button'">
           <el-button
-            v-if="scope.row[item.param]"
+            v-if="item['items'][scope.row[item.param]]?true:false"
             :type="item.button[scope.row[item.param]]"
             size="mini"
             @click="handleButton(item['items'][scope.row[item.param]],scope.row)"

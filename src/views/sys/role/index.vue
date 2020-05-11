@@ -7,7 +7,18 @@
         <el-button size="mini" type="primary" @click="handleClick('新增')">新增</el-button>
       </div>
     </div>-->
-    <search-form :formConfig="formConfig" :value="form" labelWidth="80px"></search-form>
+    <search-form :formConfig="formConfig" :value="form" labelWidth="80px">
+      <el-form-item label="公司" prop="selectCompanyId" slot="formItem">
+        <el-select v-model="form.selectCompanyId" clearable placeholder="请选择" filterable>
+          <el-option
+            v-for="(item,index) in companyListToSelect"
+            :key="index"
+            :label="item.label"
+            :value="item.value"
+          ></el-option>
+        </el-select>
+      </el-form-item>
+    </search-form>
     <div class>
       <div class="tableOutBox">
         <el-table
@@ -70,7 +81,7 @@
 <script>
 import { getRoleInfoTree, deleteRoleInfo } from '@/api/sys'
 import SearchForm from '@/components/seachForm/seachForm'
-
+import { mapGetters } from 'vuex'
 import addRole from './addRole'
 export default {
   components: {
@@ -92,13 +103,20 @@ export default {
       },
       expands: [],
       form: {
-        value0: '',
-        value1: '',
-        value2: '',
-        value3: ''
+        selectCompanyId: ''
       },
+      arrList: [],
       formConfig: {
-        formItemList: [],
+        formItemList: [
+          // {
+          //   type: 'select',
+          //   prop: 'state',
+          //   // clearable: '关闭',
+          //   label: '公司',
+          //   placeholder: '请选择',
+          //   optList: this.arrList
+          // }
+        ],
         operate: [
           {
             icon: 'el-icon-search',
@@ -115,6 +133,12 @@ export default {
         ]
       },
       tableTitle: [
+        {
+          prop: 'companyName',
+          name: '公司名称',
+          width: '',
+          align: 'center'
+        },
         {
           prop: 'roleId',
           name: 'ID',
@@ -152,8 +176,15 @@ export default {
       dialogVisible1: false
     }
   },
+  created() {
+    this.arrList = this.companyListToSelect
+    console.log(this.companyListToSelect, 'companyListToSelect')
+  },
   mounted() {
     this.getList()
+  },
+  computed: {
+    ...mapGetters(['companyListToSelect'])
   },
   methods: {
     addNew() {
@@ -165,7 +196,8 @@ export default {
     },
     getList: async function() {
       this.listLoading = true
-      let res = await getRoleInfoTree()
+      let obj = JSON.parse(JSON.stringify(this.form))
+      let res = await getRoleInfoTree(obj)
       this.listLoading = false
       this.tableData = res.result.list
     },

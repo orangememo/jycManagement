@@ -1,5 +1,5 @@
 <template>
-  <div id="memberOrder" class="mainWrap">
+  <div id="reservationInfo" class="mainWrap">
     <search-form :formConfig="formConfig" :value="form" labelWidth="80px"></search-form>
     <!-- <div class="ly-flex ly-justify-sb mt40 titleAndButton">
       <div style="padding-left:15px">{{$route.meta.title}}列表</div>
@@ -17,6 +17,7 @@
           :table-option="tableOption"
           :selectionShow="true"
           @handleButton="handleButton"
+          @handleSelectionChange="handleSelectionChange"
         ></jyc-table>
         <!-- <el-table
           :data="tableData"
@@ -69,11 +70,11 @@
       </div>
     </div>
     <div class="dialog">
-      <el-dialog title="提示" :visible.sync="dialogVisible" width="50%" :close-on-click-modal="false">
+      <el-dialog title="提示" :visible.sync="dialogVisible" width="65%" :close-on-click-modal="false">
         <div slot="title" style="padding:20px 30px ;border-bottom:1px solid #DCDFE6">
           <span>{{editTitle[edit]}}</span>
         </div>
-
+        <addInfo :edit="edit" :editId="editId" :propHandleClick="handleClick" />
         <span slot="footer" class="dialog-footer"></span>
       </el-dialog>
     </div>
@@ -81,9 +82,8 @@
 </template>
 
 <script>
-import { exportMemberOrderList } from '@/api/member'
-import { getUserAccountListPage } from '@/api/account'
-
+import { getBusinessOrderPage, deleteInformationHotel } from '@/api/member'
+import addInfo from './addInfo'
 import Pagination from '@/components/Pagination'
 import jycTable from '@/components/table/jycTable'
 import SearchForm from '@/components/seachForm/seachForm'
@@ -91,15 +91,17 @@ export default {
   components: {
     Pagination,
     jycTable,
-    SearchForm
+    SearchForm,
+    addInfo
   },
   data() {
     return {
       edit: 0,
-      editRoleId: null,
+      editId: null,
       editTitle: {
         0: '新增',
-        1: '编辑'
+        1: '编辑',
+        2: '查看'
       },
       page: {
         total: 0,
@@ -110,43 +112,47 @@ export default {
         formItemList: [
           {
             type: 'input',
-            prop: 'mobile',
+            prop: 'phone',
             label: '手机号',
-            placeholder: '请输入'
+            placeholder: '请输入手机号'
           },
           {
-            type: 'input',
-            prop: 'nickName',
-            label: '昵称',
-            placeholder: '请输入'
+            type: 'date',
+            prop: 'startTime',
+            dateFormate: 'yyyy-MM-dd',
+            label: '开始日期'
           },
           {
-            type: 'input',
-            prop: 'userName',
-            label: '用户名',
-            placeholder: '请输入'
+            prop: 'endTime',
+            type: 'date',
+            dateFormate: 'yyyy-MM-dd',
+            label: '结束日期'
+          },
+          {
+            type: 'select',
+            prop: 'state',
+            clearable: '关闭',
+            label: '状态',
+            placeholder: '选择状态',
+            optList: [
+              {
+                label: '全部',
+                value: ''
+              },
+              {
+                label: '待核销',
+                value: 'order_1'
+              },
+              {
+                label: '已核销',
+                value: 'order_2'
+              },
+              {
+                label: '异常订单',
+                value: 'order_3'
+              }
+            ]
           }
-          // {
-          //   type: 'select',
-          //   prop: 'time',
-          //   clearable: '关闭',
-          //   optList: [
-          //     {
-          //       label: '全部',
-          //       value: ''
-          //     },
-          //     {
-          //       label: '上午',
-          //       value: '0'
-          //     },
-          //     {
-          //       label: '下午',
-          //       value: '1'
-          //     }
-          //   ],
-          //   label: '订单状态',
-          //   placeholder: '选择状态'
-          // }
         ],
         operate: [
           {
@@ -165,79 +171,103 @@ export default {
         ]
       },
       form: {
-        mobile: '',
-        userName: '',
-        nickName: ''
+        state: '',
+        phone: '',
+        endTime: '',
+        startTime: ''
       },
       tableTitle: [
         {
-          label: '手机号',
-          param: 'mobile',
+          label: '用户订单',
+          param: 'border',
           align: 'center',
           width: '',
-          // sortable: true,
           type: 'text'
         },
         {
-          label: '昵称',
-          param: 'nickName',
-          align: 'center',
-          width: '',
-          // sortable: true,
-          type: 'text'
-        },
-        {
-          label: '用户名',
-          param: 'userName',
-          align: 'center',
-          width: '',
-          // sortable: true,
-          type: 'text'
-        },
-        {
-          label: '头像',
-          param: 'avatar',
+          label: '图片',
+          param: 'images',
           align: 'center',
           type: 'img'
         },
         {
-          label: '邮箱',
-          param: 'email',
+          label: '商品价格',
+          param: 'commPrice',
+          align: 'center',
+          width: '',
+          type: 'text'
+        },
+        // {
+        //   label: '时间',
+        //   param: 'time',
+        //   align: 'center',
+        //   type: 'text',
+        //   render: row => {
+        //     if (row.time == 0) {
+        //       return '上午'
+        //     } else {
+        //       return '下午'
+        //     }
+        //   }
+        // },
+        {
+          label: '原价',
+          param: 'originalPrice',
           align: 'center',
           type: 'text'
         },
-
         {
-          label: '性别',
-          param: 'genderName',
+          label: '用户ID',
+          param: 'userId',
+          align: 'center',
+          type: 'text'
+        },
+        {
+          label: '用户使用红包',
+          param: 'consumption',
+          align: 'center',
+          width: '',
+          // sortable: true,
+          type: 'text'
+        },
+        {
+          label: '其他费用',
+          param: 'otherExpenses',
+          align: 'center',
+          width: '',
+          // sortable: true,
+          type: 'text'
+        },
+        {
+          label: '应付金额',
+          param: 'paymentamount',
+          align: 'center',
+          type: 'text'
+        },
+        {
+          label: '总价',
+          param: 'totalPrice',
+          align: 'center',
+          type: 'text'
+        },
+        {
+          label: '订单状态',
+          param: 'state',
+          align: 'center',
           type: 'text',
-          align: 'center'
-        },
-
-        {
-          label: '加入IP',
-          param: 'joinIp',
-          align: 'center',
-          type: 'text'
-        },
-        {
-          label: '登录IP',
-          param: 'loginIp',
-          align: 'center',
-          type: 'text'
-        },
-        {
-          label: '登陆时间',
-          param: 'loginTime',
-          align: 'center',
-          type: 'text'
-        },
-
-        {
-          label: '状态',
-          param: 'stateName',
-          align: 'center',
-          type: 'text'
+          render: row => {
+            switch (row.state) {
+              case 'order_1':
+                return '待核销'
+                break
+              case 'order_2':
+                return '已核销'
+                break
+              case 'order_3':
+                return '异常订单'
+                break
+            }
+          }
         },
         {
           label: '创建时间',
@@ -256,7 +286,20 @@ export default {
         //   type: 'text'
         // },
       ],
-      tableOption: [],
+      tableOption: [
+        {
+          label: '操作',
+          width: '100',
+          fixed: 'right',
+          options: [
+            {
+              label: '查看',
+              type: '',
+              methods: '查看'
+            }
+          ]
+        }
+      ],
       tableData: [],
       listLoading: false,
       dialogVisible: false
@@ -268,9 +311,10 @@ export default {
   methods: {
     reset() {
       this.form = {
-        mobile: '',
-        userName: '',
-        nickName: ''
+        state: '',
+        phone: '',
+        endTime: '',
+        startTime: ''
       }
       this.search()
     },
@@ -281,9 +325,6 @@ export default {
     addNew() {
       this.handleClick('新增')
     },
-    export() {
-      this.handleClick('导出')
-    },
     getList: async function() {
       this.listLoading = true
       let obj = JSON.parse(JSON.stringify(this.form))
@@ -292,7 +333,7 @@ export default {
         currentPage: this.page.page,
         pageSize: this.page.size
       }
-      let res = await getUserAccountListPage(obj)
+      let res = await getBusinessOrderPage(obj)
       if (res.code == 200) {
         let { result } = res
         this.page.total = result.total
@@ -302,13 +343,18 @@ export default {
     },
     handleClick(type, val) {
       switch (type) {
+        case '查看':
+          this.edit = 2
+          this.editId = val.border
+          this.dialogVisible = true
+          break
         case '新增':
           this.edit = 0
           this.dialogVisible = true
           break
         case '编辑':
           this.edit = 1
-          this.editRoleId = val.applicationVersionId
+          this.editId = val.id
           this.dialogVisible = true
           break
         case '确认':
@@ -316,38 +362,24 @@ export default {
           this.dialogVisible = false
           break
         case '关闭':
-          this.getList()
+          //   this.getList()
           this.dialogVisible = false
-          break
-        case '导出':
-          exportMemberOrderList('blob').then(res => {
-            let data = new Blob([res])
-            let url = window.URL.createObjectURL(data)
-            let link = document.createElement('a')
-            link.style.display = 'none'
-            link.href = url
-            link.setAttribute('download', `订单管理列表.xlsx`)
-            document.body.appendChild(link)
-            link.click()
-          })
-          // this.getList()
-          // this.dialogVisible = false
           break
 
         case '删除':
-          this.$confirm('确认删除？', '提示', {
+          this.$confirm('确认拒绝？', '提示', {
             cancelButtonText: '取消',
             confirmButtonText: '确定',
             type: 'warning'
           })
             .then(() => {
-              let roleId = val.roleId
+              let id = val.id
               console.log(val.roleId)
-              deleteRoleInfo({ roleId }).then(res => {
+              deleteInformationHotel({ id }).then(res => {
                 if (res.code == 200) {
                   this.$message({
                     type: 'success',
-                    message: '删除成功'
+                    message: '拒绝成功'
                   })
                   this.getList()
                 }
@@ -371,14 +403,15 @@ export default {
 
     handleButton(a) {
       this.handleClick(a.methods, a.row)
-    }
+    },
+    handleSelectionChange() {}
   }
 }
 </script>
 
 <style lang="scss" scoped>
 @import '@/styles/mainWrap.scss';
-#memberOrder {
+#reservationInfo {
   .topSearch {
     justify-content: space-between;
     .searchButton {

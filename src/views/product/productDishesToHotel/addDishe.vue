@@ -4,35 +4,27 @@
       <el-form ref="form" :model="form" :rules="formRules" label-width="140px" size="small">
         <el-row>
           <el-col :span="24">
-            <el-form-item label="spu名称" prop="spuName">
-              <el-input v-model="form.spuName" placeholder="请输入" maxlength="50"></el-input>
+            <el-form-item label="菜品名称" prop="dishDetailsName">
+              <el-input v-model="form.dishDetailsName" placeholder="请输入" maxlength="50"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="品牌" prop="brandName">
-              <el-input v-model="form.brandName" placeholder="请输入" maxlength="50" disabled></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="类目" prop="catalogName">
-              <el-input v-model="form.catalogName" placeholder="请输入" maxlength="50" disabled></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="供应商" prop="supplierId">
-              <el-input v-model="form.supplierName" placeholder="请输入" maxlength="50" disabled></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="标题" prop="title">
-              <el-input v-model="form.title" placeholder="请输入" maxlength="50"></el-input>
+            <el-form-item label="菜系" prop="dishTypeId">
+              <el-select v-model="form.dishTypeId" placeholder="请选择" style="width:100%" filterable>
+                <el-option
+                  v-for="item in options.dishTypeOptions"
+                  :key="item.id"
+                  :label="item.dishName"
+                  :value="item.id"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
 
           <el-col :span="24">
-            <el-form-item label="简介" prop="brief">
+            <el-form-item label="详细内容" prop="detailscontent">
               <el-input
-                v-model="form.brief"
+                v-model="form.detailscontent"
                 type="textarea"
                 :autosize="{ minRows: 2, maxRows: 3 }"
                 placeholder="请输入"
@@ -41,9 +33,9 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="描述" prop="spuDescribe">
+            <el-form-item label="说明" prop="explainContent">
               <el-input
-                v-model="form.spuDescribe"
+                v-model="form.explainContent"
                 type="textarea"
                 :autosize="{ minRows: 2, maxRows: 3 }"
                 placeholder="请输入"
@@ -52,41 +44,35 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="大图" prop="bitImage">
+            <el-form-item label="大图" prop="images">
               <div>格式要求：支持jpg/png/jpeg/bmp格式照片，大小不超过5m</div>
               <upLoad ref="Img" :getImgs="getImg" :toImgs="toImgs1" />
             </el-form-item>
           </el-col>
-          <el-col :span="24">
-            <el-form-item label="图片组" prop="image">
-              <div>格式要求：支持jpg/png/jpeg/bmp格式照片，大小不超过5m</div>
-              <upLoad ref="Imgs" :getImgs="getImgs" :limit="5" :toImgs="toImgs2" />
-            </el-form-item>
-          </el-col>
 
           <el-col :span="24">
-            <el-form-item label="价格" prop="spuPrice">
-              <el-input-number
-                v-model="form.spuPrice"
-                controls-position="right"
-                placeholder="请输入价格"
-              ></el-input-number>
+            <el-form-item label="价格" prop="money">
+              <el-input-number v-model="form.money" controls-position="right" placeholder="请输入价格"></el-input-number>
             </el-form-item>
           </el-col>
-
           <el-col :span="24">
-            <el-form-item label="是否上架" prop="upperShelf">
-              <el-radio-group v-model="form.upperShelf">
-                <el-radio label="YES">上架</el-radio>
-                <el-radio label="NO">下架</el-radio>
+            <el-form-item label="权重" prop="weigh">
+              <el-input-number v-model="form.weigh" controls-position="right" placeholder="请输入排序"></el-input-number>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="是否售空" prop="bool">
+              <el-radio-group v-model="form.bool">
+                <el-radio label="1">有货</el-radio>
+                <el-radio label="0">售空</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="状态" prop="state">
-              <el-radio-group v-model="form.state">
-                <el-radio label="NORMAL">正常</el-radio>
-                <el-radio label="DELETE">隐藏</el-radio>
+            <el-form-item label="状态" prop="hotelStatus">
+              <el-radio-group v-model="form.hotelStatus">
+                <el-radio label="1">上架</el-radio>
+                <el-radio label="0">下架</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -107,13 +93,12 @@ import { validateMobile } from '@/utils/validate'
 
 import upLoad from '@/components/upLoad/index'
 import {
-  addSkuInfo,
-  getSpuInfo,
-  putSpuInfo,
-  getCatalogList,
-  getBrandList,
-  getSupplierInfoList
+  addDishDetails,
+  getDishTypeDetails,
+  putDishTypeDetails,
+  getDishTypeList
 } from '@/api/products'
+import { mapState } from 'vuex'
 
 export default {
   components: {
@@ -134,52 +119,54 @@ export default {
     return {
       sumbitLoading: false,
       form: {
-        spuName: '',
-        brandName: '',
-        catalogName: '',
-        supplierName: '',
-        title: '',
-        brief: '',
-        spuDescribe: '',
-        state: 'NORMAL',
-        bitImage: [],
-        image: [],
-        spuPrice: '',
-        upperShelf: 'YES'
+        dishDetailsName: '',
+        dishTypeId: '',
+        weigh: 0,
+        detailscontent: '',
+        explainContent: '',
+        hotelStatus: '1',
+        images: [],
+        money: '',
+        bool: '1'
       },
-      formRules: {},
+      formRules: {
+        dishDetailsName: [
+          { required: true, message: '请填写', trigger: 'blur' }
+        ],
+        images: [{ required: true, message: '请选择', trigger: 'change' }],
+        dishTypeId: [{ required: true, message: '请选择', trigger: 'change' }],
+        weigh: [{ required: true, message: '请填写', trigger: 'blur' }],
+        money: [{ required: true, message: '请填写', trigger: 'blur' }],
+        hotelStatus: [{ required: true, message: '请填写', trigger: 'change' }],
+        bool: [{ required: true, message: '请填写', trigger: 'change' }]
+      },
       options: {
-        catalogOptions: [],
-        brandOptions: [],
-        supplierOptions: []
+        dishTypeOptions: []
       },
       toImgs1: [],
       toImgs2: []
     }
   },
   created() {
+    let cmpId = this.companyId
+    getDishTypeList({ cmpId }).then(res => {
+      this.options.dishTypeOptions = res.result
+    })
     if (this.edit == 1) {
-      let spuId = this.editId
-      getSpuInfo({ spuId }).then(res => {
+      let dishTypeId = this.editId
+      getDishTypeDetails({ dishTypeId }).then(res => {
         let { result } = res
         this.form = result
-        if (result.bitImage) {
-          this.toImgs1 = [{ url: `${this.hostUrl}${result.bitImage}` }]
+        if (result.images) {
+          this.toImgs1 = [{ url: `${this.hostUrl}${result.images}` }]
         } else {
           this.toImgs1 = []
         }
-        if (result.imageList) {
-          result.image = result.imageList
-          this.toImgs2 = result.imageList.map(i => {
-            return {
-              url: `${this.hostUrl}${i}`
-            }
-          })
-        } else {
-          this.toImgs2 = []
-        }
       })
     }
+  },
+  computed: {
+    ...mapState('login', ['companyId'])
   },
 
   methods: {
@@ -190,12 +177,10 @@ export default {
           this.$refs.form.validate(valid => {
             if (valid) {
               let obj = JSON.parse(JSON.stringify(this.form))
-
-              obj.bitImage = obj.bitImage.toString()
-              obj.image = obj.image.toString()
+              obj.images = obj.images.toString()
               if (this.edit == 1) {
-                obj.spuId = this.editId
-                putSpuInfo(obj).then(res => {
+                obj.id = this.editId
+                putDishTypeDetails(obj).then(res => {
                   if (res.code == 200) {
                     this.$message({
                       type: 'success',
@@ -205,7 +190,7 @@ export default {
                   }
                 })
               } else {
-                addSkuInfo(obj).then(res => {
+                addDishDetails(obj).then(res => {
                   if (res.code == 200) {
                     this.$message({
                       type: 'success',
@@ -230,7 +215,7 @@ export default {
       }
     },
     getImg(val) {
-      this.form.bitImage = val
+      this.form.images = val
     },
     getImgs(val) {
       this.form.image = val

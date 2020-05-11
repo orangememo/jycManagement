@@ -76,11 +76,17 @@ div:focus {
 .ly-justify-e {
     justify-content: flex-end;
 }
-.ly-direction-c{
-    flex-direction:column
+
+.ly-direction-c {
+    flex-direction: column
 }
+
 .ly-justify-c {
     justify-content: center;
+}
+
+.ly-align-c {
+    align-items: center;
 }
 
 .mt40 {
@@ -97,4 +103,12 @@ div:focus {
 
 .mt10 {
     margin-top: 10px;
+}
+
+.p5 {
+    padding: 5px;
+}
+
+.mb10 {
+    margin-bottom: 10px;
 }

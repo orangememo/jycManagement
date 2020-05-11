@@ -327,6 +327,42 @@ export function getExceptionListPage(params) {
 	})
 }
 /**
+ * 添加菜品
+ */
+
+export function addDishDetails(data) {
+	return request({
+		url: process.env.VUE_APP_DEV_API + '/jycDishTypeDetails',
+		method: 'post',
+		data,
+	})
+}
+
+/**
+ * 菜品信息
+ */
+
+export function getDishTypeDetails(params) {
+	return request({
+		url: process.env.VUE_APP_DEV_API + '/jycDishTypeDetails/id',
+		method: 'get',
+		params,
+	})
+}
+
+/**
+ * 菜系
+ */
+
+export function getDishTypeList(params) {
+	return request({
+		url: process.env.VUE_APP_DEV_API + '/jycDishType/list/by/hotel',
+		method: 'get',
+		params,
+	})
+}
+
+/**
  * 菜系分页
  */
 
@@ -370,5 +406,60 @@ export function deleteDishType(params) {
 		url: process.env.VUE_APP_DEV_API + '/jycDishType/info',
 		method: 'delete',
 		params,
+	})
+}
+/**
+ * 酒店上架和下架
+ */
+
+export function unDownDishTypeDetails(params) {
+	return request({
+		url: process.env.VUE_APP_DEV_API + '/jycDishTypeDetails/up/down/info',
+		method: 'PUT',
+		params,
+	})
+}
+/**
+ * 酒店上架和下架
+ */
+
+export function selloutDishTypeDetails(params) {
+	return request({
+		url: process.env.VUE_APP_DEV_API + '/jycDishTypeDetails/sellout',
+		method: 'POST',
+		params,
+	})
+}
+/**
+ * 置顶
+ */
+
+export function firstDishTypeDetails(params) {
+	return request({
+		url: process.env.VUE_APP_DEV_API + '/jycDishTypeDetails/first/id',
+		method: 'PUT',
+		params,
+	})
+}
+/**
+ * 置顶
+ */
+
+export function putDishTypeDetails(data) {
+	return request({
+		url: process.env.VUE_APP_DEV_API + '/jycDishTypeDetails/info',
+		method: 'PUT',
+		data,
+	})
+}
+/**
+ * 运营商审核
+ */
+
+export function checkDishTypeDetails(data) {
+	return request({
+		url: process.env.VUE_APP_DEV_API + '/jycDishTypeDetails/check',
+		method: 'POST',
+		data,
 	})
 }

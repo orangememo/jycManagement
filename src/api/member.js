@@ -79,7 +79,7 @@ export function getManagerCouponList(params) {
  */
 export function getInformationHotelPage(params) {
 	return request({
-		url: process.env.VUE_APP_WEB_ORDER + '/jyc/table/information/hotel/web/page',
+		url: process.env.VUE_APP_WEB_ORDER + '/jyc/table/information/hotel/page',
 		method: 'get',
 		params,
 	})
@@ -89,7 +89,7 @@ export function getInformationHotelPage(params) {
  */
 export function deleteInformationHotel(params) {
 	return request({
-		url: process.env.VUE_APP_WEB_ORDER + '/jyc/table/information/hotel/refuse',
+		url: process.env.VUE_APP_WEB_ORDER + '/jyc/table/information/hotel/del',
 		method: 'delete',
 		params,
 	})
@@ -102,5 +102,68 @@ export function getInformationHotelId(params) {
 		url: process.env.VUE_APP_WEB_ORDER + '/jyc/table/information/hotel/id',
 		method: 'get',
 		params,
+	})
+}
+/**
+ * 指定预定座位
+ */
+export function putInformationTable(params) {
+	return request({
+		url: process.env.VUE_APP_WEB_ORDER + '/jyc/table/information/hotel/table',
+		method: 'PUT',
+		params,
+	})
+}
+
+/**
+ * 查询可用座位
+ */
+export function getInformationTable(data) {
+	return request({
+		url: process.env.VUE_APP_WEB_ORDER + '/jyc/table/information/hotel/floor/table',
+		method: 'post',
+		data,
+	})
+}
+
+/**
+ * 酒店订单管理
+ */
+export function getBusinessOrderPage(params) {
+	return request({
+		url: process.env.VUE_APP_WEB_ORDER + '/jyc/border/page',
+		method: 'get',
+		params,
+	})
+}
+/**
+ * 酒店订单详情
+ */
+export function getBusinessOrderInfo(params) {
+	return request({
+		url: process.env.VUE_APP_WEB_ORDER + '/jyc/border/page/info',
+		method: 'get',
+		params,
+	})
+}
+
+/**
+ * 优惠券列表导出
+ */
+export function exportMemberCouponList(responseType) {
+	return request({
+		url: process.env.VUE_APP_WEB_ORDER + '/jyc/user/order/v1/manager/coupon/export',
+		method: 'get',
+		responseType,
+	})
+}
+/**
+ * 会员订单列表导出
+ */
+export function exportMemberOrderList(responseType) {
+	return request({
+		url: process.env.VUE_APP_WEB_ORDER + '/jyc/user/order/v1/manager/order/admin/export',
+		method: 'get',
+		responseType,
 	})
 }
