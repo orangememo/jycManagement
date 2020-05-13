@@ -251,6 +251,28 @@ export default {
           type: 'text'
         },
         {
+          label: '支付方式',
+          param: '.channel',
+          align: 'center',
+          type: 'text',
+          render: row => {
+            switch (row.channel) {
+              case '0':
+                return '微信'
+                break
+              case '1':
+                return '支付宝'
+                break
+              case '2':
+                return '现金'
+                break
+              default:
+                return '银行卡'
+                break
+            }
+          }
+        },
+        {
           label: '订单状态',
           param: 'state',
           align: 'center',

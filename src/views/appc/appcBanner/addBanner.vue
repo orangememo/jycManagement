@@ -3,19 +3,9 @@
     <div class="body">
       <el-form ref="form" :model="form" :rules="formRules" label-width="140px" size="small">
         <el-row>
-          <!-- <el-col :span="24">
-            <el-form-item label="应用id" prop="applicationId">
-              <el-input v-model.number="form.applicationId" placeholder="请输入应用id"></el-input>
-            </el-form-item>
-          </el-col>-->
           <el-col :span="24">
-            <el-form-item label="应用" prop="applicationId">
-              <el-select
-                v-model="form.applicationId"
-                placeholder="请选择应用"
-                filterable
-                style="width:100%"
-              >
+            <el-form-item label="应用" prop="selectApplicationId">
+              <el-select v-model="form.selectApplicationId" placeholder="请选择应用" style="width:100%">
                 <el-option
                   v-for="(item,index) in options.appIdOptions"
                   :key="index"
@@ -26,47 +16,15 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="新版本号" prop="applicationVersion">
-              <el-input v-model="form.applicationVersion" placeholder="请输入新版本号"></el-input>
-            </el-form-item>
-          </el-col>
-
-          <el-col :span="24">
-            <el-form-item label="升级内容" prop="content">
-              <el-input v-model="form.content" placeholder="请输入升级内容"></el-input>
-            </el-form-item>
-          </el-col>
-
-          <el-col :span="24">
-            <el-form-item label="图片" prop="applicationImage">
+            <el-form-item label="图片" prop="image">
               <div>格式要求：支持jpg/png/jpeg/bmp格式照片，大小不超过5m</div>
-              <el-upload
-                class="avatar-uploader"
-                :action="upLoadImg"
-                :show-file-list="false"
-                :on-success="handleAvatarSuccess"
-                :before-upload="beforeAvatarUpload"
-                accept="image/bmp, image/jpeg, image/jpg, image/png"
-              >
-                <img
-                  v-if="form.applicationImage"
-                  :src="`${hostUrl}/${form.applicationImage}`"
-                  class="avatar"
-                />
-                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-              </el-upload>
+              <upLoad ref="Img" :getImgs="getImg" :toImgs="toImgs1" />
             </el-form-item>
           </el-col>
 
           <el-col :span="24">
-            <el-form-item label="下载地址" prop="applicationUrl">
-              <el-input v-model="form.applicationUrl" placeholder="请输入下载地址"></el-input>
-            </el-form-item>
-          </el-col>
-
-          <el-col :span="24">
-            <el-form-item label="最低支持版本" prop="applicationMin">
-              <el-input v-model="form.applicationMin" placeholder="请输入最低支持版本"></el-input>
+            <el-form-item label="跳转" prop="jump">
+              <el-input v-model="form.jump" placeholder="请输入跳转地址"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -91,18 +49,19 @@
 
 <script>
 import { validateMobile } from '@/utils/validate'
-import treeSelect from '@/components/treeSelect'
+import upLoad from '@/components/upLoad/index'
+
 import {
-  addVersionInfo,
+  addBannerInfo,
   getVersionInfo,
-  putVersionInfo,
-  upLoadImg,
-  getApplication
+  putBannerInfo,
+  getApplicationList
 } from '@/api/member'
+import { mapState } from 'vuex'
 
 export default {
   components: {
-    treeSelect
+    upLoad
   },
   props: {
     propHandleClick: {
@@ -113,49 +72,53 @@ export default {
     },
     editId: {
       default: null
+    },
+    editData: {
+      default: () => {}
     }
   },
   data() {
     return {
-      upLoadImg,
       sumbitLoading: false,
       form: {
-        applicationId: '',
-        applicationVersion: '',
-        content: '',
+        selectApplicationId: '',
         state: 'NORMAL',
-        applicationUrl: '',
-        applicationImage: '',
-        applicationMin: ''
+        jump: '',
+        image: ''
       },
       formRules: {
-        applicationId: [
-          { required: true, message: '请填写应用id', trigger: 'blur' }
+        selectApplicationId: [
+          { required: true, message: '请选择', trigger: 'blur' }
         ],
-        applicationVersion: [
-          { required: true, message: '请填写版本号', trigger: 'blur' }
-        ],
-        applicationUrl: [
-          { required: true, message: '请输入下载地址', trigger: 'blur' }
-        ]
+        image: [{ required: true, message: '请上传', trigger: 'blur' }],
+        jump: [{ required: true, message: '请填写', trigger: 'blur' }],
+        state: [{ required: true, message: '请选择', trigger: 'blur' }]
       },
       options: {
         appIdOptions: []
-      }
+      },
+      toImgs1: []
     }
   },
   mounted() {
-    if (this.edit == 1) {
-      let applicationVersionId = this.editId
-      getVersionInfo({ applicationVersionId }).then(res => {
-        this.form = res.result
-      })
-    }
-    getApplication().then(res => {
+    getApplicationList().then(res => {
       this.options.appIdOptions = res.result
     })
+    if (this.edit == 1) {
+      let result = JSON.parse(JSON.stringify(this.editData))
+      result.selectApplicationId = result.applicationId
+      this.form = result
+      if (result.image) {
+        this.toImgs1 = [{ url: `${this.hostUrl}${result.image}` }]
+      } else {
+        this.toImgs1 = []
+      }
+      let applicationVersionId = this.editId
+    }
   },
-
+  computed: {
+    ...mapState('login', ['companyId'])
+  },
   methods: {
     handleClick(type) {
       switch (type) {
@@ -164,10 +127,10 @@ export default {
           this.$refs.form.validate(valid => {
             if (valid) {
               let obj = JSON.parse(JSON.stringify(this.form))
-              obj.byOperateApplicationId = obj.applicationId
+              obj.image = obj.image.toString()
               if (this.edit == 1) {
-                obj.applicationVersionId = this.editId
-                putVersionInfo(obj).then(res => {
+                obj.homePageId = this.editId
+                putBannerInfo(obj).then(res => {
                   if (res.code == 200) {
                     this.$message({
                       type: 'success',
@@ -177,7 +140,7 @@ export default {
                   }
                 })
               } else {
-                addVersionInfo(obj).then(res => {
+                addBannerInfo(obj).then(res => {
                   if (res.code == 200) {
                     this.$message({
                       type: 'success',
@@ -201,27 +164,8 @@ export default {
           break
       }
     },
-    handleChange() {},
-    handleAvatarSuccess(res, file) {
-      let url = res.result
-      if (url.indexOf('.com') > -1) {
-        url = url.split('.com')[1]
-      }
-      this.form.applicationImage = url
-    },
-    beforeAvatarUpload(file) {
-      let arr = ['image/bmp', 'image/jpeg', 'image/jpg', 'image/png']
-      let a = arr.find(e => e === file.type)
-      const isJPG = a !== undefined
-      const isLt5M = file.size / 1024 / 1024 < 5
-
-      if (!isJPG) {
-        this.$message.error('上传图片格式不正确')
-      }
-      if (!isLt5M) {
-        this.$message.error('上传头像图片大小不能超过 5MB!')
-      }
-      return isJPG && isLt5M
+    getImg(val) {
+      this.form.image = val
     }
   }
   // watch: {

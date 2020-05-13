@@ -24,7 +24,7 @@ module.exports = {
 	 * In most cases please use '/' !!!
 	 * Detail: https://cli.vuejs.org/config/#publicpath
 	 */
-	publicPath: '/',
+	publicPath: '/manage',
 	outputDir: 'dist',
 	assetsDir: 'static',
 	lintOnSave: false,
@@ -38,22 +38,22 @@ module.exports = {
 		},
 		proxy: {
 			// 服务器ip
-			'/web_account': {
+			'/manage/web_account': {
 				// target: 'http://192.168.0.108:8080/',
 				// target: 'http://192.168.0.121:8080/',
 				target: 'http://192.168.0.111:8070/',
 				// target: 'http://129.211.141.150:39012/web-manage',
 				changeOrigin: true,
-				pathRewrite: { '^/web_account': '' },
+				pathRewrite: { '^/manage/web_account': '' },
 			},
-			'/web_order': {
+			'/manage/web_order': {
 				// target: 'http://192.168.0.108:8080/',
 				// target: 'http://192.168.0.121:8080/',
 				target: 'http://192.168.0.111:8080/',
 
 				// target: 'http://129.211.141.150:39012/web-manage',
 				changeOrigin: true,
-				pathRewrite: { '^/web_order': '' },
+				pathRewrite: { '^/manage/web_order': '' },
 			},
 			// '/commodity/': {
 			// 	target: 'http://192.168.0.109:8085/',
@@ -61,23 +61,23 @@ module.exports = {
 			// 	changeOrigin: true,
 			// 	pathRewrite: {},
 			// },
-			'/commodity': {
+			'/manage/commodity': {
 				// target: 'http://192.168.0.109:8088/',
-				target: 'http://192.168.0.108:8088/',
+				target: 'http://192.168.0.109:8088/',
 				// target: 'http://192.168.0.108:9090/',
 				// target: 'http://129.211.141.150:39012/web-manage',
 				changeOrigin: true,
 				pathRewrite: {
-					'^/commodity': '',
+					'^/manage/commodity': '',
 				},
 			},
-			'/web_manage/': {
+			'/manage/web_manage/': {
 				target: 'http://192.168.0.109:8085/',
 				// target: 'http://192.168.0.109:8085/',
 				// target: 'http://129.211.141.150:39012/webManage',
 				changeOrigin: true,
 				pathRewrite: {
-					'^/web_manage': '',
+					'^/manage/web_manage': '',
 				},
 			},
 		},

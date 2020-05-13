@@ -133,7 +133,7 @@ export default {
     return {
       sumbitLoading: false,
       form: {
-        roleIdList: '',
+        roleIdList: [],
         userName: '',
         email: '',
         nickName: '',
@@ -185,36 +185,47 @@ export default {
       optionDisables: []
     }
   },
+
   created() {
-    let parentRoleIdList = []
-    getParentRoleIdList().then(res => {
-      let { result } = res
-      parentRoleIdList = result.selectList
-      this.form.roleIdList = result.selectList
-      this.optionDisables = result.unAbleList
-      roleInfoTreeAccountId().then(res => {
-        this.options.proleIdOptions = res.result.list
-      })
-      if (this.edit == 1) {
-        let userInfoId = this.editId
-        getManagerUserInfo({ userInfoId }).then(res => {
-          let { result } = res
-          let list = [...new Set([...result.roleIdList, ...parentRoleIdList])]
-          result.roleIdList = list
-          this.changeaffiliatedCompanyId(result.affiliatedCompanyId)
-          this.form = result
-        })
-      }
-    })
-  },
-  mounted() {
     this.options.affiliatedCompanyIdOptions = this.companyListToSelect
+
+    if (this.edit == 1) {
+      let userInfoId = this.editId
+      getManagerUserInfo({ userInfoId }).then(res => {
+        let { result } = res
+        let list = [...new Set([...result.roleIdList, ...this.form.roleIdList])]
+        result.roleIdList = list
+        this.changeaffiliatedCompanyId(result.affiliatedCompanyId)
+        this.form = result
+      })
+    }
   },
+  mounted() {},
   computed: {
     ...mapGetters(['companyListToSelect'])
   },
   methods: {
     changeaffiliatedCompanyId(value) {
+      this.form.roleIdList = []
+      Promise.all([
+        roleInfoTreeAccountId({
+          selectCompanyId: value,
+          operationType: 'noSelectList'
+        }),
+        getParentRoleIdList({ selectCompanyId: value })
+      ]).then(arr => {
+        this.options.proleIdOptions = arr[0].result.list
+        let parentRoleIdList = []
+        let { result } = arr[1]
+        parentRoleIdList = result.selectList
+        this.form.roleIdList = [
+          ...new Set([...this.form.roleIdList, ...result.selectList])
+        ]
+      })
+      // roleInfoTreeAccountId({ selectCompanyId: value }).then(res => {})
+      // getParentRoleIdList({ selectCompanyId: value }).then(res => {
+      //   // this.optionDisables = result.unAbleList
+      // })
       this.form.manageableCompanyIdList = []
       this.options.manageableCompanyIdListOptions = this.companyListToSelect.filter(
         i => i.parentId === value

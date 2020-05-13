@@ -66,7 +66,7 @@
 import { validUsername } from '@/utils/validate'
 import { loginJyc } from '@/api/login'
 import { mapActions } from 'vuex'
-
+import { getToken } from '@/utils/auth'
 export default {
   name: 'Login',
   data() {
@@ -107,9 +107,16 @@ export default {
     }
   },
   mounted() {
+    // console.log(11111, 22222)
+    // // this.loginForm = {
+    // //   username: '',
+    // //   password: ''
+    // // }
+    // console.log(this.loginForm)
     this.$store.dispatch('login/resetToken')
     this.$store.dispatch('login/resetRouter')
   },
+
   methods: {
     ...mapActions('login', ['login']),
     showPwd() {
@@ -135,6 +142,9 @@ export default {
           this.login(obj)
             .then(res => {
               this.$router.addRoutes(res)
+              // let url = `http://129.211.141.150:39016/webRecruit/?token=${getToken()}`
+              // // window.open(url)
+              // window.location.href = url
               this.$router.push({ path: '/dashboard' })
               this.loading = false
             })

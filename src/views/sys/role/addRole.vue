@@ -6,8 +6,26 @@
                   <el-date-picker v-model="form.value1" type="date" placeholder="请选择开始日期"></el-date-picker>-
                   <el-date-picker v-model="form.value2" type="date" placeholder="请选择结束日期"></el-date-picker>
         </el-form-item>-->
-
         <el-row>
+          <el-col :span="24">
+            <el-form-item label="所属公司" prop="affiliatedCompanyId">
+              <el-select
+                v-model="form.affiliatedCompanyId"
+                placeholder="请选择"
+                filterable
+                @change="changeaffiliatedCompanyId"
+                style="width:100%"
+                :disabled="edit===1?true:false"
+              >
+                <el-option
+                  v-for="item in options.affiliatedCompanyIdOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
           <el-col :span="24">
             <el-form-item label="父级" prop="proleId">
               <treeSelect
@@ -105,6 +123,7 @@ export default {
         disabled: 'disabled'
       },
       form: {
+        affiliatedCompanyId: '',
         proleId: '',
         component: '',
         roleName: '',
@@ -113,6 +132,9 @@ export default {
       },
 
       formRules: {
+        affiliatedCompanyId: [
+          { required: true, message: '请选择公司', trigger: 'change' }
+        ],
         proleId: [{ required: true, message: '请选择父级', trigger: 'change' }],
         roleName: [
           { required: true, message: '请填写角色名称', trigger: 'blur' }
@@ -125,21 +147,23 @@ export default {
       },
       options: {
         proleIdOptions: [],
-        ruleOptions: []
+        ruleOptions: [],
+        affiliatedCompanyIdOptions: []
       }
     }
   },
+  created() {
+    this.options.affiliatedCompanyIdOptions = this.companyListToSelect
+  },
   mounted() {
-    getRoleInfoTree().then(res => {
-      this.options.proleIdOptions = res.result.list
-    })
-
     if (this.edit == 1) {
       let roleId = this.editRoleId
       getRoleInfo({ roleId }).then(res => {
         this.form = res.result
         let { result } = res
-        if (result.proleId == 0) {
+        this.changeaffiliatedCompanyId(result.selectCompanyId)
+        console.log(result, 'result')
+        if (result.proleId === 0) {
           this.fatherDisable = true
         }
         let ruleIdList = result.ruleIdList
@@ -147,9 +171,29 @@ export default {
       })
     }
   },
-
+  computed: {
+    ...mapGetters(['companyListToSelect'])
+  },
   methods: {
-    getPositionPageList: async function() {},
+    changeaffiliatedCompanyId(value) {
+      // this.form.proleId = ''
+      if (this.edit !== 1) {
+        this.form.proleId = ''
+      }
+      this.options.ruleOptions = []
+      let operationType = 'selectList'
+      getRoleInfoTree({ selectCompanyId: value, operationType }).then(res => {
+        this.options.proleIdOptions = res.result.list
+      })
+      // roleInfoTreeAccountId({ selectCompanyId: value }).then(res => {})
+      // getParentRoleIdList({ selectCompanyId: value }).then(res => {
+      //   // this.optionDisables = result.unAbleList
+      // })
+      this.form.manageableCompanyIdList = []
+      this.options.manageableCompanyIdListOptions = this.companyListToSelect.filter(
+        i => i.parentId === value
+      )
+    },
 
     handleClick(type) {
       switch (type) {
@@ -204,7 +248,7 @@ export default {
       handler(newValue, oldValue) {
         let roleId = newValue.proleId
         let operationType = 'selectList'
-        if (this.proleId !== roleId) {
+        if (roleId && this.proleId !== roleId) {
           this.proleId = roleId
           getRuleInfoTree({ operationType, roleId }).then(res => {
             this.options.ruleOptions = res.result.list

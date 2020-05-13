@@ -191,7 +191,9 @@ export default {
     return {
       channelInfo: {
         0: '微信',
-        1: '支付宝'
+        1: '支付宝',
+        2: '现金',
+        3: '银行卡'
       },
       stateInfo: {
         order_1: '待核销',

@@ -167,3 +167,95 @@ export function exportMemberOrderList(responseType) {
 		responseType,
 	})
 }
+
+/**
+ * 获取新闻中心列表(PC)
+ */
+export function getNewsCenterInfoPage(params) {
+	return request({
+		url: process.env.VUE_APP_WEB_MANAGE + '/jycNewsCenter/jycNewsCenterInfo/page/list',
+		method: 'get',
+		params,
+	})
+}
+/**
+ * 新增新闻中心列表(PC)
+ */
+export function addNewsCenterInfo(data) {
+	return request({
+		url: process.env.VUE_APP_WEB_MANAGE + '/jycNewsCenter/jycNewsCenterInfo',
+		method: 'post',
+		data,
+	})
+}
+/**
+ * 更新新闻中心列表(PC)
+ */
+export function putNewsCenterInfo(data) {
+	return request({
+		url: process.env.VUE_APP_WEB_MANAGE + '/jycNewsCenter/centerInfo',
+		method: 'put',
+		data,
+	})
+}
+/**
+ * 更新新闻中心列表(PC)
+ */
+export function deleteNewsCenterInfo(data) {
+	return request({
+		url: process.env.VUE_APP_WEB_MANAGE + '/jycNewsCenter/jycNewsCenterInfo/id',
+		method: 'delete',
+		data,
+	})
+}
+
+/**
+ * 获取banner列表(PC)
+ */
+export function getBannerInfoPage(params) {
+	return request({
+		url: process.env.VUE_APP_WEB_MANAGE + '/jycHomePage/jycHomePageInfo/page/list',
+		method: 'get',
+		params,
+	})
+}
+/**
+ * 新增banner
+ */
+export function addBannerInfo(data) {
+	return request({
+		url: process.env.VUE_APP_WEB_MANAGE + '/jycHomePage/jycHomePageInfo',
+		method: 'post',
+		data,
+	})
+}
+/**
+ * 修改banner
+ */
+export function putBannerInfo(data) {
+	return request({
+		url: process.env.VUE_APP_WEB_MANAGE + '/jycHomePage/homePageInfo',
+		method: 'put',
+		data,
+	})
+}
+/**
+ * 删除banner
+ */
+export function deleteBannerInfoList(data) {
+	return request({
+		url: process.env.VUE_APP_WEB_MANAGE + '/jycHomePage/jycHomePageInfo/id',
+		method: 'DELETE',
+		data,
+	})
+}
+/**
+ * 获取应用
+ */
+export function getApplicationList(params) {
+	return request({
+		url: process.env.VUE_APP_WEB_MANAGE + '/application/applicationInfo',
+		method: 'get',
+		params,
+	})
+}

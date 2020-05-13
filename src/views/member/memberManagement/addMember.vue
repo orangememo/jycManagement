@@ -233,7 +233,8 @@ export default {
     }
   },
   mounted() {
-    getRoleInfoTree().then(res => {
+    let operationType = 'selectList'
+    getRoleInfoTree({ operationType }).then(res => {
       this.options.proleIdOptions = res.result.list
     })
 

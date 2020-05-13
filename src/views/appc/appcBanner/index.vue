@@ -1,17 +1,6 @@
 <template>
-  <div id="productCategory" class="mainWrap">
-    <search-form :formConfig="formConfig" :value="form" labelWidth="80px">
-      <el-form-item label="公司" prop="selectCompanyId" slot="formItem">
-        <el-select v-model="form.selectCompanyId" clearable placeholder="请选择">
-          <el-option
-            v-for="(item,index) in companyListToSelect"
-            :key="index"
-            :label="item.label"
-            :value="item.value"
-          ></el-option>
-        </el-select>
-      </el-form-item>
-    </search-form>
+  <div id="appcBanner" class="mainWrap">
+    <search-form :formConfig="formConfig" :value="form" labelWidth="80px"></search-form>
     <!-- <div class="ly-flex ly-justify-sb mt40 titleAndButton">
       <div style="padding-left:15px">{{$route.meta.title}}列表</div>
       <div class="buttonCtrl">
@@ -35,7 +24,7 @@
           fit
           border
           stripe
-          row-key="roleId"
+          row-key="homePageIdList"
           v-loading="listLoading"
           :expand-row-keys="expands"
           :header-row-style="{'background-color':'#152535'}"
@@ -81,15 +70,16 @@
       </div>
     </div>
     <div class="dialog">
-      <el-dialog title="提示" :visible.sync="dialogVisible" width="50%" :close-on-click-modal="false">
+      <el-dialog title="提示" :visible.sync="dialogVisible" width="50%">
         <div slot="title" style="padding:20px 30px ;border-bottom:1px solid #DCDFE6">
           <span>{{editTitle[edit]}}</span>
         </div>
-        <addCategory
+        <addBanner
           :propHandleClick="handleClick"
           v-if="dialogVisible"
           :edit="edit"
           :editId="editId"
+          :editData="editData"
         />
         <span slot="footer" class="dialog-footer"></span>
       </el-dialog>
@@ -98,21 +88,14 @@
 </template>
 
 <script>
-import {
-  getCatalogPage,
-  deleteCatalogInfo,
-  putCatalogTop
-} from '@/api/products'
+import { getBannerInfoPage, deleteBannerInfoList } from '@/api/member'
 
-import Pagination from '@/components/Pagination'
-import addCategory from './addCategory'
+import addBanner from './addBanner'
 import jycTable from '@/components/table/jycTable'
 import SearchForm from '@/components/seachForm/seachForm'
-import { mapGetters } from 'vuex'
 export default {
   components: {
-    Pagination,
-    addCategory,
+    addBanner,
     jycTable,
     SearchForm
   },
@@ -120,6 +103,7 @@ export default {
     return {
       edit: 0,
       editId: null,
+      editData: {},
       editTitle: {
         0: '新增',
         1: '编辑'
@@ -132,17 +116,9 @@ export default {
       formConfig: {
         formItemList: [
           {
-            type: 'input',
-            prop: 'name',
-            label: '名称',
-            placeholder: '请输入名称'
-          },
-          {
             type: 'select',
             prop: 'state',
             clearable: '关闭',
-            label: '状态',
-            placeholder: '选择状态',
             optList: [
               {
                 label: '全部',
@@ -153,10 +129,12 @@ export default {
                 value: 'NORMAL'
               },
               {
-                label: '删除',
+                label: '隐藏',
                 value: 'DELETE'
               }
-            ]
+            ],
+            label: '状态',
+            placeholder: '选择状态'
           }
         ],
         operate: [
@@ -187,83 +165,71 @@ export default {
         ]
       },
       form: {
-        selectCompanyId: '',
-        state: '',
-        name: ''
+        state: ''
       },
       tableTitle: [
         {
-          label: '名称',
-          param: 'name',
-          align: 'center',
-          type: 'text'
-        },
-        {
-          label: '父级Id',
-          param: 'parentId',
-          align: 'center',
-          type: 'text'
-        },
-        {
-          label: '类目深度',
-          param: 'depth',
-          align: 'center',
-          type: 'text'
-        },
-        {
-          label: '权重',
-          param: 'weight',
+          label: 'id',
+          param: 'applicationId',
           align: 'center',
           type: 'text'
         },
         {
           label: '图片',
-          param: 'imageUrl',
-          align: 'center',
-          type: 'img'
+          param: 'image',
+          type: 'img',
+          align: 'center'
         },
 
+        {
+          label: '管理员ID',
+          param: 'adminId',
+          align: 'center',
+
+          type: 'text'
+        },
+
+        {
+          label: '创建时间',
+          param: 'createTime',
+          align: 'center',
+          // sortable: true,
+          type: 'text',
+          width: '200'
+        },
+        {
+          label: '更新时间',
+          param: 'modifyTime',
+          align: 'center',
+          width: '200',
+          // sortable: true,
+          type: 'text'
+        },
+        {
+          label: '跳转',
+          param: 'jump',
+          align: 'center',
+          type: 'link'
+        },
         {
           label: '状态',
           param: 'state',
           align: 'center',
           type: 'text',
+
           render: row => {
             if (row.state === 'NORMAL') {
-              return "<span style='color:#409EFF'>正常</span>"
+              return '正常'
             } else {
-              return "<span style='color:#909399'>已删除</span>"
+              return '隐藏'
             }
           }
-        },
-        {
-          label: '创建时间',
-          param: 'createTime',
-          align: 'center',
-          type: 'text'
-        },
-        {
-          label: '修改时间',
-          param: 'modifyTime',
-          align: 'center',
-          type: 'text'
         }
       ],
       tableOption: [
         {
-          label: '置顶',
-          width: '100',
-          options: [
-            {
-              label: '置顶',
-              type: 'primary',
-              methods: '置顶'
-            }
-          ]
-        },
-        {
           label: '操作',
-          width: '200',
+          width: '180',
           options: [
             {
               label: '编辑',
@@ -287,15 +253,10 @@ export default {
   mounted() {
     this.getList()
   },
-  computed: {
-    ...mapGetters(['companyListToSelect'])
-  },
   methods: {
     reset() {
       this.form = {
-        selectCompanyId: '',
-        state: '',
-        name: ''
+        state: ''
       }
       this.search()
     },
@@ -317,7 +278,7 @@ export default {
         currentPage: this.page.page,
         pageSize: this.page.size
       }
-      let res = await getCatalogPage(obj)
+      let res = await getBannerInfoPage(obj)
       if (res.code == 200) {
         let { result } = res
         this.page.total = result.total
@@ -327,25 +288,14 @@ export default {
     },
     handleClick(type, val) {
       switch (type) {
-        case '置顶':
-          let catalogId = val.catalogId
-          putCatalogTop({ catalogId }).then(res => {
-            if (res.code == 200) {
-              this.$message({
-                type: 'success',
-                message: '置顶成功'
-              })
-              this.getList()
-            }
-          })
-          break
         case '新增':
           this.edit = 0
           this.dialogVisible = true
           break
         case '编辑':
           this.edit = 1
-          this.editId = val.catalogId
+          this.editId = val.homePageId
+          this.editData = val
           this.dialogVisible = true
           break
         case '确认':
@@ -357,10 +307,30 @@ export default {
           this.dialogVisible = false
           break
 
+        case '删除':
+          this.$confirm('确认删除？', '提示', {
+            cancelButtonText: '取消',
+            confirmButtonText: '确定',
+            type: 'warning'
+          })
+            .then(() => {
+              let homePageIdList = [val.homePageId]
+              deleteBannerInfoList({ homePageIdList }).then(res => {
+                if (res.code == 200) {
+                  this.$message({
+                    type: 'success',
+                    message: '删除成功'
+                  })
+                  this.getList()
+                }
+              })
+            })
+            .catch(() => {})
+          break
         case '批量删除':
           let selectData = this.selectData
           if (selectData.length === 0) {
-            this.$message.error('请勾选需要删除的品牌')
+            this.$message.error('请勾选需要删除的')
           } else {
             this.$confirm('确认批量删除选中的？', '提示', {
               cancelButtonText: '取消',
@@ -368,9 +338,8 @@ export default {
               type: 'warning'
             })
               .then(() => {
-                let catalogIdList = selectData.map(i => i.catalogId)
-                catalogIdList = catalogIdList.toString()
-                deleteCatalogInfo({ catalogIdList }).then(res => {
+                let homePageIdList = selectData.map(i => i.homePageId)
+                deleteBannerInfoList({ homePageIdList }).then(res => {
                   if (res.code == 200) {
                     this.$message({
                       type: 'success',
@@ -383,27 +352,6 @@ export default {
               .catch(() => {})
           }
 
-          break
-        case '删除':
-          this.$confirm('确认删除？', '提示', {
-            cancelButtonText: '取消',
-            confirmButtonText: '确定',
-            type: 'warning'
-          })
-            .then(() => {
-              let catalogIdList = val.catalogId
-              console.log(catalogIdList, 'catalogIdList')
-              deleteCatalogInfo({ catalogIdList }).then(res => {
-                if (res.code == 200) {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功'
-                  })
-                  this.getList()
-                }
-              })
-            })
-            .catch(() => {})
           break
       }
     },
@@ -431,7 +379,7 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/styles/mainWrap.scss';
-#productCategory {
+#appcBanner {
   .topSearch {
     justify-content: space-between;
     .searchButton {

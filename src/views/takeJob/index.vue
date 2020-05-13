@@ -7,7 +7,7 @@ import { getToken } from '@/utils/auth'
 
 export default {
   created() {
-    let url = `http://www.baidu.com?token=${getToken()}`
+    let url = `http://129.211.141.150:39016/webRecruit/#/?token=${getToken()}`
     window.open(url)
     this.$router.go(-1)
   },

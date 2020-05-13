@@ -41,6 +41,9 @@
             fit="cover"
           ></el-image>
         </span>
+        <span v-else-if="item.type=='link'">
+          <el-link type="primary" :href="scope.row[item.param]|toHTTPUrl">{{scope.row[item.param]}}</el-link>
+        </span>
         <span v-else>{{scope.row[item.param]}}</span>
       </template>
     </el-table-column>

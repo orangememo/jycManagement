@@ -73,6 +73,35 @@ export const constantRoutes = [
 		],
 	},
 	// {
+	// 	path: '/appc',
+	// 	component: Layout,
+	// 	redirect: '/appc/index',
+	// 	meta: {
+	// 		title: 'appc',
+	// 		icon: 'nested',
+	// 	},
+	// 	children: [
+	// 		{
+	// 			path: 'Cvideo',
+	// 			name: 'Cvideo',
+	// 			component: () => import('@/views/appc/appcCvideo'),
+	// 			meta: { title: 'Cvideo', icon: '' },
+	// 		},
+	// 		{
+	// 			path: 'appcFakeNews',
+	// 			name: 'appcFakeNews',
+	// 			component: () => import('@/views/appc/appcFakeNews'),
+	// 			meta: { title: '新闻中心', icon: '' },
+	// 		},
+	// 		{
+	// 			path: 'appcBanner',
+	// 			name: 'appcBanner',
+	// 			component: () => import('@/views/appc/appcBanner'),
+	// 			meta: { title: '首页banner', icon: '' },
+	// 		},
+	// 	],
+	// },
+	// {
 	// 	path: '/test',
 	// 	component: Layout,
 	// 	redirect: '/product/productList',
@@ -87,6 +116,12 @@ export const constantRoutes = [
 	// 			component: () => import('@/views/takeJob'),
 	// 			meta: { title: 'takeJob', icon: '' },
 	// 		},
+	// 		// {
+	// 		// 	path: 'upVideo',
+	// 		// 	name: 'upVideo',
+	// 		// 	component: () => import('@/components/upVideo'),
+	// 		// 	meta: { title: 'upVideo', icon: '' },
+	// 		// },
 	// 	],
 	// },
 	// {

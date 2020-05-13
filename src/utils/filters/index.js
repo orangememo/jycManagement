@@ -9,9 +9,20 @@ export function numberFormatter(num, digits) {
 }
 
 export function toThousandFilter(num) {
-	return (+num || 0).toString().replace(/^-?\d+/g, m => m.replace(/(?=(?!\b)(\d{3})+$)/g, ','))
+	return (+num || 0).toString().replace(/^-?\d+/g, (m) => m.replace(/(?=(?!\b)(\d{3})+$)/g, ','))
 }
+export function toHTTPUrl(str) {
+	if (!str) {
+		return ''
+	}
+	if (str.indexOf('http') == -1) {
+		return `http://${str}`
+	} else {
+		return str
+	}
 
+	return
+}
 export function parseTimeFormat(time, cFormat) {
 	if (arguments.length === 0) {
 		return null
@@ -36,7 +47,7 @@ export function parseTimeFormat(time, cFormat) {
 		h: date.getHours(),
 		i: date.getMinutes(),
 		s: date.getSeconds(),
-		a: date.getDay()
+		a: date.getDay(),
 	}
 	const time_str = format.replace(/{(y|m|d|h|i|s|a)+}/g, (result, key) => {
 		let value = formatObj[key]

@@ -178,7 +178,6 @@ export default {
   },
   created() {
     this.arrList = this.companyListToSelect
-    console.log(this.companyListToSelect, 'companyListToSelect')
   },
   mounted() {
     this.getList()
@@ -197,6 +196,7 @@ export default {
     getList: async function() {
       this.listLoading = true
       let obj = JSON.parse(JSON.stringify(this.form))
+      obj.operationType = ''
       let res = await getRoleInfoTree(obj)
       this.listLoading = false
       this.tableData = res.result.list

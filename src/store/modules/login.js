@@ -88,7 +88,6 @@ const actions = {
 				.then((res) => {
 					const { result } = res
 					const { token, companyList, applicationList, userName, avatar, accountId, companyId, ruleList, applicationId } = result
-
 					commit('SET_TOKEN', token)
 					commit('SET_COMPANY_LIST', companyList)
 					commit('SET_APPLICATION_LIST', applicationList)

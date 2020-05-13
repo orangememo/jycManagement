@@ -1,6 +1,17 @@
 <template>
   <div id="productList" class="mainWrap">
-    <search-form :formConfig="formConfig" :value="form" labelWidth="80px"></search-form>
+    <search-form :formConfig="formConfig" :value="form" labelWidth="80px">
+      <el-form-item label="公司" prop="selectCompanyId" slot="formItem">
+        <el-select v-model="form.selectCompanyId" clearable placeholder="请选择">
+          <el-option
+            v-for="(item,index) in companyListToSelect"
+            :key="index"
+            :label="item.label"
+            :value="item.value"
+          ></el-option>
+        </el-select>
+      </el-form-item>
+    </search-form>
     <!-- <div class="ly-flex ly-justify-sb mt40 titleAndButton">
       <div style="padding-left:15px">{{$route.meta.title}}列表</div>
       <div class="buttonCtrl">
@@ -99,7 +110,8 @@ import Pagination from '@/components/Pagination'
 import addDishe from './addDishe'
 import jycTable from '@/components/table/jycTable'
 import SearchForm from '@/components/seachForm/seachForm'
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
+
 export default {
   components: {
     Pagination,
@@ -214,7 +226,7 @@ export default {
         ]
       },
       form: {
-        Name: '',
+        selectCompanyId: '',
         Hstate: '',
         Ystate: '',
         dishName: '',
@@ -389,13 +401,17 @@ export default {
     this.getList()
   },
   computed: {
+    ...mapGetters(['companyListToSelect']),
     ...mapState('login', ['companyType'])
   },
   methods: {
     reset() {
       this.form = {
+        selectCompanyId: '',
         Hstate: '',
-        Ystate: ''
+        Ystate: '',
+        dishName: '',
+        dishDetailsName: ''
       }
       this.search()
     },
