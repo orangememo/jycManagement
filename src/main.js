@@ -16,7 +16,7 @@ import '@/icons' // icon
 import '@/permission' // permission control
 import { JSEncrypt } from 'jsencrypt'
 import * as filters from '@/utils/filters' // global filters
-Object.keys(filters).forEach(key => {
+Object.keys(filters).forEach((key) => {
 	Vue.filter(key, filters[key])
 })
 Vue.prototype.$getRsaCode = function(str) {
@@ -31,20 +31,20 @@ Vue.prototype.$getRsaCode = function(str) {
 }
 //全局弹窗
 //正确
-Vue.prototype.alertMessage = param => {
+Vue.prototype.alertMessage = (param) => {
 	Vue.prototype.$message({
-    message: param,
-    type: 'success',
-    duration: 5 * 1000
-  })
+		message: param,
+		type: 'success',
+		duration: 5 * 1000,
+	})
 }
 //图片前缀地址
 Vue.prototype.hostUrl = 'https://9uc-1253537498.cos.ap-shanghai.myqcloud.com'
 //时间格式化
-const filerdata = s => {
+const filerdata = (s) => {
 	return s < 10 ? '0' + s : s
 }
-Vue.prototype.$dateFormat = param => {
+Vue.prototype.$dateFormat = (param) => {
 	let dateMat = new Date(param * 1000)
 	const year = dateMat.getFullYear()
 	const month = dateMat.getMonth() + 1
@@ -60,7 +60,7 @@ Vue.use(VueAMap)
 VueAMap.initAMapApiLoader({
 	key: 'c287b27e8e07e0b82fd1d9807dc5c670',
 	plugin: ['AMap.Autocomplete', 'AMap.PlaceSearch', 'AMap.Scale', 'AMap.OverView', 'AMap.ToolBar', 'AMap.MapType', 'AMap.PolyEditor', 'Geocoder'],
-	v: '1.4.4'
+	v: '1.4.4',
 })
 
 /**
@@ -87,5 +87,5 @@ new Vue({
 	el: '#app',
 	router,
 	store,
-	render: h => h(App)
+	render: (h) => h(App),
 })

@@ -81,7 +81,6 @@
           :editId="editId"
           :editData="editData"
         />
-        <span slot="footer" class="dialog-footer"></span>
       </el-dialog>
     </div>
   </div>
@@ -170,7 +169,7 @@ export default {
       tableTitle: [
         {
           label: 'id',
-          param: 'applicationId',
+          param: 'homePageId',
           align: 'center',
           type: 'text'
         },
@@ -180,7 +179,6 @@ export default {
           type: 'img',
           align: 'center'
         },
-
         {
           label: '管理员ID',
           param: 'adminId',

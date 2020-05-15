@@ -55,7 +55,6 @@
           :editId="editId"
           :editNumber="editNumber"
         />
-        <span slot="footer" class="dialog-footer"></span>
       </el-dialog>
     </div>
   </div>

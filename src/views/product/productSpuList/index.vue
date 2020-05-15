@@ -86,7 +86,6 @@
           <span>{{editTitle[edit]}}</span>
         </div>
         <addSPU :propHandleClick="handleClick" v-if="dialogVisible" :edit="edit" :editId="editId" />
-        <span slot="footer" class="dialog-footer"></span>
       </el-dialog>
     </div>
   </div>

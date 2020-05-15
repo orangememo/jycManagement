@@ -1,13 +1,7 @@
 <template>
-  <div id="memberOrder" class="mainWrap">
+  <div id="appcFakeNews" class="mainWrap">
     <search-form :formConfig="formConfig" :value="form" labelWidth="80px"></search-form>
-    <!-- <div class="ly-flex ly-justify-sb mt40 titleAndButton">
-      <div style="padding-left:15px">{{$route.meta.title}}列表</div>
-      <div class="buttonCtrl">
-        <el-button size="small" type="info" @click="search()">刷新</el-button>
-        <el-button size="small" type="primary" @click="handleClick('新增')">新增</el-button>
-      </div>
-    </div>-->
+
     <div class>
       <div class="tableOutBox">
         <jyc-table
@@ -33,7 +27,7 @@
       </div>
     </div>
     <div class="dialog">
-      <el-dialog title="提示" :visible.sync="dialogVisible" width="50%" :close-on-click-modal="false">
+      <el-dialog title="提示" :visible.sync="dialogVisible" width="50%">
         <div slot="title" style="padding:20px 30px ;border-bottom:1px solid #DCDFE6">
           <span>{{editTitle[edit]}}</span>
         </div>
@@ -43,21 +37,19 @@
 </template>
 
 <script>
-import { getManagerCouponList, exportMemberCouponList } from '@/api/member'
+import { getFeedbackInfoListPage, deleteNewsCenterInfo } from '@/api/member'
 
-import Pagination from '@/components/Pagination'
 import jycTable from '@/components/table/jycTable'
 import SearchForm from '@/components/seachForm/seachForm'
 export default {
   components: {
-    Pagination,
     jycTable,
     SearchForm
   },
   data() {
     return {
       edit: 0,
-      editRoleId: null,
+      editId: null,
       editTitle: {
         0: '新增',
         1: '编辑'
@@ -71,13 +63,14 @@ export default {
         formItemList: [
           {
             type: 'input',
-            prop: 'couponCode',
-            label: '优惠券编码',
-            placeholder: '请输入订单编码'
+            prop: 'content',
+            clearable: '关闭',
+            label: '内容',
+            placeholder: '请输入'
           },
           {
             type: 'select',
-            prop: 'couponStatus',
+            prop: 'state',
             clearable: '关闭',
             optList: [
               {
@@ -85,23 +78,15 @@ export default {
                 value: ''
               },
               {
-                label: '已赠送',
-                value: '4'
+                label: '正常',
+                value: 'NORMAL'
               },
               {
-                label: '待消费',
-                value: '1'
-              },
-              {
-                label: '已消费',
-                value: '2'
-              },
-              {
-                label: '已预定',
-                value: '3'
+                label: '隐藏',
+                value: 'DELETE'
               }
             ],
-            label: '优惠券状态',
+            label: '状态',
             placeholder: '选择状态'
           }
         ],
@@ -112,12 +97,7 @@ export default {
             name: '查询',
             handleClick: this.search
           },
-          {
-            icon: 'el-icon-folder',
-            type: 'primary',
-            name: '导出',
-            handleClick: this.export
-          },
+
           {
             icon: 'el-icon-refresh-left',
             type: 'primary',
@@ -127,52 +107,46 @@ export default {
         ]
       },
       form: {
-        couponStatus: '',
-        couponCode: ''
+        content: '',
+        state: ''
       },
       tableTitle: [
+        // {
+        //   label: 'id',
+        //   param: 'newsCenterId',
+        //   align: 'center',
+        //   type: 'text'
+        // },
         {
-          label: '优惠券编码',
-          param: 'couponCode',
+          label: '内容',
+          param: 'content',
           align: 'center',
-          type: 'text'
+          type: 'text',
+          width: '350'
+        },
+
+        {
+          label: '反馈来源',
+          param: ' source',
+          align: 'center',
+          // sortable: true,
+          type: 'text',
+          width: ''
         },
         {
-          label: '订单编号',
-          param: 'orderCode',
+          label: '创建时间',
+          param: 'createTime',
           align: 'center',
-          width: '220',
-          type: 'text'
+          // sortable: true,
+          type: 'text',
+          width: '200'
         },
         {
-          label: '账户ID',
-          param: 'accountId',
+          label: '更新时间',
+          param: 'modifyTime',
           align: 'center',
-          type: 'text'
-        },
-        {
-          label: '酒店ID',
-          param: 'companyId',
-          align: 'center',
-          width: '220',
-          type: 'text'
-        },
-        {
-          label: '优惠券状态',
-          param: 'couponStatusName',
-          align: 'center',
-          type: 'text'
-        },
-        {
-          label: '优惠券金额',
-          param: 'couponSumMoney',
-          align: 'center',
-          type: 'text'
-        },
-        {
-          label: '优惠券类型',
-          param: 'couponTypeName',
-          align: 'center',
+          width: '200',
+          // sortable: true,
           type: 'text'
         },
 
@@ -185,49 +159,40 @@ export default {
           render: row => {
             if (row.state === 'NORMAL') {
               return '正常'
-            } else if (row.state === 'FROZEN') {
-              return '冻结'
             } else {
-              return '删除'
+              return '隐藏'
             }
           }
-        },
-        {
-          label: '创建时间',
-          param: 'createTime',
-          align: 'center',
-          // sortable: true,
-          type: 'text',
-          width: '200'
-        },
-        {
-          label: '使用时间',
-          param: 'useTime',
-          align: 'center',
-          width: '200',
-          // sortable: true,
-          type: 'text'
-        },
-        {
-          label: '删除时间',
-          param: 'deleteTime',
-          align: 'center',
-          width: '200',
-          // sortable: true,
-          type: 'text'
         }
-        // {
-        //   label: '权重',
-        //   param: 'id',
-        //   align: 'center',
-
-        //   type: 'text'
-        // },
       ],
-      tableOption: [],
+      tableOption: [
+        // {
+        //   label: '操作',
+        //   width: '180',
+        //   options: [
+        //     {
+        //       label: '查看',
+        //       type: '',
+        //       methods: '查看'
+        //     }
+        //     // {
+        //     //   label: '编辑',
+        //     //   type: 'primary',
+        //     //   methods: '编辑'
+        //     // },
+        //     // {
+        //     //   label: '删除',
+        //     //   type: 'danger',
+        //     //   methods: '删除'
+        //     // }
+        //   ]
+        // }
+      ],
       tableData: [],
       listLoading: false,
-      dialogVisible: false
+      dialogVisible: false,
+      editData: [],
+      selectData: []
     }
   },
   mounted() {
@@ -236,9 +201,8 @@ export default {
   methods: {
     reset() {
       this.form = {
-        orderStatus: '',
-        orderCode: '',
-        payType: ''
+        content: '',
+        state: ''
       }
       this.search()
     },
@@ -249,8 +213,8 @@ export default {
     addNew() {
       this.handleClick('新增')
     },
-    export() {
-      this.handleClick('导出')
+    deleteItem() {
+      this.handleClick('批量删除')
     },
     getList: async function() {
       this.listLoading = true
@@ -260,48 +224,17 @@ export default {
         currentPage: this.page.page,
         pageSize: this.page.size
       }
-      let res = await getManagerCouponList(obj)
+      let res = await getFeedbackInfoListPage(obj)
       if (res.code == 200) {
         let { result } = res
         this.page.total = result.total
+
         this.tableData = result.records
       }
       this.listLoading = false
     },
     handleClick(type, val) {
       switch (type) {
-        case '新增':
-          this.edit = 0
-          this.dialogVisible = true
-          break
-        case '编辑':
-          this.edit = 1
-          this.editRoleId = val.applicationVersionId
-          this.dialogVisible = true
-          break
-        case '确认':
-          this.getList()
-          this.dialogVisible = false
-          break
-        case '关闭':
-          this.getList()
-          this.dialogVisible = false
-          break
-        case '导出':
-          exportMemberCouponList('blob').then(res => {
-            let data = new Blob([res])
-            let url = window.URL.createObjectURL(data)
-            let link = document.createElement('a')
-            link.style.display = 'none'
-            link.href = url
-            link.setAttribute('download', `优惠券列表.xlsx`)
-            document.body.appendChild(link)
-            link.click()
-          })
-          // this.getList()
-          // this.dialogVisible = false
-          break
-
         case '删除':
           this.$confirm('确认删除？', '提示', {
             cancelButtonText: '取消',
@@ -309,8 +242,9 @@ export default {
             type: 'warning'
           })
             .then(() => {
-              let roleId = val.roleId
-              deleteRoleInfo({ roleId }).then(res => {
+              let newsCenterIdList = val.newsCenterId
+
+              deleteRoleInfo({ newsCenterIdList }).then(res => {
                 if (res.code == 200) {
                   this.$message({
                     type: 'success',
@@ -321,6 +255,33 @@ export default {
               })
             })
             .catch(() => {})
+          break
+        case '批量删除':
+          let selectData = this.selectData
+          if (selectData.length === 0) {
+            this.$message.error('请勾选需要删除')
+          } else {
+            this.$confirm('确认批量删除选中的？', '提示', {
+              cancelButtonText: '取消',
+              confirmButtonText: '确定',
+              type: 'warning'
+            })
+              .then(() => {
+                let newsCenterIdList = selectData.map(i => i.newsCenterId)
+                // newsCenterIdList = newsCenterIdList.toString()
+                deleteNewsCenterInfo({ newsCenterIdList }).then(res => {
+                  if (res.code == 200) {
+                    this.$message({
+                      type: 'success',
+                      message: '删除成功'
+                    })
+                    this.getList()
+                  }
+                })
+              })
+              .catch(() => {})
+          }
+
           break
       }
     },
@@ -339,14 +300,16 @@ export default {
     handleButton(a) {
       this.handleClick(a.methods, a.row)
     },
-    handleSelectionChange() {}
+    handleSelectionChange(val) {
+      this.selectData = val
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
 @import '@/styles/mainWrap.scss';
-#memberOrder {
+#appcFakeNews {
   .topSearch {
     justify-content: space-between;
     .searchButton {

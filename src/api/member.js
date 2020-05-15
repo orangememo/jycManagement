@@ -47,6 +47,8 @@ export function getVersionInfo(params) {
 }
 
 export const upLoadImg = `http://49.234.12.49/lp/lp/lpVuser/edits`
+export const upLoadVideo = process.env.VUE_APP_WEB_MANAGE + `/video/upload`
+
 export function getApplication(params) {
 	return request({
 		url: process.env.VUE_APP_WEB_MANAGE + '/application/list',
@@ -255,6 +257,76 @@ export function deleteBannerInfoList(data) {
 export function getApplicationList(params) {
 	return request({
 		url: process.env.VUE_APP_WEB_MANAGE + '/application/applicationInfo',
+		method: 'get',
+		params,
+	})
+}
+/**
+ * 获取公司
+ */
+export function getcompanyInfoIdList(params) {
+	return request({
+		url: process.env.VUE_APP_WEB_MANAGE + '/account/companyInfoIdList',
+		method: 'get',
+		params,
+	})
+}
+/**
+ * 获取视频
+ */
+export function getVideoInfoList(params) {
+	return request({
+		url: process.env.VUE_APP_WEB_MANAGE + '/jycVideo/jycVideoInfo/page/list',
+		method: 'get',
+		params,
+	})
+}
+/**
+ * 新增视频
+ */
+export function addVideoInfo(data) {
+	return request({
+		url: process.env.VUE_APP_WEB_MANAGE + '/jycVideo/jycVideoInfo',
+		method: 'post',
+		data,
+	})
+}
+/**
+ * 修改视频
+ */
+export function putVideoInfo(data) {
+	return request({
+		url: process.env.VUE_APP_WEB_MANAGE + '/jycVideo/jycVideoInfo',
+		method: 'put',
+		data,
+	})
+}
+/**
+ * 修改视频
+ */
+export function deleteVideoInfo(data) {
+	return request({
+		url: process.env.VUE_APP_WEB_MANAGE + '/jycVideo/jycVideoInfo/id',
+		method: 'delete',
+		data,
+	})
+}
+/**
+ * 新增意见反馈
+ */
+export function addFeedbackInfo(data) {
+	return request({
+		url: process.env.VUE_APP_WEB_MANAGE + '/jycFeedback/jycFeedback',
+		method: 'post',
+		data,
+	})
+}
+/**
+ * 意见反馈列表
+ */
+export function getFeedbackInfoListPage(params) {
+	return request({
+		url: process.env.VUE_APP_WEB_MANAGE + '/jycFeedback/jycFeedback/page/list',
 		method: 'get',
 		params,
 	})

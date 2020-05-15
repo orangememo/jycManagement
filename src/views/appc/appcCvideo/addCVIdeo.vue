@@ -1,8 +1,20 @@
 <template>
-  <div class="dialogBody" id="addNews">
+  <div class="dialogBody" id="addCVIdeo">
     <div class="body">
       <el-form ref="form" :model="form" :rules="formRules" label-width="140px" size="small">
         <el-row>
+          <el-col :span="24">
+            <el-form-item label="所属公司" prop="hotelId">
+              <el-select v-model="form.hotelId" placeholder="请选择" filterable style="width:100%">
+                <el-option
+                  v-for="item in options.hotelIdOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
           <el-col :span="24">
             <el-form-item label="应用" prop="selectApplicationId">
               <el-select v-model="form.selectApplicationId" placeholder="请选择应用" style="width:100%">
@@ -16,8 +28,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="标题" prop="title">
-              <el-input v-model="form.title" placeholder="请输入"></el-input>
+            <el-form-item label="名称" prop="name">
+              <el-input v-model="form.name" placeholder="请输入"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -27,10 +39,17 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="消息内容" prop="content">
-              <tinymce v-model="form.content" :height="300" />
+            <el-form-item label="视频" prop="video">
+              <div>格式要求：支持mp4/qlv/qsv/ogg/flv/avi/wmv/rmvb格式视频</div>
+              <upVideo ref="video" :getImgs="getImg2" :videoData="toVideo" />
             </el-form-item>
           </el-col>
+          <el-col :span="24">
+            <el-form-item label="描述" prop="describe">
+              <el-input v-model="form.describe" placeholder="请输入"></el-input>
+            </el-form-item>
+          </el-col>
+
           <el-col :span="24">
             <el-form-item label="权重" prop="weigh">
               <el-input-number v-model="form.weigh" placeholder="请输入权重" controls-position="right"></el-input-number>
@@ -59,16 +78,15 @@
 <script>
 import { validateMobile } from '@/utils/validate'
 import upLoad from '@/components/upLoad/index'
+import upVideo from '@/components/upVideo'
 import Tinymce from '@/components/Tinymce'
-import {
-  getApplicationList,
-  putNewsCenterInfo,
-  addNewsCenterInfo
-} from '@/api/member'
+import { getApplicationList, putVideoInfo, addVideoInfo } from '@/api/member'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   components: {
     upLoad,
+    upVideo,
     Tinymce
   },
   props: {
@@ -89,29 +107,38 @@ export default {
     return {
       sumbitLoading: false,
       form: {
+        hotelId: '',
         selectApplicationId: '',
         content: '',
         state: 'NORMAL',
-        title: '',
+        name: '',
         image: '',
-        weigh: 0
+        video: '',
+        weigh: 0,
+        describe: ''
       },
       formRules: {
+        hotelId: [{ required: true, message: '请选择', trigger: 'blur' }],
         selectApplicationId: [
           { required: true, message: '请选择', trigger: 'blur' }
         ],
         image: [{ required: true, message: '请上传', trigger: 'blur' }],
-        title: [{ required: true, message: '请填写', trigger: 'blur' }],
+        video: [{ required: true, message: '请上传', trigger: 'blur' }],
+        describe: [{ required: true, message: '请填写', trigger: 'blur' }],
+        name: [{ required: true, message: '请填写', trigger: 'blur' }],
         state: [{ required: true, message: '请选择', trigger: 'blur' }],
         weigh: [{ required: true, message: '请填写', trigger: 'blur' }]
       },
       options: {
-        appIdOptions: []
+        appIdOptions: [],
+        hotelIdOptions: []
       },
-      toImgs1: []
+      toImgs1: [],
+      toVideo: ''
     }
   },
   mounted() {
+    this.options.hotelIdOptions = this.companyListToSelect
     getApplicationList().then(res => {
       this.options.appIdOptions = res.result
     })
@@ -124,9 +151,17 @@ export default {
       } else {
         this.toImgs1 = []
       }
+      if (result.video) {
+        this.toVideo = `${this.hostUrl}${result.video}`
+      } else {
+        this.toVideo = ''
+      }
     }
   },
-
+  computed: {
+    ...mapState('login', ['companyId']),
+    ...mapGetters(['companyListToSelect'])
+  },
   methods: {
     handleClick(type) {
       switch (type) {
@@ -137,8 +172,7 @@ export default {
               let obj = JSON.parse(JSON.stringify(this.form))
               obj.image = obj.image.toString()
               if (this.edit == 1) {
-                obj.newsCenterId = this.editId
-                putNewsCenterInfo(obj).then(res => {
+                putVideoInfo(obj).then(res => {
                   if (res.code == 200) {
                     this.$message({
                       type: 'success',
@@ -148,7 +182,7 @@ export default {
                   }
                 })
               } else {
-                addNewsCenterInfo(obj).then(res => {
+                addVideoInfo(obj).then(res => {
                   if (res.code == 200) {
                     this.$message({
                       type: 'success',
@@ -174,6 +208,9 @@ export default {
     },
     getImg(val) {
       this.form.image = val
+    },
+    getImg2(val) {
+      this.form.video = val
     }
   }
   // watch: {
@@ -196,7 +233,7 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/styles/mainWrap.scss';
-#addNews {
+#addCVIdeo {
   .body {
   }
   .avatar-uploader {

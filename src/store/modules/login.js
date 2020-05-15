@@ -1,5 +1,7 @@
-import { login, logout, getInfo } from '@/api/user'
+// import { login, logout, getInfo } from '@/api/user'
 import { loginJyc, loginInfo } from '@/api/login'
+import { getcompanyInfoIdList } from '@/api/member'
+
 import { componentsMap } from '@/router/componentsMap'
 
 import { getToken, setToken, removeToken } from '@/utils/auth'
@@ -87,7 +89,7 @@ const actions = {
 			loginJyc(obj)
 				.then((res) => {
 					const { result } = res
-					const { token, companyList, applicationList, userName, avatar, accountId, companyId, ruleList, applicationId } = result
+					const { token, companyList, applicationList, userName, avatar, accountId, companyId, ruleList, applicationId, companyType } = result
 					commit('SET_TOKEN', token)
 					commit('SET_COMPANY_LIST', companyList)
 					commit('SET_APPLICATION_LIST', applicationList)
@@ -104,6 +106,8 @@ const actions = {
 						}
 						return obj
 					})
+					commit('SET_COMPANY_TYPE', companyType)
+
 					commit('SET_COMPANY_LIST_TO_SELECT', companyListToSelect)
 					commit('SET_APPLICATION_ID', applicationId)
 					commit('SET_LIST', ruleList)
@@ -181,6 +185,20 @@ const actions = {
 			let ruleList = comparedRouter(state.list)
 			ruleList.push({ path: '*', redirect: '/404', hidden: true })
 			resolve(ruleList)
+		})
+	},
+	setCompanyList({ commit, state }) {
+		getcompanyInfoIdList().then((res) => {
+			const { result } = res
+			let companyListToSelect = result.map((item) => {
+				let obj = {
+					label: item.companyName,
+					value: item.companyId,
+					parentId: item.pcompanyId,
+				}
+				return obj
+			})
+			commit('SET_COMPANY_LIST_TO_SELECT', companyListToSelect)
 		})
 	},
 }

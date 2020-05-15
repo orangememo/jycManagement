@@ -89,8 +89,10 @@ module.exports = {
 				minimizer: [
 					new TerserPlugin({
 						terserOptions: {
+							warnings: false,
 							compress: {
 								drop_console: true,
+								drop_debugger: true,
 							},
 						},
 					}),

@@ -22,6 +22,7 @@
       :label="item.label"
       :prop="item.param"
       :sortable="item.sortable ? 'custom' : false"
+      :show-overflow-tooltip="item.type=='textarea'?true:false"
     >
       <template slot-scope="scope">
         <span v-if="item.render" v-html="item.render(scope.row)"></span>

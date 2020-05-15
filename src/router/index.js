@@ -116,12 +116,24 @@ export const constantRoutes = [
 	// 			component: () => import('@/views/takeJob'),
 	// 			meta: { title: 'takeJob', icon: '' },
 	// 		},
-	// 		// {
-	// 		// 	path: 'upVideo',
-	// 		// 	name: 'upVideo',
-	// 		// 	component: () => import('@/components/upVideo'),
-	// 		// 	meta: { title: 'upVideo', icon: '' },
-	// 		// },
+	// 		{
+	// 			path: 'upVideo',
+	// 			name: 'upVideo',
+	// 			component: () => import('@/components/map'),
+	// 			meta: { title: 'map', icon: '' },
+	// 		},
+	// 		{
+	// 			path: 'addFeedback',
+	// 			name: 'addFeedback',
+	// 			component: () => import('@/views/feedback/addFeedback'),
+	// 			meta: { title: '意见反馈', icon: '' },
+	// 		},
+	// 		{
+	// 			path: 'feedback',
+	// 			name: 'feedback',
+	// 			component: () => import('@/views/feedback'),
+	// 			meta: { title: '意见反馈列表', icon: '' },
+	// 		},
 	// 	],
 	// },
 	// {

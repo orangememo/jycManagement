@@ -75,7 +75,6 @@
           <span>{{editTitle[edit]}}</span>
         </div>
         <addInfo :edit="edit" :editId="editId" :propHandleClick="handleClick" />
-        <span slot="footer" class="dialog-footer"></span>
       </el-dialog>
     </div>
     <div class="dialog">
@@ -95,7 +94,6 @@
           :propHandleClick="handleClick"
           :editData="editData"
         />
-        <span slot="footer" class="dialog-footer"></span>
       </el-dialog>
     </div>
   </div>

@@ -72,7 +72,6 @@
           :edit="edit"
           :editRoleId="editRoleId"
         />
-        <span slot="footer" class="dialog-footer"></span>
       </el-dialog>
     </div>
   </div>

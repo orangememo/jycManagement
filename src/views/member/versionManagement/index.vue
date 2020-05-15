@@ -80,7 +80,6 @@
           :edit="edit"
           :editId="editId"
         />
-        <span slot="footer" class="dialog-footer"></span>
       </el-dialog>
     </div>
   </div>

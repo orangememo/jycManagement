@@ -27,6 +27,11 @@ export const componentsMap = {
 	productDishesToOperator: () => import('@/views/product/productDishesToOperator'),
 	productCuisine: () => import('@/views/product/productCuisine'),
 	takeJob: () => import('@/views/takeJob'),
+	appcFakeNews: () => import('@/views/appc/appcFakeNews'),
+	appcBanner: () => import('@/views/appc/appcBanner'),
+	appcCvideo: () => import('@/views/appc/appcCvideo'),
+	addFeedback: () => import('@/views/feedback/addFeedback'),
+	feedback: () => import('@/views/feedback'),
 }
 // {
 // 		path: '/product',

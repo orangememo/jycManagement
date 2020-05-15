@@ -71,7 +71,6 @@
           :edit="edit"
           :editRuleId="editRuleId"
         />
-        <span slot="footer" class="dialog-footer"></span>
       </el-dialog>
     </div>
   </div>

@@ -23,16 +23,15 @@
       <div v-if="dialogStatus">
         <el-form :model="newProd" :rules="formRules" ref="roleFrom">
           <el-form-item
-              label="是否供应商"
-              prop="isSupplier"
-              :label-width="labelWidth"
-              style="margin-right: -80px;"
-            >
-              <el-radio-group v-model="newProd.isSupplier">
-                <el-radio label="YES">是</el-radio>
-                <el-radio label="NO">否</el-radio>
-              </el-radio-group>
-            </el-form-item>
+            label="是否供应商"
+            prop="isSupplier"
+            :label-width="labelWidth"
+            style="margin-right: -80px;"
+          >
+            <el-radio-group v-model="newProd.isSupplier">
+              <el-radio label="YES">是</el-radio>
+              <el-radio label="NO">否</el-radio>
+            </el-radio-group>
           </el-form-item>
           <el-form-item
             label="标志"
@@ -219,7 +218,7 @@ export default {
         ],
         weight: [{ required: true, message: '请输入权重值', trigger: 'blur' }],
         state: [{ required: true, message: '请选择状态', trigger: 'blur' }],
-        isSupplier:[{ required: true, message: '请选择', trigger: 'blur' }]
+        isSupplier: [{ required: true, message: '请选择', trigger: 'blur' }]
       },
       labelWidth: '100px',
       dialogStatus: false,
@@ -254,7 +253,7 @@ export default {
         weight: 0,
         images: [],
         labelList: [],
-        isSupplier:'YES'
+        isSupplier: 'YES'
       },
       pageSize: 10,
       listQuery: {
@@ -561,6 +560,7 @@ export default {
                 _this.dialogStatus = false
                 _this.getList()
               }
+              this.$store.dispatch('login/setCompanyList')
             })
           } else {
             addNewCompany(sessionProd).then(data => {
@@ -569,6 +569,7 @@ export default {
                 _this.dialogStatus = false
                 _this.getList()
               }
+              this.$store.dispatch('login/setCompanyList')
             })
           }
         }
@@ -701,7 +702,7 @@ export default {
         state: '',
         vrimage: '',
         weight: 0,
-        isSupplier:'YES'
+        isSupplier: 'YES'
       }
     },
     resetSearch() {

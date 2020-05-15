@@ -91,7 +91,6 @@
           :edit="edit"
           :editId="editId"
         />
-        <span slot="footer" class="dialog-footer"></span>
       </el-dialog>
       <el-dialog title="提示" :visible.sync="checkVisible" width="50%">
         <div slot="title" style="padding:15px 20px ;border-bottom:1px solid #DCDFE6">

@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div class="app-container" id="hotelType">
     <search-form :formConfig="formConfig" :value="form" labelWidth="80px"></search-form>
     <el-popover placement="top-end" trigger="click" v-model="moreStatus"></el-popover>
     <jyc-table
@@ -20,7 +20,7 @@
       @pagination="getList"
     />
 
-    <el-dialog :title="dialogTitle" :visible.sync="dialogStatus" width="800px">
+    <el-dialog :title="dialogTitle" :visible.sync="dialogStatus" width="850px">
       <div v-if="dialogStatus">
         <el-form :model="newProd" :rules="formRules" ref="roleFrom">
           <el-form-item
@@ -131,12 +131,14 @@
           <el-form-item label="描述" :label-width="labelWidth" prop="description">
             <el-input v-model="newProd.description"></el-input>
           </el-form-item>
-          <el-form-item label="X" :label-width="labelWidth" prop="longitude">
-            <el-input v-model="newProd.longitude" type="text"></el-input>
+
+          <el-form-item label="地址" :label-width="labelWidth" prop="longitude">
+            <Map @location="location" class="map" style="width: 600px;" />
+            <!-- <el-input v-model="newProd.longitude" type="text"></el-input> -->
           </el-form-item>
-          <el-form-item label="Y" :label-width="labelWidth" prop="latitude">
+          <!-- <el-form-item label="Y" :label-width="labelWidth" prop="latitude">
             <el-input v-model="newProd.latitude" type="text"></el-input>
-          </el-form-item>
+          </el-form-item>-->
           <el-form-item label="权重" :label-width="labelWidth" prop="weight">
             <el-input v-model="newProd.weight"></el-input>
           </el-form-item>
@@ -162,6 +164,7 @@ import jycTable from '@/components/table/jycTable'
 import Pagination from '@/components/Pagination'
 import Upload from '@/components/Upload.vue'
 import store from '@/store'
+import Map from '@/components/map'
 import { validEmail, validateMobile } from '@/utils/validate'
 import {
   getCompanyPageHotel,
@@ -173,7 +176,7 @@ import {
 import { getApplyByCompany } from '@/api/apply'
 import { getLabelList } from '@/api/label'
 export default {
-  components: { Pagination, jycTable, SearchForm, Upload },
+  components: { Pagination, jycTable, SearchForm, Upload, Map },
   data() {
     return {
       form: {}, //查询条件
@@ -481,6 +484,10 @@ export default {
     this.getApply()
   },
   methods: {
+    location(a, b, c) {
+      this.newProd.longitude = b[0]
+      this.newProd.latitude = b[1]
+    },
     handleButton(object) {
       let _this = this
       let method = object['methods']
@@ -595,6 +602,7 @@ export default {
                 _this.dialogStatus = false
                 _this.getList()
               }
+              this.$store.dispatch('login/setCompanyList')
             })
           } else {
             addNewCompany(sessionProd).then(data => {
@@ -603,6 +611,7 @@ export default {
                 _this.dialogStatus = false
                 _this.getList()
               }
+              this.$store.dispatch('login/setCompanyList')
             })
           }
         }
@@ -686,14 +695,15 @@ export default {
     setRuleFrom(row) {
       let newLabel = []
       row.cmpId = row.companyId
+
       row.labelList.map(item => {
         newLabel.push(item.labelId)
       })
 
       let newApply = []
-      row.applyList.map(item => {
-        newApply.push(item.applicationId)
-      })
+      // row.applyList.map(item => {
+      //   newApply.push(item.applicationId)
+      // })
 
       if (row.images instanceof Array) {
         this.newProd = { ...row }
@@ -766,5 +776,13 @@ export default {
 .img-div-t {
   display: flex;
   flex-direction: column;
+}
+#hotelType {
+  .map {
+    // width: 300px;
+    >>> .amap-page-container {
+      // width: 300px !important;
+    }
+  }
 }
 </style>

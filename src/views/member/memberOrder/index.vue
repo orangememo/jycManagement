@@ -74,8 +74,6 @@
         <div slot="title" style="padding:20px 30px ;border-bottom:1px solid #DCDFE6">
           <span>{{editTitle[edit]}}</span>
         </div>
-
-        <span slot="footer" class="dialog-footer"></span>
       </el-dialog>
     </div>
   </div>
