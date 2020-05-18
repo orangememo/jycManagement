@@ -214,12 +214,18 @@ export default {
           type: 'img',
           align: 'center'
         },
+        // {
+        //   label: '下载地址',
+        //   param: 'applicationUrl',
+        //   align: 'center',
+
+        //   type: 'text'
+        // },
         {
           label: '下载地址',
           param: 'applicationUrl',
           align: 'center',
-
-          type: 'text'
+          type: 'link'
         },
         {
           label: '最低支持版本',

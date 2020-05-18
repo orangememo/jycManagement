@@ -120,7 +120,7 @@ export default {
           {
             icon: 'el-icon-search',
             type: 'primary',
-            name: '刷新',
+            name: '搜索',
             handleClick: this.search
           },
           {
@@ -128,6 +128,12 @@ export default {
             type: 'primary',
             name: '添加',
             handleClick: this.addNew
+          },
+          {
+            icon: 'el-icon-refresh-left',
+            type: 'primary',
+            name: '重置',
+            handleClick: this.reset
           }
         ]
       },
@@ -187,6 +193,12 @@ export default {
   methods: {
     addNew() {
       this.handleClick('新增')
+    },
+    reset() {
+      this.form = {
+        selectCompanyId: ''
+      }
+      this.search()
     },
     search() {
       this.page.page = 1

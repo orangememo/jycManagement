@@ -127,10 +127,6 @@ export default {
               {
                 label: '正常',
                 value: 'NORMAL'
-              },
-              {
-                label: '冻结',
-                value: 'FROZEN'
               }
             ],
             label: '状态',
@@ -162,6 +158,13 @@ export default {
         {
           prop: 'userInfoId',
           name: 'ID',
+          width: '',
+          align: 'center'
+        },
+
+        {
+          prop: 'accountNum',
+          name: '账号',
           width: '',
           align: 'center'
         },

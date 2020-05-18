@@ -111,12 +111,6 @@ export default {
         state: ''
       },
       tableTitle: [
-        // {
-        //   label: 'id',
-        //   param: 'newsCenterId',
-        //   align: 'center',
-        //   type: 'text'
-        // },
         {
           label: '内容',
           param: 'content',
@@ -127,7 +121,7 @@ export default {
 
         {
           label: '反馈来源',
-          param: ' source',
+          param: 'source',
           align: 'center',
           // sortable: true,
           type: 'text',
@@ -149,13 +143,11 @@ export default {
           // sortable: true,
           type: 'text'
         },
-
         {
           label: '状态',
           param: 'state',
           align: 'center',
           type: 'text',
-
           render: row => {
             if (row.state === 'NORMAL') {
               return '正常'

@@ -132,7 +132,7 @@
             <el-input v-model="newProd.description"></el-input>
           </el-form-item>
 
-          <el-form-item label="地址" :label-width="labelWidth" prop="longitude">
+          <el-form-item label="地址经纬度" :label-width="labelWidth" prop="longitude">
             <Map @location="location" class="map" style="width: 600px;" />
             <!-- <el-input v-model="newProd.longitude" type="text"></el-input> -->
           </el-form-item>
@@ -247,9 +247,7 @@ export default {
         longitude: [
           { required: true, message: '请输入经度值', trigger: 'blur' }
         ],
-        latitude: [
-          { required: true, message: '请输入纬度值', trigger: 'blur' }
-        ],
+
         weight: [{ required: true, message: '请输入权重值', trigger: 'blur' }],
         state: [{ required: true, message: '请输选择状态', trigger: 'blur' }]
       },
@@ -485,8 +483,8 @@ export default {
   },
   methods: {
     location(a, b, c) {
-      this.newProd.longitude = b[0]
-      this.newProd.latitude = b[1]
+      this.newProd.longitude = b[0][0]
+      this.newProd.latitude = b[0][1]
     },
     handleButton(object) {
       let _this = this
@@ -587,7 +585,7 @@ export default {
       this.$refs.roleFrom.validate(valid => {
         if (valid) {
           let sessionProd = { ..._this.newProd }
-
+          console.log(sessionProd, 'sessionProd')
           _this.newProd.labelList instanceof Array
             ? (sessionProd.flags = _this.newProd.labelList.join(','))
             : ''

@@ -89,7 +89,9 @@ const actions = {
 			loginJyc(obj)
 				.then((res) => {
 					const { result } = res
-					const { token, companyList, applicationList, userName, avatar, accountId, companyId, ruleList, applicationId, companyType } = result
+					const { token, companyList, applicationList, userName, avatar, accountId, companyId, ruleList, applicationId } = result
+					let companyType = companyList.find((item) => item.companyId == companyId).companyType
+
 					commit('SET_TOKEN', token)
 					commit('SET_COMPANY_LIST', companyList)
 					commit('SET_APPLICATION_LIST', applicationList)
