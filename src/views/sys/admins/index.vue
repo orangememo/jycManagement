@@ -196,6 +196,13 @@ export default {
           prop: 'state',
           name: '状态',
           width: '',
+          render: row => {
+            if (row.state === 'NORMAL') {
+              return '正常'
+            } else {
+              return '隐藏'
+            }
+          },
           align: 'center'
         }
       ],

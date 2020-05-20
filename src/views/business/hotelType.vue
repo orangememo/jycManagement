@@ -245,7 +245,7 @@ export default {
           }
         ],
         longitude: [
-          { required: true, message: '请输入经度值', trigger: 'blur' }
+          { required: true, message: '请在地图上选择', trigger: 'change' }
         ],
 
         weight: [{ required: true, message: '请输入权重值', trigger: 'blur' }],
