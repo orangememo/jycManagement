@@ -35,6 +35,7 @@
                 <span v-else-if="item.prop=='icon'">
                   <svg-icon :icon-class="scope.row[scope.column.property]" />
                 </span>
+                <span v-else-if="item.type=='render'">{{item.render(scope.row)}}</span>
                 <span v-else>{{scope.row[scope.column.property]}}</span>
               </template>
             </el-table-column>
@@ -127,6 +128,10 @@ export default {
               {
                 label: '正常',
                 value: 'NORMAL'
+              },
+              {
+                label: '隐藏',
+                value: 'DELETE'
               }
             ],
             label: '状态',
@@ -196,14 +201,15 @@ export default {
           prop: 'state',
           name: '状态',
           width: '',
+          type: 'render',
+          align: 'center',
           render: row => {
-            if (row.state === 'NORMAL') {
+            if (row.state == 'NORMAL') {
               return '正常'
             } else {
               return '隐藏'
             }
-          },
-          align: 'center'
+          }
         }
       ],
       tableData: [],

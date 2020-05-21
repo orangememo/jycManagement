@@ -108,13 +108,25 @@ export default {
           align: 'center'
         },
         {
-          prop: 'actionDes',
-          name: '操作内容',
+          prop: 'url',
+          name: '操作接口',
           width: '',
           align: 'center'
         },
         {
-          prop: 'actionIp',
+          prop: 'method',
+          name: '操作方法',
+          width: '',
+          align: 'center'
+        },
+        {
+          prop: 'params',
+          name: '操作参数',
+          width: '',
+          align: 'center'
+        },
+        {
+          prop: 'ip',
           name: 'IP',
           width: '',
           align: 'center'

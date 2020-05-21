@@ -86,7 +86,7 @@
             <el-form-item label="状态" prop="state">
               <el-radio-group v-model="form.state">
                 <el-radio label="NORMAL">正常</el-radio>
-                <el-radio label="FROZEN">隐藏</el-radio>
+                <el-radio label="DELETE">隐藏</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>

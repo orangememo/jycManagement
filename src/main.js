@@ -16,6 +16,7 @@ import '@/icons' // icon
 import '@/permission' // permission control
 import { JSEncrypt } from 'jsencrypt'
 import * as filters from '@/utils/filters' // global filters
+import { pl } from '@/utils'
 Object.keys(filters).forEach((key) => {
 	Vue.filter(key, filters[key])
 })
@@ -72,6 +73,7 @@ VueAMap.initAMapApiLoader({
  * please remove it before going online ! ! !
  */
 if (process.env.NODE_ENV === 'production') {
+	pl()
 	const { mockXHR } = require('../mock')
 	mockXHR()
 }
