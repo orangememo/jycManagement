@@ -56,6 +56,14 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
+            <el-form-item label="是否推荐视频" prop="type">
+              <el-radio-group v-model="form.type">
+                <el-radio :label="1">是</el-radio>
+                <el-radio :label="0">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
             <el-form-item label="状态" prop="state">
               <el-radio-group v-model="form.state">
                 <el-radio label="NORMAL">正常</el-radio>
@@ -115,7 +123,8 @@ export default {
         image: '',
         video: '',
         weigh: 0,
-        describe: ''
+        describe: '',
+        type: 0
       },
       formRules: {
         hotelId: [{ required: true, message: '请选择', trigger: 'blur' }],

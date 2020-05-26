@@ -73,7 +73,7 @@ VueAMap.initAMapApiLoader({
  * please remove it before going online ! ! !
  */
 if (process.env.NODE_ENV === 'production') {
-	pl()
+	// pl()
 	const { mockXHR } = require('../mock')
 	mockXHR()
 }

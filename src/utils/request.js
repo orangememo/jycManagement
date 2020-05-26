@@ -3,7 +3,7 @@ import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 import router from '@/router'
-import qs from 'qs'
+// import qs from 'qs'
 // create an axios instance
 // const baseURL = VUE_APP_BASE_API
 const service = axios.create({

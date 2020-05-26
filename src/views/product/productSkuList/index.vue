@@ -259,6 +259,12 @@ export default {
           align: 'center',
           type: 'img'
         },
+        {
+          label: '分页图',
+          param: 'paginationImage',
+          align: 'center',
+          type: 'img'
+        },
 
         {
           label: '市场价',

@@ -32,6 +32,8 @@ export const componentsMap = {
 	appcCvideo: () => import('@/views/appc/appcCvideo'),
 	addFeedback: () => import('@/views/feedback/addFeedback'),
 	feedback: () => import('@/views/feedback'),
+	businessPurchaseOrder: () => import('@/views/business/businessPurchaseOrder'),
+	operatePurchaseOrder: () => import('@/views/operate/operatePurchaseOrder'),
 }
 // {
 // 		path: '/product',

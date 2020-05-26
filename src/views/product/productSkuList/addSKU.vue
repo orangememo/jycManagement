@@ -83,6 +83,18 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
+            <el-form-item label="分页图" prop="paginationImage">
+              <div>格式要求：支持jpg/png/jpeg/bmp格式照片，大小不超过5m</div>
+              <upLoad ref="Img" :getImgs="getImg0" :toImgs="toImgs0" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="详情图" prop="detailsImage">
+              <div>格式要求：支持jpg/png/jpeg/bmp格式照片，大小不超过5m</div>
+              <upLoad ref="Img" :getImgs="getImg3" :toImgs="toImgs3" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
             <el-form-item label="商品图片" prop="images">
               <div>格式要求：支持jpg/png/jpeg/bmp格式照片，大小不超过5m</div>
               <upLoad ref="Imgs" :getImgs="getImgs" :limit="5" :toImgs="toImgs2" />
@@ -168,6 +180,9 @@ export default {
         catalogId: '',
         state: 'NORMAL',
         abbreviateImg: [],
+        detailsImage: [],
+        paginationImage: [],
+
         price: '',
         describe: '',
         images: [],
@@ -188,6 +203,12 @@ export default {
         abbreviateImg: [
           { required: true, message: '请上传缩略图', trigger: 'change' }
         ],
+        detailsImage: [
+          { required: true, message: '请上传', trigger: 'change' }
+        ],
+        paginationImage: [
+          { required: true, message: '请上传', trigger: 'change' }
+        ],
         images: [{ required: true, message: '请上传图片', trigger: 'change' }],
         price: [{ required: true, message: '请填写价格', trigger: 'blur' }],
         state: [{ required: true, message: '请选择', trigger: 'change' }],
@@ -201,8 +222,10 @@ export default {
         brandOptions: []
         // supplierOptions: []
       },
+      toImgs0: [],
       toImgs1: [],
-      toImgs2: []
+      toImgs2: [],
+      toImgs3: []
     }
   },
   created() {
@@ -227,6 +250,17 @@ export default {
         } else {
           this.toImgs1 = []
         }
+        if (result.paginationImage) {
+          this.toImgs0 = [{ url: `${this.hostUrl}${result.paginationImage}` }]
+        } else {
+          this.toImgs0 = []
+        }
+        if (result.detailsImage) {
+          this.toImgs3 = [{ url: `${this.hostUrl}${result.detailsImage}` }]
+        } else {
+          this.toImgs3 = []
+        }
+
         result.images = result.imagesList
         this.toImgs2 = result.imagesList.map(i => {
           return {
@@ -246,6 +280,9 @@ export default {
             if (valid) {
               let obj = JSON.parse(JSON.stringify(this.form))
               obj.abbreviateImg = obj.abbreviateImg.toString()
+              obj.paginationImage = obj.paginationImage.toString()
+              obj.detailsImage = obj.detailsImage.toString()
+
               obj.images = obj.images.toString()
               // obj.supplierName = this.options.supplierOptions.find(
               //   e => e.companyId === obj.supplierId
@@ -286,6 +323,12 @@ export default {
           this.propHandleClick(type)
           break
       }
+    },
+    getImg3(val) {
+      this.form.detailsImage = val
+    },
+    getImg0(val) {
+      this.form.paginationImage = val
     },
     getImg(val) {
       this.form.abbreviateImg = val

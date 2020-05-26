@@ -188,6 +188,13 @@ export default {
           type: 'text'
         },
         {
+          label: '更新标题',
+          param: 'title',
+          align: 'center',
+
+          type: 'text'
+        },
+        {
           label: '新版本号',
           param: 'applicationVersion',
           align: 'center',
@@ -214,13 +221,21 @@ export default {
           type: 'img',
           align: 'center'
         },
-        // {
-        //   label: '下载地址',
-        //   param: 'applicationUrl',
-        //   align: 'center',
+        {
+          label: '包名',
+          param: 'packageName',
+          align: 'center',
 
-        //   type: 'text'
-        // },
+          type: 'text'
+        },
+        {
+          label: '包大小',
+          param: 'packageSize',
+          align: 'center',
+
+          type: 'text'
+        },
+
         {
           label: '下载地址',
           param: 'applicationUrl',

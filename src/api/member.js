@@ -331,3 +331,64 @@ export function getFeedbackInfoListPage(params) {
 		params,
 	})
 }
+
+/**
+ * 分页查询采购订单
+ */
+export function getVorderPageList(params) {
+	return request({
+		url: process.env.VUE_APP_WEB_ORDER + '/order/jyc/vorder/page',
+		method: 'get',
+		params,
+	})
+}
+/**
+ * 添加采购订单
+ */
+export function addVorderInfo(data) {
+	return request({
+		url: process.env.VUE_APP_WEB_ORDER + '/order/jyc/vorder/add',
+		method: 'post',
+		data,
+	})
+}
+/**
+ * 修改采购订单状态
+ */
+export function putVorderInfoState(params) {
+	return request({
+		url: process.env.VUE_APP_WEB_ORDER + '/order/jyc/vorder/order/state',
+		method: 'PUT',
+		params,
+	})
+}
+/**
+ * 取消采购订单
+ */
+export function cancelVorderInfoState(params) {
+	return request({
+		url: process.env.VUE_APP_WEB_ORDER + '/order/jyc/vorder/cancel/order',
+		method: 'get',
+		params,
+	})
+}
+/**
+ * 删除采购记录
+ */
+export function deleteVorderInfoState(params) {
+	return request({
+		url: process.env.VUE_APP_WEB_ORDER + '/order/jyc/vorder/order',
+		method: 'DELETE',
+		params,
+	})
+}
+/**
+ * 查看采购订单详情
+ */
+export function getVorderInfo(params) {
+	return request({
+		url: process.env.VUE_APP_WEB_ORDER + '/order/jyc/vorder/order/info',
+		method: 'GET',
+		params,
+	})
+}

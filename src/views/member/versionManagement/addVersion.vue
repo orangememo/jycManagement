@@ -26,8 +26,23 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
+            <el-form-item label="更新标题" prop="title">
+              <el-input v-model="form.title" placeholder="请输入"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
             <el-form-item label="新版本号" prop="applicationVersion">
               <el-input v-model="form.applicationVersion" placeholder="请输入新版本号"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="包名" prop="packageName">
+              <el-input v-model="form.packageName" placeholder="请输入"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="包大小" prop="packageSize ">
+              <el-input v-model="form.packageSize " placeholder="请输入"></el-input>
             </el-form-item>
           </el-col>
 
@@ -126,7 +141,10 @@ export default {
         state: 'NORMAL',
         applicationUrl: '',
         applicationImage: '',
-        applicationMin: ''
+        applicationMin: '',
+        packageName: '',
+        packageSize: '',
+        title: ''
       },
       formRules: {
         applicationId: [
@@ -137,7 +155,10 @@ export default {
         ],
         applicationUrl: [
           { required: true, message: '请输入下载地址', trigger: 'blur' }
-        ]
+        ],
+        packageName: [{ required: true, message: '请输入', trigger: 'blur' }],
+        packageSize: [{ required: true, message: '请输入', trigger: 'blur' }],
+        title: [{ required: true, message: '请输入', trigger: 'blur' }]
       },
       options: {
         appIdOptions: []

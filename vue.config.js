@@ -48,8 +48,8 @@ module.exports = {
 			},
 			'/manage/web_order': {
 				// target: 'http://192.168.0.108:8080/',
-				// target: 'http://192.168.0.121:8080/',
-				target: 'http://192.168.0.111:8080/',
+				target: 'http://129.211.141.150:39016/order',
+				// target: 'http://192.168.0.111:8080/',
 
 				// target: 'http://129.211.141.150:39012/web-manage',
 				changeOrigin: true,
