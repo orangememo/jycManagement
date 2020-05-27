@@ -34,6 +34,7 @@ export const componentsMap = {
 	feedback: () => import('@/views/feedback'),
 	businessPurchaseOrder: () => import('@/views/business/businessPurchaseOrder'),
 	operatePurchaseOrder: () => import('@/views/operate/operatePurchaseOrder'),
+	operateJoin: () => import('@/views/operate/operateJoin'),
 }
 // {
 // 		path: '/product',

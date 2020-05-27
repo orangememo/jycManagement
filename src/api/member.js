@@ -333,11 +333,21 @@ export function getFeedbackInfoListPage(params) {
 }
 
 /**
+ * 运营商采购订单
+ */
+export function getYyVorderPageList(params) {
+	return request({
+		url: process.env.VUE_APP_WEB_ORDER + '/jyc/vorder/yy/cancel/order',
+		method: 'get',
+		params,
+	})
+}
+/**
  * 分页查询采购订单
  */
 export function getVorderPageList(params) {
 	return request({
-		url: process.env.VUE_APP_WEB_ORDER + '/order/jyc/vorder/page',
+		url: process.env.VUE_APP_WEB_ORDER + '/jyc/vorder/page',
 		method: 'get',
 		params,
 	})
@@ -347,7 +357,7 @@ export function getVorderPageList(params) {
  */
 export function addVorderInfo(data) {
 	return request({
-		url: process.env.VUE_APP_WEB_ORDER + '/order/jyc/vorder/add',
+		url: process.env.VUE_APP_WEB_ORDER + '/jyc/vorder/add',
 		method: 'post',
 		data,
 	})
@@ -357,7 +367,7 @@ export function addVorderInfo(data) {
  */
 export function putVorderInfoState(params) {
 	return request({
-		url: process.env.VUE_APP_WEB_ORDER + '/order/jyc/vorder/order/state',
+		url: process.env.VUE_APP_WEB_ORDER + '/jyc/vorder/order/state',
 		method: 'PUT',
 		params,
 	})
@@ -367,7 +377,7 @@ export function putVorderInfoState(params) {
  */
 export function cancelVorderInfoState(params) {
 	return request({
-		url: process.env.VUE_APP_WEB_ORDER + '/order/jyc/vorder/cancel/order',
+		url: process.env.VUE_APP_WEB_ORDER + '/jyc/vorder/cancel/order',
 		method: 'get',
 		params,
 	})
@@ -377,7 +387,7 @@ export function cancelVorderInfoState(params) {
  */
 export function deleteVorderInfoState(params) {
 	return request({
-		url: process.env.VUE_APP_WEB_ORDER + '/order/jyc/vorder/order',
+		url: process.env.VUE_APP_WEB_ORDER + '/jyc/vorder/order',
 		method: 'DELETE',
 		params,
 	})
@@ -387,8 +397,28 @@ export function deleteVorderInfoState(params) {
  */
 export function getVorderInfo(params) {
 	return request({
-		url: process.env.VUE_APP_WEB_ORDER + '/order/jyc/vorder/order/info',
+		url: process.env.VUE_APP_WEB_ORDER + '/jyc/vorder/order/info',
 		method: 'GET',
 		params,
+	})
+}
+/**
+ * 获取加盟酒店申请信息列表（PC）
+ */
+export function getJoinInformationListPage(params) {
+	return request({
+		url: process.env.VUE_APP_WEB_MANAGE + '/jycJoinInformation/jycJoinInformation/page/list',
+		method: 'GET',
+		params,
+	})
+}
+/**
+ * 修改加盟酒店申请信息状态（PC）
+ */
+export function putJoinInformationState(data) {
+	return request({
+		url: process.env.VUE_APP_WEB_MANAGE + '/jycJoinInformation/jycJoinInformation/id',
+		method: 'put',
+		data,
 	})
 }

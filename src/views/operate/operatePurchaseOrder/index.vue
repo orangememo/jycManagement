@@ -1,6 +1,17 @@
 <template>
   <div id="reservationInfo" class="mainWrap">
-    <search-form :formConfig="formConfig" :value="form" labelWidth="80px"></search-form>
+    <search-form :formConfig="formConfig" :value="form" labelWidth="80px">
+      <el-form-item label="公司" prop="hotelId" slot="formItem">
+        <el-select v-model="form.hotelId" clearable placeholder="请选择">
+          <el-option
+            v-for="(item,index) in companyListToSelect"
+            :key="index"
+            :label="item.label"
+            :value="item.value"
+          ></el-option>
+        </el-select>
+      </el-form-item>
+    </search-form>
     <!-- <div class="ly-flex ly-justify-sb mt40 titleAndButton">
       <div style="padding-left:15px">{{$route.meta.title}}列表</div>
       <div class="buttonCtrl">
@@ -19,43 +30,6 @@
           @handleButton="handleButton"
           @handleSelectionChange="handleSelectionChange"
         ></jyc-table>
-        <!-- <el-table
-          :data="tableData"
-          fit
-          border
-          stripe
-          row-key="roleId"
-          v-loading="listLoading"
-          :expand-row-keys="expands"
-          :header-row-style="{'background-color':'#152535'}"
-          @selection-change="handleSelectionChange"
-        >
-          <el-table-column type="selection" width="55" align="center"></el-table-column>
-          <template v-for="(item , index) in tableTitle ">
-            <el-table-column
-              :key="index"
-              :prop="item.prop"
-              :label="item.name"
-              :width="item.width"
-              :align="item.align"
-            >
-              <template slot-scope="scope">
-                <span v-if="item.prop=='isHide'">{{scope.row[scope.column.property]==0?'显示':'隐藏'}}</span>
-                <span v-else-if="item.prop=='icon'">
-                  
-                  <svg-icon :icon-class="scope.row[scope.column.property]" />
-                </span>
-                <span v-else>{{scope.row[scope.column.property]}}</span>
-              </template>
-            </el-table-column>
-          </template>
-          <el-table-column label="操作" fixed="right" width="180" align="center">
-            <template slot-scope="scope">
-              <el-button size="small" type="primary" @click="handleClick('编辑',scope.row)">编辑</el-button>
-              <el-button size="small" type="danger" @click="handleClick('删除',scope.row)">删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>-->
       </div>
       <div class="mt10">
         <el-pagination
@@ -70,7 +44,13 @@
       </div>
     </div>
     <div class="dialog">
-      <el-dialog title="提示" :visible.sync="dialogVisible" width="65%" :close-on-click-modal="false">
+      <el-dialog
+        title="提示"
+        :visible.sync="dialogVisible"
+        width="65%"
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+      >
         <div slot="title" style="padding:20px 30px ;border-bottom:1px solid #DCDFE6">
           <span>{{editTitle[edit]}}</span>
         </div>
@@ -81,11 +61,17 @@
 </template>
 
 <script>
-import { getBusinessOrderPage, deleteInformationHotel } from '@/api/member'
+import {
+  getYyVorderPageList,
+  deleteVorderInfoState,
+  putVorderInfoState,
+  cancelVorderInfoState
+} from '@/api/member'
 import addInfo from './addInfo'
 import Pagination from '@/components/Pagination'
 import jycTable from '@/components/table/jycTable'
 import SearchForm from '@/components/seachForm/seachForm'
+import { mapState, mapGetters } from 'vuex'
 export default {
   components: {
     Pagination,
@@ -109,24 +95,24 @@ export default {
       },
       formConfig: {
         formItemList: [
-          {
-            type: 'input',
-            prop: 'phone',
-            label: '手机号',
-            placeholder: '请输入手机号'
-          },
-          {
-            type: 'date',
-            prop: 'startTime',
-            dateFormate: 'yyyy-MM-dd',
-            label: '开始日期'
-          },
-          {
-            prop: 'endTime',
-            type: 'date',
-            dateFormate: 'yyyy-MM-dd',
-            label: '结束日期'
-          },
+          // {
+          //   type: 'input',
+          //   prop: 'phone',
+          //   label: '手机号',
+          //   placeholder: '请输入手机号'
+          // },
+          // {
+          //   type: 'date',
+          //   prop: 'startTime',
+          //   dateFormate: 'yyyy-MM-dd',
+          //   label: '开始日期'
+          // },
+          // {
+          //   prop: 'endTime',
+          //   type: 'date',
+          //   dateFormate: 'yyyy-MM-dd',
+          //   label: '结束日期'
+          // },
           {
             type: 'select',
             prop: 'state',
@@ -139,16 +125,24 @@ export default {
                 value: ''
               },
               {
-                label: '待核销',
+                label: '待处理',
                 value: 'order_1'
               },
               {
-                label: '已核销',
+                label: '配送中',
                 value: 'order_2'
               },
               {
-                label: '异常订单',
+                label: '以配送',
                 value: 'order_3'
+              },
+              {
+                label: '以完结',
+                value: 'order_4'
+              },
+              {
+                label: '取消',
+                value: 'order_5'
               }
             ]
           }
@@ -160,7 +154,12 @@ export default {
             name: '查询',
             handleClick: this.search
           },
-
+          // {
+          //   icon: 'el-icon-document-add',
+          //   type: 'primary',
+          //   name: '添加',
+          //   handleClick: this.addNew
+          // },
           {
             icon: 'el-icon-refresh-left',
             type: 'primary',
@@ -171,14 +170,12 @@ export default {
       },
       form: {
         state: '',
-        phone: '',
-        endTime: '',
-        startTime: ''
+        hotelId: ''
       },
       tableTitle: [
         {
-          label: '用户订单',
-          param: 'border',
+          label: '单号',
+          param: 'orderIds',
           align: 'center',
           width: '',
           type: 'text'
@@ -190,83 +187,60 @@ export default {
           type: 'img'
         },
         {
-          label: '商品价格',
-          param: 'commPrice',
+          label: '姓名',
+          param: 'name',
           align: 'center',
           width: '',
           type: 'text'
         },
-        // {
-        //   label: '时间',
-        //   param: 'time',
-        //   align: 'center',
-        //   type: 'text',
-        //   render: row => {
-        //     if (row.time == 0) {
-        //       return '上午'
-        //     } else {
-        //       return '下午'
-        //     }
-        //   }
-        // },
+
         {
-          label: '原价',
-          param: 'originalPrice',
+          label: '备注',
+          param: 'content',
           align: 'center',
           type: 'text'
         },
         {
-          label: '用户ID',
-          param: 'userId',
+          label: '酒店名称',
+          param: 'hotelName',
           align: 'center',
           type: 'text'
         },
         {
-          label: '用户使用红包',
-          param: 'consumption',
+          label: '电话',
+          param: 'phone',
           align: 'center',
           width: '',
           // sortable: true,
-          type: 'text'
-        },
-        {
-          label: '其他费用',
-          param: 'otherExpenses',
-          align: 'center',
-          width: '',
-          // sortable: true,
-          type: 'text'
-        },
-        {
-          label: '应付金额',
-          param: 'paymentamount',
-          align: 'center',
           type: 'text'
         },
         {
           label: '总价',
           param: 'totalPrice',
           align: 'center',
+          width: '',
+          // sortable: true,
+          type: 'text'
+        },
+
+        {
+          label: '地址',
+          param: 'address',
+          align: 'center',
           type: 'text'
         },
         {
-          label: '支付方式',
-          param: 'channel',
+          label: '删除状态',
+          param: 'orderDel',
           align: 'center',
           type: 'text',
           render: row => {
             switch (row.channel) {
               case '0':
-                return '微信'
+                return '删除'
                 break
               case '1':
-                return '支付宝'
-                break
-              case '2':
-                return '现金'
-                break
-              default:
-                return '银行卡'
+                return '未删除'
                 break
             }
           }
@@ -279,13 +253,16 @@ export default {
           render: row => {
             switch (row.state) {
               case 'order_1':
-                return '待核销'
+                return '待处理'
                 break
               case 'order_2':
-                return '已核销'
+                return '配送中'
                 break
               case 'order_3':
-                return '异常订单'
+                return '以配送'
+                break
+              case 'order_4':
+                return '以完结'
                 break
             }
           }
@@ -310,13 +287,33 @@ export default {
       tableOption: [
         {
           label: '操作',
-          width: '100',
+          width: '350',
           fixed: 'right',
           options: [
             {
-              label: '查看',
-              type: '',
-              methods: '查看'
+              label: '配送',
+              type: 'primary',
+              methods: '配送'
+            },
+            {
+              label: '送达',
+              type: 'success',
+              methods: '送达'
+            },
+            {
+              label: '完结',
+              type: 'success',
+              methods: '完结'
+            },
+            {
+              label: '取消',
+              type: 'danger',
+              methods: '取消'
+            },
+            {
+              label: '删除',
+              type: 'danger',
+              methods: '删除'
             }
           ]
         }
@@ -329,13 +326,15 @@ export default {
   mounted() {
     this.getList()
   },
+  computed: {
+    ...mapState('login', ['companyId']),
+    ...mapGetters(['companyListToSelect'])
+  },
   methods: {
     reset() {
       this.form = {
         state: '',
-        phone: '',
-        endTime: '',
-        startTime: ''
+        hotelId: ''
       }
       this.search()
     },
@@ -351,10 +350,11 @@ export default {
       let obj = JSON.parse(JSON.stringify(this.form))
       obj = {
         ...obj,
+        companyId: this.companyId,
         currentPage: this.page.page,
         pageSize: this.page.size
       }
-      let res = await getBusinessOrderPage(obj)
+      let res = await getYyVorderPageList(obj)
       if (res.code == 200) {
         let { result } = res
         this.page.total = result.total
@@ -363,6 +363,9 @@ export default {
       this.listLoading = false
     },
     handleClick(type, val) {
+      if (val) {
+        let order = val.id
+      }
       switch (type) {
         case '查看':
           this.edit = 2
@@ -373,6 +376,43 @@ export default {
           this.edit = 0
           this.dialogVisible = true
           break
+        case '配送':
+          putJoinInformationState({ order, type: '2' }).then(res => {
+            if (res.code == 200) {
+              this.$message({
+                type: 'success',
+                message: '修改成功'
+              })
+              this.getList()
+            }
+          })
+
+          break
+        case '送达':
+          putJoinInformationState({ order, type: '3' }).then(res => {
+            if (res.code == 200) {
+              this.$message({
+                type: 'success',
+                message: '修改成功'
+              })
+              this.getList()
+            }
+          })
+
+          break
+        case '完结':
+          putJoinInformationState({ order, type: '4' }).then(res => {
+            if (res.code == 200) {
+              this.$message({
+                type: 'success',
+                message: '修改成功'
+              })
+              this.getList()
+            }
+          })
+
+          break
+
         case '编辑':
           this.edit = 1
           this.editId = val.id
@@ -388,19 +428,36 @@ export default {
           break
 
         case '删除':
-          this.$confirm('确认拒绝？', '提示', {
+          this.$confirm('确认删除？', '提示', {
             cancelButtonText: '取消',
             confirmButtonText: '确定',
             type: 'warning'
           })
             .then(() => {
-              let id = val.id
-              console.log(val.roleId)
-              deleteInformationHotel({ id }).then(res => {
+              deleteVorderInfoState({ order }).then(res => {
                 if (res.code == 200) {
                   this.$message({
                     type: 'success',
-                    message: '拒绝成功'
+                    message: '删除成功'
+                  })
+                  this.getList()
+                }
+              })
+            })
+            .catch(() => {})
+          break
+        case '取消':
+          this.$confirm('确认取消？', '提示', {
+            cancelButtonText: '取消',
+            confirmButtonText: '确定',
+            type: 'warning'
+          })
+            .then(() => {
+              cancelVorderInfoState({ order }).then(res => {
+                if (res.code == 200) {
+                  this.$message({
+                    type: 'success',
+                    message: '取消成功'
                   })
                   this.getList()
                 }

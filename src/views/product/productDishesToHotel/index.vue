@@ -497,7 +497,7 @@ export default {
 
           break
         case '售空':
-          this.$confirm('确认下架？', '提示', {
+          this.$confirm('售空？', '提示', {
             cancelButtonText: '取消',
             confirmButtonText: '确定',
             type: 'warning'

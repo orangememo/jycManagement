@@ -36,14 +36,15 @@
       <el-dialog
         title="提示"
         :visible.sync="dialogVisible"
-        width="65%"
+        width="200"
         :close-on-click-modal="false"
         :close-on-press-escape="false"
       >
         <div slot="title" style="padding:20px 30px ;border-bottom:1px solid #DCDFE6">
-          <span>{{editTitle[edit]}}</span>
+          <span>修改状态</span>
         </div>
-        <addInfo :edit="edit" :editId="editId" :propHandleClick="handleClick" />
+
+        <!-- <addInfo :edit="edit" :editId="editId" :propHandleClick="handleClick" /> -->
       </el-dialog>
     </div>
   </div>
@@ -51,12 +52,11 @@
 
 <script>
 import {
-  getVorderPageList,
-  deleteVorderInfoState,
-  putVorderInfoState,
+  getJoinInformationListPage,
+  putJoinInformationState,
   cancelVorderInfoState
 } from '@/api/member'
-import addInfo from './addInfo'
+
 import Pagination from '@/components/Pagination'
 import jycTable from '@/components/table/jycTable'
 import SearchForm from '@/components/seachForm/seachForm'
@@ -65,8 +65,7 @@ export default {
   components: {
     Pagination,
     jycTable,
-    SearchForm,
-    addInfo
+    SearchForm
   },
   data() {
     return {
@@ -104,6 +103,27 @@ export default {
           // },
           {
             type: 'select',
+            prop: 'region',
+            clearable: '关闭',
+            label: '加盟类型',
+            placeholder: '选择',
+            optList: [
+              {
+                label: '全部',
+                value: ''
+              },
+              {
+                label: '加盟酒店',
+                value: '1'
+              },
+              {
+                label: '运营中心',
+                value: '2'
+              }
+            ]
+          },
+          {
+            type: 'select',
             prop: 'state',
             clearable: '关闭',
             label: '状态',
@@ -114,24 +134,24 @@ export default {
                 value: ''
               },
               {
-                label: '待处理',
-                value: 'order_1'
+                label: '待联系',
+                value: '0'
               },
               {
-                label: '配送中',
-                value: 'order_2'
+                label: '联系中',
+                value: '1'
               },
               {
-                label: '以配送',
-                value: 'order_3'
+                label: '成功',
+                value: '2'
               },
               {
-                label: '以完结',
-                value: 'order_4'
+                label: '失败',
+                value: '3'
               },
               {
-                label: '取消',
-                value: 'order_5'
+                label: '删除',
+                value: '4'
               }
             ]
           }
@@ -143,12 +163,7 @@ export default {
             name: '查询',
             handleClick: this.search
           },
-          {
-            icon: 'el-icon-document-add',
-            type: 'primary',
-            name: '添加',
-            handleClick: this.addNew
-          },
+
           {
             icon: 'el-icon-refresh-left',
             type: 'primary',
@@ -158,42 +173,24 @@ export default {
         ]
       },
       form: {
-        state: ''
+        state: '',
+        region: ''
       },
       tableTitle: [
         {
-          label: '单号',
-          param: 'orderIds',
+          label: '用户名',
+          param: 'userName',
           align: 'center',
           width: '',
           type: 'text'
         },
         {
-          label: '图片',
-          param: 'images',
+          label: '微信',
+          param: 'wechat',
           align: 'center',
-          type: 'img'
-        },
-        {
-          label: '姓名',
-          param: 'name',
-          align: 'center',
-          width: '',
           type: 'text'
         },
 
-        {
-          label: '备注',
-          param: 'content',
-          align: 'center',
-          type: 'text'
-        },
-        {
-          label: '酒店名称',
-          param: 'hotelName',
-          align: 'center',
-          type: 'text'
-        },
         {
           label: '电话',
           param: 'phone',
@@ -203,8 +200,8 @@ export default {
           type: 'text'
         },
         {
-          label: '总价',
-          param: 'totalPrice',
+          label: '职位',
+          param: 'position',
           align: 'center',
           width: '',
           // sortable: true,
@@ -212,49 +209,31 @@ export default {
         },
 
         {
-          label: '地址',
-          param: 'address',
-          align: 'center',
-          type: 'text'
-        },
-        {
-          label: '删除状态',
-          param: 'orderDel',
-          align: 'center',
-          type: 'text',
-          render: row => {
-            switch (row.channel) {
-              case '0':
-                return '删除'
-                break
-              case '1':
-                return '未删除'
-                break
-            }
-          }
-        },
-        {
-          label: '订单状态',
+          label: '状态',
           param: 'state',
           align: 'center',
           type: 'text',
           render: row => {
             switch (row.state) {
-              case 'order_1':
-                return '待处理'
+              case '0':
+                return '待联系'
                 break
-              case 'order_2':
-                return '配送中'
+              case '1':
+                return '联系中'
                 break
-              case 'order_3':
-                return '以配送'
+              case '2':
+                return '成功'
                 break
-              case 'order_4':
-                return '以完结'
+              case '3':
+                return '失败'
+                break
+              case '4':
+                return '删除'
                 break
             }
           }
         },
+
         {
           label: '创建时间',
           param: 'createTime',
@@ -275,13 +254,18 @@ export default {
       tableOption: [
         {
           label: '操作',
-          width: '180',
+          width: '250',
           fixed: 'right',
           options: [
             {
-              label: '取消',
-              type: 'danger',
-              methods: '取消'
+              label: '联系',
+              type: 'primary',
+              methods: '联系'
+            },
+            {
+              label: '修改状态',
+              type: 'primary',
+              methods: '修改状态'
             },
             {
               label: '删除',
@@ -305,7 +289,8 @@ export default {
   methods: {
     reset() {
       this.form = {
-        state: ''
+        state: '',
+        region: ''
       }
       this.search()
     },
@@ -321,11 +306,10 @@ export default {
       let obj = JSON.parse(JSON.stringify(this.form))
       obj = {
         ...obj,
-        companyId: this.companyId,
         currentPage: this.page.page,
         pageSize: this.page.size
       }
-      let res = await getVorderPageList(obj)
+      let res = await getJoinInformationListPage(obj)
       if (res.code == 200) {
         let { result } = res
         this.page.total = result.total
@@ -334,10 +318,6 @@ export default {
       this.listLoading = false
     },
     handleClick(type, val) {
-      if (val) {
-        let order = val.id
-      }
-
       switch (type) {
         case '查看':
           this.edit = 2
@@ -348,47 +328,57 @@ export default {
           this.edit = 0
           this.dialogVisible = true
           break
-        case '配送':
-          putJoinInformationState({ order, type: '2' }).then(res => {
-            if (res.code == 200) {
-              this.$message({
-                type: 'success',
-                message: '修改成功'
-              })
-              this.getList()
-            }
-          })
-
-          break
-        case '送达':
-          putJoinInformationState({ order, type: '3' }).then(res => {
-            if (res.code == 200) {
-              this.$message({
-                type: 'success',
-                message: '修改成功'
-              })
-              this.getList()
-            }
-          })
-
-          break
-        case '完结':
-          putJoinInformationState({ order, type: '4' }).then(res => {
-            if (res.code == 200) {
-              this.$message({
-                type: 'success',
-                message: '修改成功'
-              })
-              this.getList()
-            }
-          })
+        case '联系':
+          {
+            let id = val.id
+            putJoinInformationState({ id, state: '1' }).then(res => {
+              if (res.code == 200) {
+                this.$message({
+                  type: 'success',
+                  message: '修改成功'
+                })
+                this.getList()
+              }
+            })
+          }
 
           break
 
-        case '编辑':
+        case '修改状态':
           this.edit = 1
-          this.editId = val.id
-          this.dialogVisible = true
+          let id = val.id
+          // this.dialogVisible = true
+          this.$confirm('修改状态', '提示', {
+            confirmButtonText: '成功',
+            cancelButtonText: '失败',
+            type: 'success'
+          })
+            .then(() => {
+              putJoinInformationState({ id, state: '2' }).then(res => {
+                if (res.code == 200) {
+                  this.$message({
+                    type: 'success',
+                    message: '修改成功'
+                  })
+                  this.getList()
+                }
+              })
+            })
+            .catch(() => {
+              putJoinInformationState({ id, state: '3' }).then(res => {
+                if (res.code == 200) {
+                  this.$message({
+                    type: 'success',
+                    message: '修改成功'
+                  })
+                  this.getList()
+                }
+              })
+              // this.$message({
+              //   type: 'info',
+              //   message: '已取消删除'
+              // })
+            })
           break
         case '确认':
           this.getList()
@@ -406,30 +396,13 @@ export default {
             type: 'warning'
           })
             .then(() => {
-              deleteVorderInfoState({ order }).then(res => {
+              let id = val.id
+
+              putJoinInformationState({ id, state: '4' }).then(res => {
                 if (res.code == 200) {
                   this.$message({
                     type: 'success',
                     message: '删除成功'
-                  })
-                  this.getList()
-                }
-              })
-            })
-            .catch(() => {})
-          break
-        case '取消':
-          this.$confirm('确认取消？', '提示', {
-            cancelButtonText: '取消',
-            confirmButtonText: '确定',
-            type: 'warning'
-          })
-            .then(() => {
-              cancelVorderInfoState({ order }).then(res => {
-                if (res.code == 200) {
-                  this.$message({
-                    type: 'success',
-                    message: '取消成功'
                   })
                   this.getList()
                 }

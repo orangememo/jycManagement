@@ -521,7 +521,7 @@ export default {
         case '上架':
           {
             let obj = {
-              id: this.editId,
+              id: val.id,
               state: 1
             }
             checkDishTypeDetails(obj).then(res => {

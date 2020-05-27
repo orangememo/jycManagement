@@ -463,3 +463,14 @@ export function checkDishTypeDetails(data) {
 		data,
 	})
 }
+/**
+ * 查询可供应商可采购商品接口（APP）
+ */
+
+export function getCommoditySkuInfoList(params) {
+	return request({
+		url: process.env.VUE_APP_DEV_API + '/purchase/JycCommoditySkuInfo/page',
+		method: 'get',
+		params,
+	})
+}

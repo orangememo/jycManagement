@@ -2,8 +2,8 @@
   <el-row :gutter="40" class="panel-group">
     <template v-for="(item,index) in propsData">
       <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-        <div class="card-panel" @click="handleSetLineChartData(item.text)">
-          <div class="card-panel-icon-wrapper icon-people">
+        <div class="card-panel" @click="handleSetLineChartData(item.type)">
+          <div class="card-panel-icon-wrapper" :class="`icon-${index}`">
             <svg-icon :icon-class="item['icon']" class-name="card-panel-icon" />
           </div>
           <div class="card-panel-description">
@@ -13,45 +13,6 @@
         </div>
       </el-col>
     </template>
-    <!-- <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <div class="card-panel" @click="handleSetLineChartData('messages')">
-        <div class="card-panel-icon-wrapper icon-message">
-          <svg-icon icon-class="message" class-name="card-panel-icon" />
-        </div>
-        <div class="card-panel-description">
-          <div class="card-panel-text">
-            Messages
-          </div>
-          <count-to :start-val="0" :end-val="81212" :duration="3000" class="card-panel-num" />
-        </div>
-      </div>
-    </el-col>
-    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <div class="card-panel" @click="handleSetLineChartData('purchases')">
-        <div class="card-panel-icon-wrapper icon-money">
-          <svg-icon icon-class="money" class-name="card-panel-icon" />
-        </div>
-        <div class="card-panel-description">
-          <div class="card-panel-text">
-            Purchases
-          </div>
-          <count-to :start-val="0" :end-val="9280" :duration="3200" class="card-panel-num" />
-        </div>
-      </div>
-    </el-col>
-    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <div class="card-panel" @click="handleSetLineChartData('shoppings')">
-        <div class="card-panel-icon-wrapper icon-shopping">
-          <svg-icon icon-class="shopping" class-name="card-panel-icon" />
-        </div>
-        <div class="card-panel-description">
-          <div class="card-panel-text">
-            Shoppings
-          </div>
-          <count-to :start-val="0" :end-val="13600" :duration="3600" class="card-panel-num" />
-        </div>
-      </div>
-    </el-col>-->
   </el-row>
 </template>
 
@@ -99,36 +60,36 @@ export default {
         color: #fff;
       }
 
-      .icon-people {
+      .icon-0 {
         background: #40c9c6;
       }
 
-      .icon-message {
+      .icon-1 {
         background: #36a3f7;
       }
 
-      .icon-money {
+      .icon-2 {
         background: #f4516c;
       }
 
-      .icon-shopping {
+      .icon-3 {
         background: #34bfa3;
       }
     }
 
-    .icon-people {
+    .icon-0 {
       color: #40c9c6;
     }
 
-    .icon-message {
+    .icon-1 {
       color: #36a3f7;
     }
 
-    .icon-money {
+    .icon-2 {
       color: #f4516c;
     }
 
-    .icon-shopping {
+    .icon-3 {
       color: #34bfa3;
     }
 

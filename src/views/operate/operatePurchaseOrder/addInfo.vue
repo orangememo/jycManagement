@@ -8,154 +8,72 @@
               <el-input v-model.number="form.applicationId" placeholder="请输入应用id"></el-input>
             </el-form-item>
           </el-col>-->
-          <el-col :span="12">
-            <el-form-item label="用户Id" prop="userId">
-              <el-input v-model="form.userId" :readonly="edit==2"></el-input>
+          <el-col :span="24">
+            <el-form-item label="商品选择" prop="product">
+              <el-select v-model="form.product" multiple placeholder="请选择" style="width:100%">
+                <el-option
+                  v-for="item in options.productOptions"
+                  :key="item.skuId"
+                  :label="item.spuName"
+                  :value="item.skuId"
+                >
+                  <span style="float: left">{{ item.spuName }}</span>
+                  <span
+                    style="float: right; color: #8492a6; font-size: 13px;margin-right:18px"
+                  >{{ item.supplierName }}</span>
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="状态" prop="state">
-              <el-input v-model="stateInfo[form.state]" :readonly="edit==2"></el-input>
+          <el-col :span="24">
+            <el-form-item label="已选择商品" prop="commodity">
+              <el-table :data="form.commodity" border fit highlight-current-row style="width: 100%">
+                <el-table-column align="center" prop="skuName" label="商品名称"></el-table-column>
+                <el-table-column align="center" prop="images" label="图片">
+                  <template slot-scope="{row}">
+                    <el-image
+                      style="width: 50px; height: 50px"
+                      :src="hostUrl+row.images"
+                      :preview-src-list="[hostUrl+row.images]"
+                      fit="cover"
+                    ></el-image>
+                  </template>
+                </el-table-column>
+                <el-table-column align="center" prop="costPrice" label="价格"></el-table-column>
+                <el-table-column align="center" prop="num" label="数量">
+                  <template slot-scope="{row}">
+                    <el-input-number v-model="row.num" size="small" :min="6" :step="6" />
+                  </template>
+                </el-table-column>
+              </el-table>
             </el-form-item>
           </el-col>
-
-          <el-col :span="12">
-            <el-form-item label="用户使用红包" prop="consumption">
-              <el-input v-model="form.consumption" :readonly="edit==2"></el-input>
+          <el-col :span="24">
+            <el-form-item label="收货人姓名" prop="name">
+              <el-input v-model="form.name"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="原价" prop="originalPrice">
-              <el-input v-model="form.originalPrice" :readonly="edit==2"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="其他费用" prop="otherExpenses">
-              <el-input v-model="form.otherExpenses" :readonly="edit==2"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="应付金额" prop="paymentamount">
-              <el-input v-model="form.paymentamount" :readonly="edit==2"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="真实价格" prop="price">
-              <el-input v-model="form.price" :readonly="edit==2"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="使用时间" prop="refreshtime">
-              <el-input v-model="form.refreshtime" :readonly="edit==2"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="商品数量" prop="num">
-              <el-input v-model="form.refreshtime" :readonly="edit==2"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="总价" prop="totalPrice">
-              <el-input v-model="form.totalPrice" :readonly="edit==2"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="支付方式" prop="channel">
-              <el-input v-model="channelInfo[form.channel]" :readonly="edit==2"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
+          <el-col :span="24">
             <el-form-item label="手机号" prop="phone">
-              <el-input v-model="form.phone" :readonly="edit==2"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="创建时间" prop=" createTime">
-              <el-input v-model="form. createTime" :readonly="edit==2"></el-input>
+              <el-input v-model="form.phone"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-divider>
-              <i class="el-icon-cold-drink"></i> 优惠券
-            </el-divider>
+            <el-form-item label="地址" prop="address">
+              <el-input v-model="form.address"></el-input>
+            </el-form-item>
           </el-col>
-          <template v-for="item in form.couponInfoList">
-            <el-col :span="12" class="mb10">
-              <el-col :span="8" class="ly-flex ly-justify-c">
-                <el-image
-                  :src="hostUrl+item.images"
-                  style="width: 150px; height: 150px; "
-                  class="p5"
-                ></el-image>
-              </el-col>
-              <el-col :span="16">
-                <el-col :span="24">
-                  <el-form-item label="商品名称" prop="skuName" label-width="100px">
-                    <el-input v-model="item.skuName" :readonly="edit==2"></el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="24">
-                  <el-form-item label="优惠券编码" prop="couponCode" label-width="100px">
-                    <el-input v-model="item.couponCode" :readonly="edit==2"></el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="skuCode" prop="skuCode" label-width="75px">
-                    <el-input v-model="item.skuCode" :readonly="edit==2"></el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="金额" prop="couponSumMoney" label-width="75px">
-                    <el-input v-model="item.couponSumMoney" :readonly="edit==2"></el-input>
-                  </el-form-item>
-                </el-col>
-              </el-col>
-            </el-col>
-          </template>
           <el-col :span="24">
-            <el-divider>
-              <i class="el-icon-cold-drink"></i>复消酒
-            </el-divider>
+            <el-form-item label="备注" prop=" remark">
+              <el-input v-model="form.remark"></el-input>
+            </el-form-item>
           </el-col>
-          <template v-for="item in form. jycLiquorProductsList">
-            <el-col :span="12" class="mb10">
-              <el-col :span="8" class="ly-flex ly-justify-c">
-                <el-image
-                  :src="hostUrl+item.image"
-                  style="width: 150px; height: 150px; "
-                  class="p5"
-                ></el-image>
-              </el-col>
-              <el-col :span="16">
-                <el-col :span="24">
-                  <el-form-item label="商品名称" prop="skuName" label-width="100px">
-                    <el-input v-model="item.skuName" :readonly="edit==2"></el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="24">
-                  <el-form-item label="skuCode" prop="skuCode">
-                    <el-input v-model="item.skuCode" :readonly="edit==2"></el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="价格" prop="money" label-width="70px">
-                    <el-input v-model="item.money" :readonly="edit==2"></el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="数量" prop="number" label-width="70px">
-                    <el-input v-model="item.number" :readonly="edit==2"></el-input>
-                  </el-form-item>
-                </el-col>
-              </el-col>
-            </el-col>
-          </template>
         </el-row>
       </el-form>
     </div>
     <div class="ly-flex ly-justify-e buttonCtrl">
       <div>
-        <!-- <el-button type="primary" @click="handleClick('确认')" :loading="sumbitLoading">确认</el-button> -->
+        <el-button type="primary" @click="handleClick('确认')" :loading="sumbitLoading">确认</el-button>
         <el-button @click="handleClick('关闭')">关闭</el-button>
       </div>
     </div>
@@ -164,18 +82,12 @@
 
 <script>
 import { validateMobile } from '@/utils/validate'
-import treeSelect from '@/components/treeSelect'
-import {
-  addVersionInfo,
-  getBusinessOrderInfo,
-  putVersionInfo,
-  upLoadImg
-} from '@/api/member'
+
+import { addVorderInfo } from '@/api/member'
+import { getCommoditySkuInfoList } from '@/api/products'
+import { mapState } from 'vuex'
 
 export default {
-  components: {
-    treeSelect
-  },
   props: {
     propHandleClick: {
       type: Function
@@ -189,70 +101,97 @@ export default {
   },
   data() {
     return {
-      channelInfo: {
-        0: '微信',
-        1: '支付宝',
-        2: '现金',
-        3: '银行卡'
-      },
-      stateInfo: {
-        order_1: '待核销',
-        order_2: '已核销',
-        order_3: '异常订单'
-      },
-      upLoadImg,
       sumbitLoading: false,
       form: {
-        applicationId: '',
-        applicationVersion: '',
-        content: '',
-        state: 'NORMAL',
-        applicationUrl: '',
-        applicationImage: '',
-        applicationMin: ''
+        product: [],
+        commodity: [],
+        name: '',
+        phone: '',
+        address: '',
+        remark: ''
       },
-      formRules: {},
+      formRules: {
+        product: [{ required: true, message: '请选择', trigger: 'blur' }],
+        name: [{ required: true, message: '请填写', trigger: 'blur' }],
+        phone: [{ required: true, message: '请填写', trigger: 'blur' }],
+        address: [{ required: true, message: '请填写', trigger: 'blur' }]
+      },
       options: {
-        appIdOptions: []
+        productOptions: []
       }
     }
   },
+  computed: {
+    ...mapState('login', ['companyListToSelect', 'companyId'])
+  },
   mounted() {
-    if (this.edit == 2) {
-      let order = this.editId
-      console.log('12313212')
-      getBusinessOrderInfo({ order }).then(res => {
-        this.form = res.result
-      })
-    }
+    let supplierId = this.companyListToSelect.find(
+      i => i.value == this.companyId
+    ).parentId
+    getCommoditySkuInfoList({
+      isPage: 'NO',
+      supplierId
+    }).then(res => {
+      this.options.productOptions = res.result
+    })
   },
 
   methods: {
     handleClick(type) {
       switch (type) {
         case '确认':
+          this.$refs.form.validate(valid => {
+            if (valid) {
+              let obj = JSON.parse(JSON.stringify(this.form))
+              addVorderInfo(obj).then(res => {
+                if (res.code == 200) {
+                  this.$message({
+                    type: 'success',
+                    message: '新增成功'
+                  })
+                  this.propHandleClick(type)
+                }
+              })
+
+              this.sumbitLoading = false
+            } else {
+              this.sumbitLoading = false
+              return false
+            }
+          })
+
           break
         case '关闭':
           this.propHandleClick(type)
           break
       }
     }
+  },
+
+  watch: {
+    'form.product'(newValue, oldValue) {
+      let commodity = []
+      newValue.forEach(item => {
+        let com = this.form.product.find(i => item === i.skuId)
+        if (com) {
+          commodity.push(com)
+        } else {
+          com = this.options.productOptions.find(i => item === i.skuId)
+          commodity.push(com)
+        }
+      })
+      this.form.commodity = commodity.map(item => {
+        let obj = {
+          skuName: item.skuName,
+          skuCode: item.skuCode,
+          images: item.images,
+          costPrice: item.costPrice,
+          num: 6
+        }
+        return obj
+      })
+    }
   }
-  // watch: {
-  //   form: {
-  //     handler(newValue, oldValue) {
-  //       let roleId = newValue.proleId
-  //       let operationType = 'operationType'
-  //       if (this.proleId !== roleId) {
-  //         this.proleId = roleId
-  //         getRuleInfoTree({ operationType, roleId }).then(res => {
-  //           this.options.ruleOptions = res.result.list
-  //         })
-  //       }
-  //     },
-  //     deep: true
-  //   }
-  // }
 }
 </script>
 
@@ -268,6 +207,7 @@ export default {
       cursor: pointer;
       position: relative;
       overflow: hidden;
+
       &:hover {
         border-color: #409eff;
       }

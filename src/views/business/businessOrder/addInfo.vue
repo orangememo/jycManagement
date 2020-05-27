@@ -71,7 +71,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="创建时间" prop=" createTime">
-              <el-input v-model="form. createTime" :readonly="edit==2"></el-input>
+              <el-input v-model="form.createTime" :readonly="edit==2"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24">

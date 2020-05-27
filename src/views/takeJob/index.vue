@@ -7,7 +7,7 @@ import { getToken } from '@/utils/auth'
 
 export default {
   created() {
-    let url = `http://lp-admin.cn:8089/webRecruit/#/?token=${getToken()}`
+    let url = `https://lpjuc.com/webRecruit/#/?token=${getToken()}`
     window.open(url)
     this.$router.go(-1)
   },
